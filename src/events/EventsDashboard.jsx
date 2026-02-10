@@ -188,48 +188,51 @@ export default function EventsDashboard() {
   // Overview
   return (
     <div className="min-h-screen bg-sand-light">
-      <div className="max-w-4xl mx-auto px-4 py-6">
+      <div className="max-w-6xl mx-auto px-4 py-6">
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-ink">2026 Events Overview</h1>
           <p className="text-ink-light mt-2">North Star House Events Committee Dashboard</p>
         </div>
 
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {months.map((month) => {
             const monthEvents = eventsByMonth[month];
-            if (monthEvents.length === 0) return null;
             return (
-              <div key={month}>
-                <h3 className="font-bold text-ink text-lg mb-2 flex items-center gap-2 px-1">
+              <div
+                key={month}
+                className="bg-white border border-sand-dark rounded-xl p-4 flex flex-col"
+              >
+                <h3 className="font-bold text-ink text-lg mb-3 flex items-center gap-2">
                   <Calendar size={16} className="text-gold" />
                   {month}
                 </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-                  {monthEvents.map((event) => (
-                    <button
-                      key={event.id}
-                      onClick={() => navigateToEvent(event.id)}
-                      className="bg-white border border-sand-dark rounded-xl p-4 text-left hover:border-gold hover:shadow-md transition-all group cursor-pointer"
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <p className="font-semibold text-sm text-ink group-hover:text-gold transition-colors leading-tight">
+                {monthEvents.length === 0 ? (
+                  <p className="text-sm text-ink-light italic">No events scheduled</p>
+                ) : (
+                  <div className="space-y-2 flex-1">
+                    {monthEvents.map((event) => (
+                      <button
+                        key={event.id}
+                        onClick={() => navigateToEvent(event.id)}
+                        className="w-full text-left bg-sand-light hover:bg-sand rounded-lg p-3 transition-all group cursor-pointer border border-transparent hover:border-gold/30 hover:shadow-sm"
+                      >
+                        <p className="font-medium text-sm text-ink group-hover:text-gold transition-colors leading-tight">
                           {event.name}
                         </p>
-                        <ChevronRight size={14} className="text-ink-light group-hover:text-gold transition-colors mt-0.5 shrink-0" />
-                      </div>
-                      {(event.date || event.dayTime) && (
-                        <p className="text-xs text-ink-light mt-1.5">
-                          {event.dayTime && event.dayTime}
-                          {event.date && event.dayTime && ', '}
-                          {event.date && event.date}
-                        </p>
-                      )}
-                      <div className="mt-2">
-                        <DaysUntilBadge isoDate={event.isoDate} />
-                      </div>
-                    </button>
-                  ))}
-                </div>
+                        {(event.date || event.dayTime) && (
+                          <p className="text-xs text-ink-light mt-1">
+                            {event.dayTime && event.dayTime}
+                            {event.date && event.dayTime && ' - '}
+                            {event.date && event.date}
+                          </p>
+                        )}
+                        <div className="mt-1.5">
+                          <DaysUntilBadge isoDate={event.isoDate} />
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             );
           })}
