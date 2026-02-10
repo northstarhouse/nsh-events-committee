@@ -190,7 +190,7 @@ export default function EventsDashboard() {
     <div className="min-h-screen bg-sand-light">
       <div className="max-w-6xl mx-auto px-4 py-6">
         <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-gold">North Star House Events Committee Dashboard</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-gold">North Star House Events Committee Dashboard</h1>
           <p className="text-lg text-ink-light mt-3">2026 Events Overview</p>
         </div>
 
