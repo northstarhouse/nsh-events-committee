@@ -5,6 +5,7 @@ export const events2026 = [
     name: 'Game Day at North Star House #1',
     date: 'January 18th',
     dayTime: 'Sunday 1-4pm',
+    isoDate: '2026-01-18',
   },
   {
     id: 'feb-gameday-2',
@@ -12,6 +13,7 @@ export const events2026 = [
     name: 'Game Day at North Star House #2',
     date: 'February 21st',
     dayTime: 'Saturday 1-4pm',
+    isoDate: '2026-02-21',
   },
   {
     id: 'mar-reformers',
@@ -19,6 +21,7 @@ export const events2026 = [
     name: 'Reluctant Reformers: Mary Hallock Foote and Julia Morgan in the Progressive Era',
     date: 'March 15th',
     dayTime: 'Sunday 1-3pm',
+    isoDate: '2026-03-15',
   },
   {
     id: 'apr-magic',
@@ -26,6 +29,7 @@ export const events2026 = [
     name: 'April Fools Magic Show',
     date: 'April 17th & April 18th',
     dayTime: 'Fri & Sat 7-9pm',
+    isoDate: '2026-04-17',
   },
   {
     id: 'may-tea',
@@ -33,6 +37,7 @@ export const events2026 = [
     name: "Mother's Day Tea",
     date: 'May 11th',
     dayTime: 'Sun 12-2pm',
+    isoDate: '2026-05-11',
   },
   {
     id: 'jun-mixer',
@@ -40,6 +45,7 @@ export const events2026 = [
     name: 'Chamber Mixer',
     date: 'TBD',
     dayTime: 'Thursday Evening',
+    isoDate: null,
   },
   {
     id: 'jul-open',
@@ -47,6 +53,7 @@ export const events2026 = [
     name: 'Open',
     date: '',
     dayTime: '',
+    isoDate: null,
   },
   {
     id: 'aug-volunteer',
@@ -54,6 +61,7 @@ export const events2026 = [
     name: 'Volunteer Appreciation Party',
     date: 'August 30th',
     dayTime: 'Sun 5-8pm',
+    isoDate: '2026-08-30',
   },
   {
     id: 'sep-creatives',
@@ -61,6 +69,7 @@ export const events2026 = [
     name: 'Creatives Meetup Mixer',
     date: 'TBD',
     dayTime: '',
+    isoDate: null,
   },
   {
     id: 'oct-magic',
@@ -68,6 +77,7 @@ export const events2026 = [
     name: 'Fall Magic Show',
     date: 'TBD',
     dayTime: '',
+    isoDate: null,
   },
   {
     id: 'oct-gilded',
@@ -75,6 +85,7 @@ export const events2026 = [
     name: 'A Gilded Evening at North Star House',
     date: 'October 17th',
     dayTime: 'Sat 4-7pm',
+    isoDate: '2026-10-17',
   },
   {
     id: 'nov-state',
@@ -82,6 +93,7 @@ export const events2026 = [
     name: 'State of the Star',
     date: 'November 13th',
     dayTime: 'Fri 4-6pm',
+    isoDate: '2026-11-13',
   },
   {
     id: 'dec-christmas',
@@ -89,6 +101,7 @@ export const events2026 = [
     name: 'Christmas at North Star House',
     date: 'December 12th',
     dayTime: 'Sat 3-5:30pm',
+    isoDate: '2026-12-12',
   },
   {
     id: 'dec-rossman',
@@ -96,6 +109,7 @@ export const events2026 = [
     name: 'Bob Rossman',
     date: 'TBD',
     dayTime: 'To be confirmed',
+    isoDate: null,
   },
 ];
 
@@ -126,6 +140,15 @@ export function getEventsByMonth() {
 
 export function getEventById(id) {
   return events2026.find(e => e.id === id);
+}
+
+export function getDaysUntil(isoDate) {
+  if (!isoDate) return null;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const eventDate = new Date(isoDate + 'T00:00:00');
+  const diff = eventDate - today;
+  return Math.ceil(diff / (1000 * 60 * 60 * 24));
 }
 
 export function getEventDisplayName(event) {
