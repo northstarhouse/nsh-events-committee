@@ -214,7 +214,7 @@ export default function EventsDashboard() {
                       <button
                         key={event.id}
                         onClick={() => navigateToEvent(event.id)}
-                        className="w-full text-left bg-sand-light hover:bg-sand rounded-lg p-3 transition-all group cursor-pointer border border-transparent hover:border-gold/30 hover:shadow-sm"
+                        className="w-full text-left bg-white hover:bg-sand-light rounded-lg p-3 transition-all group cursor-pointer border border-transparent hover:border-gold/30 hover:shadow-sm"
                       >
                         <p className="font-medium text-sm text-ink group-hover:text-gold transition-colors leading-tight">
                           {event.name}
