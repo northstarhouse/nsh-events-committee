@@ -109,7 +109,7 @@ export default function EventsDashboard() {
           </button>
 
           <div className="mb-6">
-            <h1 className="text-3xl font-bold text-ink">{area.label}</h1>
+            <h1 className="text-3xl font-bold text-gold">{area.label}</h1>
             <p className="text-ink-light mt-1">{area.role}: {area.person}</p>
             <p className="text-gold font-medium mt-1">
               {selectedEvent.name} {selectedEvent.dayTime && `- ${selectedEvent.dayTime}`}{selectedEvent.date && `, ${selectedEvent.date}`}
@@ -135,7 +135,7 @@ export default function EventsDashboard() {
           </button>
 
           <div className="text-center mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold text-ink">{selectedEvent.name}</h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-gold">{selectedEvent.name}</h1>
             {(selectedEvent.date || selectedEvent.dayTime) && (
               <p className="text-lg text-ink-light mt-2">
                 {selectedEvent.dayTime && selectedEvent.dayTime}
@@ -146,7 +146,7 @@ export default function EventsDashboard() {
           </div>
 
           <div className="mb-6">
-            <h2 className="text-2xl font-bold text-ink text-center mb-6">Update Event Area Notes</h2>
+            <h2 className="text-2xl font-bold text-gold text-center mb-6">Update Event Area Notes</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {committeeAreas.map((area) => {
                 const Icon = areaIcons[area.key];

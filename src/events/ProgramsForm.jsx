@@ -1,5 +1,5 @@
 import { useFormData } from './useFormData';
-import { SaveIndicator, Section, TextArea, TextInput, CheckboxGroup, RadioGroup } from './FormWrapper';
+import { FormActions, Section, TextArea, TextInput, CheckboxGroup, RadioGroup } from './FormWrapper';
 import { Plus, Trash2 } from 'lucide-react';
 
 const defaultData = {
@@ -21,13 +21,11 @@ const defaultData = {
 };
 
 export default function ProgramsForm({ event }) {
-  const { data, updateField, updateNestedField, addToArray, removeFromArray, saveStatus } = useFormData(event.id, 'programs', defaultData);
+  const { data, updateField, updateNestedField, addToArray, removeFromArray, saveStatus, saveNow } = useFormData(event.id, 'programs', defaultData);
 
   return (
     <div>
-      <div className="flex justify-end mb-4">
-        <SaveIndicator status={saveStatus} />
-      </div>
+      <FormActions saveStatus={saveStatus} onSave={saveNow} />
 
       <Section title="Activities & Programs - Planning">
         <CheckboxGroup

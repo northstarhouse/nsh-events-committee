@@ -1,5 +1,5 @@
 import { useFormData } from './useFormData';
-import { SaveIndicator, Section, TextArea, RadioGroup, CheckboxGroup } from './FormWrapper';
+import { FormActions, Section, TextArea, RadioGroup, CheckboxGroup } from './FormWrapper';
 import { Plus, Trash2 } from 'lucide-react';
 
 const defaultData = {
@@ -56,13 +56,11 @@ function DynamicTable({ label, items, onUpdate, onAdd, onRemove, col1Label, col2
 }
 
 export default function HospitalityForm({ event }) {
-  const { data, updateField, updateNestedField, addToArray, removeFromArray, saveStatus } = useFormData(event.id, 'hospitality', defaultData);
+  const { data, updateField, updateNestedField, addToArray, removeFromArray, saveStatus, saveNow } = useFormData(event.id, 'hospitality', defaultData);
 
   return (
     <div>
-      <div className="flex justify-end mb-4">
-        <SaveIndicator status={saveStatus} />
-      </div>
+      <FormActions saveStatus={saveStatus} onSave={saveNow} />
 
       <Section title="Hospitality - Planning">
         <DynamicTable

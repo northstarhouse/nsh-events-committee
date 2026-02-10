@@ -1,5 +1,5 @@
 import { useFormData } from './useFormData';
-import { SaveIndicator, Section, TextArea, TextInput, CheckboxGroup } from './FormWrapper';
+import { FormActions, Section, TextArea, TextInput, CheckboxGroup } from './FormWrapper';
 
 const defaultData = {
   recognitionMethods: [],
@@ -20,13 +20,11 @@ const defaultData = {
 };
 
 export default function SponsorshipForm({ event }) {
-  const { data, updateField, saveStatus } = useFormData(event.id, 'sponsorship', defaultData);
+  const { data, updateField, saveStatus, saveNow } = useFormData(event.id, 'sponsorship', defaultData);
 
   return (
     <div>
-      <div className="flex justify-end mb-4">
-        <SaveIndicator status={saveStatus} />
-      </div>
+      <FormActions saveStatus={saveStatus} onSave={saveNow} />
 
       <Section title="Sponsorships & Partnerships - Planning">
         <CheckboxGroup

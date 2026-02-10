@@ -1,5 +1,5 @@
 import { useFormData } from './useFormData';
-import { SaveIndicator, Section, TextArea } from './FormWrapper';
+import { FormActions, SaveIndicator, Section, TextArea } from './FormWrapper';
 
 const marketingChannels = [
   'Create Press Release',
@@ -28,7 +28,7 @@ const defaultData = {
 };
 
 export default function MarketingForm({ event }) {
-  const { data, updateField, saveStatus } = useFormData(event.id, 'marketing', defaultData);
+  const { data, updateField, saveStatus, saveNow } = useFormData(event.id, 'marketing', defaultData);
 
   const toggleChannel = (channel) => {
     const channels = { ...(data.channels || {}) };
@@ -52,11 +52,11 @@ export default function MarketingForm({ event }) {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4">
+      <FormActions saveStatus={saveStatus} onSave={saveNow} />
+      <div className="mb-4">
         <span className="text-sm text-ink-light">
           {completedCount} of {marketingChannels.length} channels completed
         </span>
-        <SaveIndicator status={saveStatus} />
       </div>
 
       <Section title="Marketing Checklist">

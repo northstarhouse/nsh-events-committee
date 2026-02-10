@@ -1,5 +1,5 @@
 import { useFormData } from './useFormData';
-import { SaveIndicator, Section, TextArea, RadioGroup } from './FormWrapper';
+import { FormActions, Section, TextArea, RadioGroup } from './FormWrapper';
 
 const defaultData = {
   statusUpdates: [
@@ -13,7 +13,7 @@ const defaultData = {
 };
 
 export default function OverallStatusForm({ event }) {
-  const { data, updateField, updateNestedField, saveStatus } = useFormData(event.id, 'overall', defaultData);
+  const { data, updateField, updateNestedField, saveStatus, saveNow } = useFormData(event.id, 'overall', defaultData);
 
   const updateStatusEntry = (index, field, value) => {
     updateNestedField('statusUpdates', index, field, value);
@@ -21,9 +21,7 @@ export default function OverallStatusForm({ event }) {
 
   return (
     <div>
-      <div className="flex justify-end mb-4">
-        <SaveIndicator status={saveStatus} />
-      </div>
+      <FormActions saveStatus={saveStatus} onSave={saveNow} />
 
       <Section title="Event Status Updates">
         <p className="text-sm text-ink-light mb-4">

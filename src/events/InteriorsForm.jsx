@@ -1,5 +1,5 @@
 import { useFormData } from './useFormData';
-import { SaveIndicator, Section, TextArea, TextInput, RadioGroup, CheckboxGroup } from './FormWrapper';
+import { FormActions, Section, TextArea, TextInput, RadioGroup, CheckboxGroup } from './FormWrapper';
 
 const defaultData = {
   historicApproach: '',
@@ -17,13 +17,11 @@ const defaultData = {
 };
 
 export default function InteriorsForm({ event }) {
-  const { data, updateField, saveStatus } = useFormData(event.id, 'interiors', defaultData);
+  const { data, updateField, saveStatus, saveNow } = useFormData(event.id, 'interiors', defaultData);
 
   return (
     <div>
-      <div className="flex justify-end mb-4">
-        <SaveIndicator status={saveStatus} />
-      </div>
+      <FormActions saveStatus={saveStatus} onSave={saveNow} />
 
       <Section title="Interiors - Planning">
         <RadioGroup

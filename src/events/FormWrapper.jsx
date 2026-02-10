@@ -22,6 +22,21 @@ export function SaveIndicator({ status }) {
   );
 }
 
+export function FormActions({ saveStatus, onSave }) {
+  return (
+    <div className="flex items-center justify-between mb-4">
+      <SaveIndicator status={saveStatus} />
+      <button
+        onClick={onSave}
+        className="flex items-center gap-2 bg-gold hover:bg-gold-dark text-white font-medium text-sm px-5 py-2 rounded-lg transition-colors cursor-pointer"
+      >
+        <Save size={16} />
+        Submit
+      </button>
+    </div>
+  );
+}
+
 export function Section({ title, children }) {
   return (
     <div className="bg-white border border-sand-dark rounded-xl p-5 mb-4">

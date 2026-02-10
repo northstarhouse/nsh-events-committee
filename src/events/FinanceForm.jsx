@@ -1,5 +1,5 @@
 import { useFormData } from './useFormData';
-import { SaveIndicator, Section, TextArea, TextInput, RadioGroup, CheckboxGroup } from './FormWrapper';
+import { FormActions, Section, TextArea, TextInput, RadioGroup, CheckboxGroup } from './FormWrapper';
 
 const expenseCategories = [
   'Food & Beverage',
@@ -42,7 +42,7 @@ const defaultData = {
 };
 
 export default function FinanceForm({ event }) {
-  const { data, updateField, updateNestedField, saveStatus } = useFormData(event.id, 'finance', defaultData);
+  const { data, updateField, updateNestedField, saveStatus, saveNow } = useFormData(event.id, 'finance', defaultData);
 
   const calcTotal = (items, field) => {
     return (items || []).reduce((sum, item) => {
@@ -53,9 +53,7 @@ export default function FinanceForm({ event }) {
 
   return (
     <div>
-      <div className="flex justify-end mb-4">
-        <SaveIndicator status={saveStatus} />
-      </div>
+      <FormActions saveStatus={saveStatus} onSave={saveNow} />
 
       <Section title="Projected Expenses">
         <div className="overflow-x-auto">

@@ -1,5 +1,5 @@
 import { useFormData } from './useFormData';
-import { SaveIndicator, Section, TextArea, TextInput, RadioGroup } from './FormWrapper';
+import { FormActions, Section, TextArea, TextInput, RadioGroup } from './FormWrapper';
 
 const defaultData = {
   proposedAttendance: '',
@@ -18,13 +18,11 @@ const defaultData = {
 };
 
 export default function LogisticsForm({ event }) {
-  const { data, updateField, saveStatus } = useFormData(event.id, 'logistics', defaultData);
+  const { data, updateField, saveStatus, saveNow } = useFormData(event.id, 'logistics', defaultData);
 
   return (
     <div>
-      <div className="flex justify-end mb-4">
-        <SaveIndicator status={saveStatus} />
-      </div>
+      <FormActions saveStatus={saveStatus} onSave={saveNow} />
 
       <Section title="Event Logistics - Planning">
         <TextInput

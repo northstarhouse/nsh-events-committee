@@ -1,5 +1,5 @@
 import { useFormData } from './useFormData';
-import { SaveIndicator, Section, TextArea, TextInput, YesNoNA } from './FormWrapper';
+import { FormActions, Section, TextArea, TextInput, YesNoNA } from './FormWrapper';
 
 const volunteerRoles = [
   'Setup', 'Check-in booth', 'Hospitality / Food Support',
@@ -24,7 +24,7 @@ const defaultData = {
 };
 
 export default function VolunteerForm({ event }) {
-  const { data, updateField, saveStatus } = useFormData(event.id, 'volunteers', defaultData);
+  const { data, updateField, saveStatus, saveNow } = useFormData(event.id, 'volunteers', defaultData);
 
   const updateRole = (role, field, value) => {
     const roles = { ...(data.roles || {}) };
@@ -34,9 +34,7 @@ export default function VolunteerForm({ event }) {
 
   return (
     <div>
-      <div className="flex justify-end mb-4">
-        <SaveIndicator status={saveStatus} />
-      </div>
+      <FormActions saveStatus={saveStatus} onSave={saveNow} />
 
       <Section title="Volunteer Coordination - Planning">
         <div className="mb-4">

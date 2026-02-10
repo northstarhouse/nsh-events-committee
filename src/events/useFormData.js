@@ -68,5 +68,16 @@ export function useFormData(eventId, formType, defaultData = {}) {
     };
   }, [data, key]);
 
-  return { data, updateField, updateNestedField, addToArray, removeFromArray, saveStatus };
+  const saveNow = useCallback(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    try {
+      localStorage.setItem(key, JSON.stringify(data));
+      setSaveStatus('saved');
+    } catch (err) {
+      console.error('Failed to save form data:', err);
+      setSaveStatus('error');
+    }
+  }, [data, key]);
+
+  return { data, updateField, updateNestedField, addToArray, removeFromArray, saveStatus, saveNow };
 }
