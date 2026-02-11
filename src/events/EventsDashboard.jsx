@@ -448,14 +448,12 @@ export default function EventsDashboard() {
             <div className="space-y-8">
               <div className="border border-sand-dark/60 rounded-2xl p-5 bg-sand-light/30">
                 <h3 className="text-lg font-semibold text-gold mb-4">Pre-Event</h3>
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {committeeAreas.map((area) => {
                     const stored = getStoredFormData(selectedEvent.id, area.key) || {};
                     const data = mergeWithDefaults(defaultFormData[area.key] || {}, stored);
-                    const Icon = areaIcons[area.key];
                     return (
-                      <div key={`pre-${area.key}`} className="border border-sand-dark/60 rounded-xl p-4 bg-white">
-                        <AreaHeader Icon={Icon} area={area} />
+                      <div key={`pre-${area.key}`}>
                         {area.key === 'overall' && (() => {
                           const updates = data.statusUpdates || [];
                           const latest = [...updates].reverse().find((entry) =>
@@ -594,19 +592,15 @@ export default function EventsDashboard() {
                           <div className="space-y-2">
                             <p className="text-xs uppercase tracking-[0.2em] text-ink-light">Projected Expenses</p>
                             {(data.expenses || []).map((row, idx) => (
-                              <div key={idx} className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                                <Field label="Category" value={row.category} />
-                                <Field label="Estimated" value={row.estimated} />
-                                <Field label="Actual" value={row.actual} />
-                              </div>
+                              <p key={idx} className="text-sm text-ink">
+                                {displayValue(row.category)} <span className="text-ink-light">-- Est: {displayValue(row.estimated)} / Actual: {displayValue(row.actual)}</span>
+                              </p>
                             ))}
                             <p className="text-xs uppercase tracking-[0.2em] text-ink-light mt-3">Projected Income</p>
                             {(data.income || []).map((row, idx) => (
-                              <div key={idx} className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                                <Field label="Source" value={row.source} />
-                                <Field label="Estimated" value={row.estimated} />
-                                <Field label="Actual" value={row.actual} />
-                              </div>
+                              <p key={idx} className="text-sm text-ink">
+                                {displayValue(row.source)} <span className="text-ink-light">-- Est: {displayValue(row.estimated)} / Actual: {displayValue(row.actual)}</span>
+                              </p>
                             ))}
                             <div className="mt-3">
                               <Field label="Financial Notes" value={data.financialNotes} />
@@ -673,14 +667,12 @@ export default function EventsDashboard() {
 
               <div className="border border-sand-dark/60 rounded-2xl p-5 bg-sand-light/30">
                 <h3 className="text-lg font-semibold text-gold mb-4">Post-Event</h3>
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {committeeAreas.map((area) => {
                     const stored = getStoredFormData(selectedEvent.id, area.key) || {};
                     const data = mergeWithDefaults(defaultFormData[area.key] || {}, stored);
-                    const Icon = areaIcons[area.key];
                     return (
-                      <div key={`post-${area.key}`} className="border border-sand-dark/60 rounded-xl p-4 bg-white">
-                        <AreaHeader Icon={Icon} area={area} />
+                      <div key={`post-${area.key}`}>
                         {area.key === 'overall' && (
                           <Field label="Final Notes" value={data.finalNotes} />
                         )}
