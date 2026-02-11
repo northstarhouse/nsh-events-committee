@@ -21,8 +21,6 @@ export default function OverallStatusForm({ event }) {
 
   return (
     <div>
-      <FormActions saveStatus={saveStatus} onSave={saveNow} />
-
       <Section title="Event Status Updates">
         <p className="text-sm text-ink-light mb-4">
           Record the overall status of the event after each committee meeting.
@@ -72,9 +70,9 @@ export default function OverallStatusForm({ event }) {
             </div>
           </div>
         ))}
-      </Section>
 
-      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+      </Section>
 
       <Section title="Final Notes">
         <TextArea
@@ -83,9 +81,8 @@ export default function OverallStatusForm({ event }) {
           placeholder="Final notes and overall reflections on this event..."
           rows={6}
         />
+        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
       </Section>
-
-      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
     </div>
   );
 }

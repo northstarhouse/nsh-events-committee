@@ -53,8 +53,6 @@ export default function FinanceForm({ event }) {
 
   return (
     <div>
-      <FormActions saveStatus={saveStatus} onSave={saveNow} />
-
       <Section title="Projected Expenses">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -162,9 +160,8 @@ export default function FinanceForm({ event }) {
           placeholder="Include budget overruns, pending sponsorships, ticket pacing concerns, or approval requests..."
           rows={4}
         />
+        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
       </Section>
-
-      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
 
       <Section title="After Event Data">
         <RadioGroup
@@ -257,9 +254,8 @@ export default function FinanceForm({ event }) {
           onChange={(val) => updateField('postNotes', val)}
           rows={4}
         />
+        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
       </Section>
-
-      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
     </div>
   );
 }

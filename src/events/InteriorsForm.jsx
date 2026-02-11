@@ -21,8 +21,6 @@ export default function InteriorsForm({ event }) {
 
   return (
     <div>
-      <FormActions saveStatus={saveStatus} onSave={saveNow} />
-
       <Section title="Interiors - Planning">
         <RadioGroup
           label="For this event, which applies?"
@@ -74,9 +72,8 @@ export default function InteriorsForm({ event }) {
           onChange={(val) => updateField('otherNotes', val)}
           rows={4}
         />
+        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
       </Section>
-
-      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
 
       <Section title="Post Event Notes">
         <RadioGroup
@@ -106,9 +103,8 @@ export default function InteriorsForm({ event }) {
           onChange={(val) => updateField('postOtherNotes', val)}
           rows={3}
         />
+        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
       </Section>
-
-      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
     </div>
   );
 }

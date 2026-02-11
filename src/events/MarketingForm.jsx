@@ -52,7 +52,6 @@ export default function MarketingForm({ event }) {
 
   return (
     <div>
-      <FormActions saveStatus={saveStatus} onSave={saveNow} />
       <div className="mb-4">
         <span className="text-sm text-ink-light">
           {completedCount} of {marketingChannels.length} channels completed
@@ -132,9 +131,8 @@ export default function MarketingForm({ event }) {
             rows={4}
           />
         </div>
+        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
       </Section>
-
-      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
     </div>
   );
 }

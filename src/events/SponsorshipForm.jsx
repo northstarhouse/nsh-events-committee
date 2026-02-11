@@ -24,8 +24,6 @@ export default function SponsorshipForm({ event }) {
 
   return (
     <div>
-      <FormActions saveStatus={saveStatus} onSave={saveNow} />
-
       <Section title="Sponsorships & Partnerships - Planning">
         <CheckboxGroup
           label="How will sponsors be recognized at this event?"
@@ -100,9 +98,8 @@ export default function SponsorshipForm({ event }) {
           onChange={(val) => updateField('otherNotes', val)}
           rows={4}
         />
+        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
       </Section>
-
-      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
 
       <Section title="Post Event Notes">
         <TextArea
@@ -135,9 +132,8 @@ export default function SponsorshipForm({ event }) {
           value={data.postOtherNotes}
           onChange={(val) => updateField('postOtherNotes', val)}
         />
+        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
       </Section>
-
-      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
     </div>
   );
 }

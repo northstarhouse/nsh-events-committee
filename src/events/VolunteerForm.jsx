@@ -34,8 +34,6 @@ export default function VolunteerForm({ event }) {
 
   return (
     <div>
-      <FormActions saveStatus={saveStatus} onSave={saveNow} />
-
       <Section title="Volunteer Coordination - Planning">
         <div className="mb-4">
           <label className="block text-sm font-semibold text-ink mb-3">Volunteer roles & amount needed</label>
@@ -107,9 +105,8 @@ export default function VolunteerForm({ event }) {
           onChange={(val) => updateField('otherNotes', val)}
           rows={4}
         />
+        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
       </Section>
-
-      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
 
       <Section title="Post Event Notes">
         <TextInput
@@ -133,9 +130,8 @@ export default function VolunteerForm({ event }) {
           placeholder="Key takeaways about volunteer coordination for this event..."
           rows={4}
         />
+        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
       </Section>
-
-      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
     </div>
   );
 }

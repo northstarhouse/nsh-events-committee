@@ -25,8 +25,6 @@ export default function ProgramsForm({ event }) {
 
   return (
     <div>
-      <FormActions saveStatus={saveStatus} onSave={saveNow} />
-
       <Section title="Activities & Programs - Planning">
         <CheckboxGroup
           label="Primary purpose of the activities/programs at this event"
@@ -159,9 +157,8 @@ export default function ProgramsForm({ event }) {
           onChange={(val) => updateField('otherNotes', val)}
           rows={4}
         />
+        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
       </Section>
-
-      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
 
       <Section title="Program & Activities Review (Post-Event)">
         <div className="mb-4">
@@ -242,9 +239,8 @@ export default function ProgramsForm({ event }) {
           value={data.postOtherNotes}
           onChange={(val) => updateField('postOtherNotes', val)}
         />
+        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
       </Section>
-
-      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
     </div>
   );
 }
