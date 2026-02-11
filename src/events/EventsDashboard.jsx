@@ -158,26 +158,13 @@ export default function EventsDashboard() {
           </div>
 
           <div className="mb-6">
-            <div className="flex flex-col items-center gap-3">
-              <button
-                onClick={() => setShowAreas((prev) => !prev)}
-                className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-white px-5 py-2 text-sm font-semibold text-gold shadow-sm transition hover:border-gold hover:shadow-md"
-              >
-                Update Event Area Notes
-                <ChevronRight size={16} className={`transition-transform ${showAreas ? 'rotate-90' : ''}`} />
-              </button>
-              <div className="w-full max-w-2xl bg-white border border-sand-dark rounded-xl p-4 text-center">
-                <p className="text-sm text-ink-light uppercase tracking-[0.2em]">Event Snapshot</p>
-                <p className="text-lg font-semibold text-ink mt-2">
-                  {completedAreasCount} of {totalAreas} areas updated
-                </p>
-                <div className="mt-3 flex flex-wrap items-center justify-center gap-3 text-xs text-ink-light">
-                  {selectedEvent.date && <span>{selectedEvent.date}</span>}
-                  {selectedEvent.dayTime && <span>• {selectedEvent.dayTime}</span>}
-                  <span>• <DaysUntilBadge isoDate={selectedEvent.isoDate} /></span>
-                </div>
-              </div>
-            </div>
+            <button
+              onClick={() => setShowAreas((prev) => !prev)}
+              className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-white px-5 py-2 text-sm font-semibold text-gold shadow-sm transition hover:border-gold hover:shadow-md"
+            >
+              Update Event Area Notes
+              <ChevronRight size={16} className={`transition-transform ${showAreas ? 'rotate-90' : ''}`} />
+            </button>
 
             {showAreas && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
