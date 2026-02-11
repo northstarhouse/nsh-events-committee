@@ -63,6 +63,84 @@ function hasFormData(eventId, areaKey) {
   }
 }
 
+function getStoredFormData(eventId, areaKey) {
+  try {
+    const key = `nsh-events-${eventId}-${areaKey}`;
+    const saved = localStorage.getItem(key);
+    return saved ? JSON.parse(saved) : null;
+  } catch {
+    return null;
+  }
+}
+
+function formatLabel(label) {
+  return label
+    .replace(/_/g, ' ')
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/\b\w/g, (m) => m.toUpperCase());
+}
+
+function isEmptyValue(value) {
+  if (value === null || value === undefined) return true;
+  if (value === '') return true;
+  if (Array.isArray(value)) return value.length === 0;
+  if (typeof value === 'object') return Object.keys(value).length === 0;
+  return false;
+}
+
+function RenderValue({ value }) {
+  if (isEmptyValue(value)) return null;
+
+  if (Array.isArray(value)) {
+    if (value.every((v) => typeof v !== 'object' || v === null)) {
+      return <span className="text-sm text-ink">{value.filter(v => v !== '').join(', ')}</span>;
+    }
+    return (
+      <div className="space-y-2">
+        {value.map((item, index) => (
+          <div key={index} className="border border-sand-dark/60 rounded-lg p-3 bg-white">
+            {typeof item === 'object' && item !== null ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {Object.entries(item).map(([k, v]) => (
+                  !isEmptyValue(v) && (
+                    <div key={k} className="text-sm text-ink">
+                      <span className="font-semibold">{formatLabel(k)}:</span> {String(v)}
+                    </div>
+                  )
+                ))}
+              </div>
+            ) : (
+              <span className="text-sm text-ink">{String(item)}</span>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (typeof value === 'object') {
+    const entries = Object.entries(value).filter(([, v]) => !isEmptyValue(v));
+    if (entries.length === 0) return null;
+    const onlyBooleans = entries.every(([, v]) => typeof v === 'boolean');
+    if (onlyBooleans) {
+      const trueKeys = entries.filter(([, v]) => v).map(([k]) => formatLabel(k));
+      if (trueKeys.length === 0) return <span className="text-sm text-ink">None</span>;
+      return <span className="text-sm text-ink">{trueKeys.join(', ')}</span>;
+    }
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+        {entries.map(([k, v]) => (
+          <div key={k} className="text-sm text-ink">
+            <span className="font-semibold">{formatLabel(k)}:</span> {String(v)}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  return <span className="text-sm text-ink">{String(value)}</span>;
+}
+
 export default function EventsDashboard() {
   const [view, setView] = useState('overview');
   const [selectedEventId, setSelectedEventId] = useState(null);
@@ -200,6 +278,67 @@ export default function EventsDashboard() {
                 })}
               </div>
             )}
+          </div>
+
+          <div className="bg-white border border-sand-dark rounded-2xl p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-ink-light">Event Snapshot</p>
+                <h2 className="text-2xl font-bold text-gold mt-1">
+                  {selectedEvent.name}
+                </h2>
+              </div>
+              <div className="text-sm text-ink-light">
+                {selectedEvent.dayTime && <span>{selectedEvent.dayTime}</span>}
+                {selectedEvent.date && selectedEvent.dayTime && <span> • </span>}
+                {selectedEvent.date && <span>{selectedEvent.date}</span>}
+              </div>
+            </div>
+
+            <div className="max-h-[520px] overflow-y-auto pr-2 space-y-6">
+              {committeeAreas.map((area) => {
+                const data = getStoredFormData(selectedEvent.id, area.key);
+                const hasData = data && Object.values(data).some((v) => !isEmptyValue(v));
+                const Icon = areaIcons[area.key];
+                return (
+                  <div key={area.key} className="relative">
+                    <div className="sticky top-0 z-10 -mx-5 px-5 py-3 bg-white border-b border-sand-dark/60">
+                      <div className="flex items-center gap-3">
+                        {Icon && (
+                          <div className="w-9 h-9 rounded-lg bg-sand flex items-center justify-center">
+                            <Icon size={18} className="text-gold" />
+                          </div>
+                        )}
+                        <div>
+                          <h3 className="text-lg font-semibold text-ink">{area.label}</h3>
+                          <p className="text-xs text-ink-light">{area.role} · {area.person}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="pt-3">
+                      {!hasData && (
+                        <p className="text-sm text-ink-light italic">No updates yet.</p>
+                      )}
+                      {hasData && (
+                        <div className="space-y-4">
+                          {Object.entries(data).map(([key, value]) => (
+                            !isEmptyValue(value) && (
+                              <div key={key} className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                                <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">
+                                  {formatLabel(key)}
+                                </p>
+                                <RenderValue value={value} />
+                              </div>
+                            )
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
