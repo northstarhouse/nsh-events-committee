@@ -370,10 +370,10 @@ export default function EventsDashboard() {
             Back to Events Overview
           </button>
 
-          <div className="text-center mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold text-gold">{selectedEvent.name}</h1>
+          <div className="mb-6">
+            <h1 className="text-2xl md:text-3xl font-bold text-gold">Event Overview</h1>
             {(selectedEvent.date || selectedEvent.dayTime) && (
-              <p className="text-lg text-ink-light mt-2">
+              <p className="text-sm text-ink-light mt-2">
                 {selectedEvent.dayTime && selectedEvent.dayTime}
                 {selectedEvent.date && selectedEvent.dayTime && ', '}
                 {selectedEvent.date && selectedEvent.date}
