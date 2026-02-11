@@ -63,7 +63,7 @@ export function Section({ title, children }) {
 
 export function TextArea({ label, value, onChange, placeholder, rows = 3 }) {
   return (
-    <div className="mb-4">
+    <div className="mb-4 pb-4 border-b border-gold/15">
       {label && <label className="block text-sm font-semibold text-ink mb-1">{label}</label>}
       <textarea
         value={value || ''}
@@ -78,7 +78,7 @@ export function TextArea({ label, value, onChange, placeholder, rows = 3 }) {
 
 export function TextInput({ label, value, onChange, placeholder, type = 'text' }) {
   return (
-    <div className="mb-4">
+    <div className="mb-4 pb-4 border-b border-gold/15">
       {label && <label className="block text-sm font-semibold text-ink mb-1">{label}</label>}
       <input
         type={type}
@@ -102,7 +102,7 @@ export function CheckboxGroup({ label, options, values, onChange }) {
   };
 
   return (
-    <div className="mb-4">
+    <div className="mb-4 pb-4 border-b border-gold/15">
       {label && <label className="block text-sm font-semibold text-ink mb-2">{label}</label>}
       <div className="flex flex-wrap gap-3">
         {options.map((option) => (
@@ -123,7 +123,7 @@ export function CheckboxGroup({ label, options, values, onChange }) {
 
 export function RadioGroup({ label, options, value, onChange }) {
   return (
-    <div className="mb-4">
+    <div className="mb-4 pb-4 border-b border-gold/15">
       {label && <label className="block text-sm font-semibold text-ink mb-2">{label}</label>}
       <div className="flex flex-wrap gap-3">
         {options.map((option) => (
@@ -144,7 +144,7 @@ export function RadioGroup({ label, options, value, onChange }) {
 
 export function YesNoNA({ label, value, onChange, dateValue, onDateChange }) {
   return (
-    <div className="mb-4 flex flex-wrap items-center gap-4">
+    <div className="mb-4 pb-4 border-b border-gold/15 flex flex-wrap items-center gap-4">
       <span className="text-sm font-semibold text-ink">{label}</span>
       <div className="flex gap-3">
         {['Yes', 'N/A'].map((opt) => (

@@ -817,13 +817,20 @@ export default function EventsDashboard() {
       <div className="max-w-6xl mx-auto px-4 pb-6">
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {months.map((month) => {
+          {months.map((month, monthIdx) => {
             const monthEvents = eventsByMonth[month];
+            const now = new Date();
+            const isPast = new Date(now.getFullYear(), monthIdx + 1, 0) < new Date(now.getFullYear(), now.getMonth(), now.getDate());
             return (
               <div
                 key={month}
-                className="bg-white border border-sand-dark rounded-xl p-4 flex flex-col"
+                className="bg-white border border-sand-dark rounded-xl p-4 flex flex-col relative"
               >
+                {isPast && (
+                  <div className="absolute top-3 right-3">
+                    <Star size={14} className="text-gold fill-gold" />
+                  </div>
+                )}
                 <h3 className="font-bold text-ink text-lg mb-3 flex items-center gap-2">
                   <Calendar size={16} className="text-gold" />
                   {month}
