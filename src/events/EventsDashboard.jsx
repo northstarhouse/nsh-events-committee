@@ -452,19 +452,26 @@ export default function EventsDashboard() {
                     <div className="pt-3">
                       {area.key === 'overall' && (
                         <div className="space-y-4">
-                          {(data.statusUpdates || []).map((entry, idx) => (
-                            <div key={idx} className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
-                              <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">
-                                Status Update {idx + 1}
-                              </p>
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                <Field label="Date" value={entry.date} />
-                                <Field label="Status" value={entry.status} />
-                                <Field label="Decisions Needed" value={entry.decisions} />
-                                <Field label="Notes" value={entry.notes} />
+                          {(() => {
+                            const updates = data.statusUpdates || [];
+                            const latest = [...updates].reverse().find((entry) =>
+                              entry && Object.values(entry).some((v) => !isEmptyValue(v))
+                            );
+                            const entry = latest || updates[updates.length - 1] || {};
+                            return (
+                              <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                                <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">
+                                  Status Update (Most Recent)
+                                </p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                  <Field label="Date" value={entry.date} />
+                                  <Field label="Status" value={entry.status} />
+                                  <Field label="Decisions Needed" value={entry.decisions} />
+                                  <Field label="Notes" value={entry.notes} />
+                                </div>
                               </div>
-                            </div>
-                          ))}
+                            );
+                          })()}
                           <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
                             <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Final Notes</p>
                             <Field label="Notes" value={data.finalNotes} />
