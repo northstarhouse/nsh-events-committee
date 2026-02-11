@@ -97,6 +97,7 @@ export default function EventsDashboard() {
   if (view === 'form' && selectedEvent && selectedArea) {
     const FormComponent = formComponents[selectedArea];
     const area = committeeAreas.find(a => a.key === selectedArea);
+    const AreaIcon = areaIcons[selectedArea];
     return (
       <div className="min-h-screen bg-sand-light">
         <div className="max-w-4xl mx-auto px-4 py-6">
@@ -109,7 +110,14 @@ export default function EventsDashboard() {
           </button>
 
           <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gold">{area.label}</h1>
+            <div className="flex items-center gap-3">
+              {AreaIcon && (
+                <div className="w-12 h-12 rounded-2xl bg-sand flex items-center justify-center">
+                  <AreaIcon size={22} className="text-gold" />
+                </div>
+              )}
+              <h1 className="text-3xl font-bold text-gold">{area.label}</h1>
+            </div>
             <p className="text-ink-light mt-1">{area.role}: {area.person}</p>
             <p className="text-gold font-medium mt-1">
               {selectedEvent.name} {selectedEvent.dayTime && `- ${selectedEvent.dayTime}`}{selectedEvent.date && `, ${selectedEvent.date}`}
