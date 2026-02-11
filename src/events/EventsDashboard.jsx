@@ -479,7 +479,7 @@ export default function EventsDashboard() {
             </div>
             <div className="space-y-8">
               <div className="border border-sand-dark/60 rounded-2xl p-5 bg-sand-light/30">
-                <h3 className="text-lg font-semibold text-gold mb-4">Pre-Event</h3>
+                <h3 className="text-lg font-semibold text-gold mb-4">Event Planning Overview</h3>
                 <div className="space-y-6">
                   {committeeAreas.map((area) => {
                     const stored = getStoredFormData(selectedEvent.id, area.key) || {};
