@@ -73,10 +73,12 @@ export default function OverallStatusForm({ event, onSubmitted }) {
                 className="w-full border border-sand-dark rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/30 resize-y bg-white"
               />
             </div>
+
+            <div className="mt-3 flex justify-end">
+              <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
+            </div>
           </div>
         ))}
-
-        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
       </Section>
 
       <Section title="Final Notes">
