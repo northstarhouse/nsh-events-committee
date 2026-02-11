@@ -272,6 +272,38 @@ function isEmptyValue(value) {
   return false;
 }
 
+const dayExpand = { Sun: 'Sunday', Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thursday', Fri: 'Friday', Sat: 'Saturday' };
+
+function expandDay(d) {
+  return d.replace(/\b(Sun|Mon|Tue|Wed|Thu|Fri|Sat)\b/g, (m) => dayExpand[m] || m);
+}
+
+function formatCardDate(event) {
+  const { date, dayTime } = event;
+  if (!date && !dayTime) return null;
+  if (!dayTime) return date;
+  if (!date || date === 'TBD') return expandDay(dayTime) + (date === 'TBD' ? ', TBD' : '');
+  const timeMatch = dayTime.match(/^(.+?)\s+(\d.+)$/);
+  if (!timeMatch) return `${expandDay(dayTime)}, ${date}`;
+  const [, days, time] = timeMatch;
+  const fullDays = expandDay(days);
+  // Clean double dates: "April 17th & April 18th" → "April 17th & 18th"
+  const parts = date.split(/\s*&\s*/);
+  let dateStr;
+  if (parts.length === 2) {
+    const m1 = parts[0].match(/^(\w+)\s+(.+)$/);
+    const m2 = parts[1].match(/^(\w+)\s+(.+)$/);
+    if (m1 && m2 && m1[1] === m2[1]) {
+      dateStr = `${m1[1]} ${m1[2]} & ${m2[2]}`;
+    } else {
+      dateStr = date;
+    }
+  } else {
+    dateStr = date;
+  }
+  return `${fullDays}, ${dateStr} from ${time}`;
+}
+
 function displayValue(value) {
   if (isEmptyValue(value)) return '--';
   if (Array.isArray(value)) return value.filter(v => v !== '').join(', ') || '--';
@@ -809,11 +841,9 @@ export default function EventsDashboard() {
                         <p className="font-medium text-sm text-ink group-hover:text-gold transition-colors leading-tight">
                           {event.name}
                         </p>
-                        {(event.date || event.dayTime) && (
+                        {formatCardDate(event) && (
                           <p className="text-xs text-ink-light mt-1">
-                            {event.dayTime && event.dayTime}
-                            {event.date && event.dayTime && ' - '}
-                            {event.date && event.date}
+                            {formatCardDate(event)}
                           </p>
                         )}
                         <div className="mt-1.5">
