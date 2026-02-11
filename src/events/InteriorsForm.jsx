@@ -105,6 +105,8 @@ export default function InteriorsForm({ event }) {
           rows={3}
         />
       </Section>
+
+      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
     </div>
   );
 }

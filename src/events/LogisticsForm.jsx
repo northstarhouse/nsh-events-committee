@@ -116,6 +116,8 @@ export default function LogisticsForm({ event }) {
           onChange={(val) => updateField('layoutSupportNeeds', val)}
         />
       </Section>
+
+      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
     </div>
   );
 }

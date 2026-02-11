@@ -15,6 +15,20 @@ export function SaveIndicator({ status }) {
       </span>
     );
   }
+  if (status === 'unsaved') {
+    return (
+      <span className="flex items-center gap-1 text-xs text-amber-700">
+        <Save size={14} /> Not saved
+      </span>
+    );
+  }
+  if (status === 'loading') {
+    return (
+      <span className="flex items-center gap-1 text-xs text-amber-700">
+        <Save size={14} /> Loading...
+      </span>
+    );
+  }
   return (
     <span className="flex items-center gap-1 text-xs text-amber-600">
       <Save size={14} /> Saving...
@@ -22,10 +36,11 @@ export function SaveIndicator({ status }) {
   );
 }
 
-export function FormActions({ saveStatus, onSave }) {
+export function FormActions({ saveStatus, onSave, align = 'between', showStatus = true }) {
+  const alignment = align === 'right' ? 'justify-end' : 'justify-between';
   return (
-    <div className="flex items-center justify-between mb-4">
-      <SaveIndicator status={saveStatus} />
+    <div className={`flex items-center ${alignment} mb-4`}>
+      {showStatus && <SaveIndicator status={saveStatus} />}
       <button
         onClick={onSave}
         className="flex items-center gap-2 bg-gold hover:bg-gold-dark text-white font-medium text-sm px-5 py-2 rounded-lg transition-colors cursor-pointer"

@@ -82,6 +82,8 @@ export default function OverallStatusForm({ event }) {
           rows={6}
         />
       </Section>
+
+      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
     </div>
   );
 }

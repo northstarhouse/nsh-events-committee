@@ -134,6 +134,8 @@ export default function SponsorshipForm({ event }) {
           onChange={(val) => updateField('postOtherNotes', val)}
         />
       </Section>
+
+      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
     </div>
   );
 }

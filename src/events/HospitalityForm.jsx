@@ -174,6 +174,8 @@ export default function HospitalityForm({ event }) {
           rows={4}
         />
       </Section>
+
+      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
     </div>
   );
 }

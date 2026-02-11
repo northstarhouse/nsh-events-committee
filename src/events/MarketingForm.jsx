@@ -133,6 +133,8 @@ export default function MarketingForm({ event }) {
           />
         </div>
       </Section>
+
+      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
     </div>
   );
 }

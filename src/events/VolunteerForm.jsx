@@ -132,6 +132,8 @@ export default function VolunteerForm({ event }) {
           rows={4}
         />
       </Section>
+
+      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
     </div>
   );
 }
