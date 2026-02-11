@@ -26,6 +26,173 @@ const areaIcons = {
   interiors: Paintbrush,
 };
 
+const marketingChannels = [
+  'Create Press Release',
+  'Send Email Blast',
+  'YubaNet (Press Release Only)',
+  'Go Nevada County Calendar - Community Blast',
+  'Arts Council Calendar',
+  'Grass Valley Chamber Newsletter',
+  'KVMR Calendar',
+  'Facebook Event Page',
+  'NSH Facebook Page',
+  'NSH Instagram Page',
+  'Nevada County Peeps',
+  'Grass Valley Peeps',
+  'Lake Wildwood Page',
+  'Next Door',
+  'Union Event Calendar',
+  'Union Advertisement ($270)',
+];
+
+const volunteerRoles = [
+  'Setup', 'Check-in booth', 'Hospitality / Food Support',
+  'Cleanup / Breakdown', 'Program Support', 'Float / General Support',
+  'Bartending', 'Parking', 'Other',
+];
+
+const defaultFormData = {
+  overall: {
+    statusUpdates: [
+      { date: '', status: '', decisions: '', notes: '' },
+      { date: '', status: '', decisions: '', notes: '' },
+      { date: '', status: '', decisions: '', notes: '' },
+      { date: '', status: '', decisions: '', notes: '' },
+      { date: '', status: '', decisions: '', notes: '' },
+    ],
+    finalNotes: '',
+  },
+  programs: {
+    purpose: [],
+    performers: [{ name: '', contact: '' }],
+    vendorFormsSent: '',
+    vendorFormsReceived: '',
+    activities: [{ activity: '', timeFrame: '', volunteers: '' }],
+    transitions: '',
+    actionItems: [{ item: '', dueDate: '', volunteer: '' }],
+    otherNotes: '',
+    activityReview: [{ activity: '', whatWorked: '', whatDidnt: '', notes: '' }],
+    flowTiming: '',
+    pinchPoints: '',
+    repeatFormat: '',
+    committeeNotes: '',
+    postOtherNotes: '',
+  },
+  volunteers: {
+    roles: {},
+    volunteersAssigned: '',
+    boardContacted: '',
+    boardContactedDate: '',
+    eventSupportContacted: '',
+    eventSupportDate: '',
+    volunteerBriefingSent: '',
+    volunteerBriefingDate: '',
+    otherNotes: '',
+    avgHoursOnSite: '',
+    totalVolunteerHours: '',
+    whatWeLearned: '',
+  },
+  logistics: {
+    proposedAttendance: '',
+    eventLocations: '',
+    setupPlan: '',
+    volunteersAssisting: '',
+    equipmentNeeded: '',
+    safetyConsiderations: '',
+    couldImpactSuccess: 'No',
+    backupPlan: '',
+    otherNotes: '',
+    setupVsReality: '',
+    adjustmentsMade: '',
+    layoutSupportNeeds: '',
+  },
+  hospitality: {
+    foodBevPlan: [{ item: '', volunteer: '' }],
+    shoppingList: [{ item: '', volunteer: '' }],
+    rentalEquipment: [{ item: '', volunteer: '' }],
+    servingStyle: [],
+    alcoholInvolved: '',
+    cleanupPlan: '',
+    volunteersAssisting: '',
+    otherNotes: '',
+    fbOutcome: '',
+    fbOutcomeRanOut: '',
+    guestFlow: '',
+    guestComments: '',
+    committeeThoughts: '',
+    postOtherNotes: '',
+  },
+  finance: {
+    expenses: [
+      { category: 'Food & Beverage', estimated: '', actual: '' },
+      { category: 'Entertainment / Speakers', estimated: '', actual: '' },
+      { category: 'Supplies / Decor', estimated: '', actual: '' },
+      { category: 'Marketing / Printing', estimated: '', actual: '' },
+      { category: 'Permits / Licenses / Insurance', estimated: '', actual: '' },
+      { category: 'Cleaning / Security', estimated: '', actual: '' },
+      { category: 'Other', estimated: '', actual: '' },
+    ],
+    income: [
+      { source: 'Ticket Sales', estimated: '', actual: '' },
+      { source: 'Alcohol or food sales', estimated: '', actual: '' },
+      { source: 'House Merch', estimated: '', actual: '' },
+      { source: 'Donations', estimated: '', actual: '' },
+      { source: 'Other', estimated: '', actual: '' },
+    ],
+    financialNotes: '',
+    receiptsCollected: '',
+    receiptsDate1: '',
+    receiptsDate2: '',
+    receiptsDate3: '',
+    reimbursementsNeeded: '',
+    reimbursementAmount: '',
+    reimbursementSubmittedBy: '',
+    finalExpenses: '',
+    finalIncome: '',
+    finalNet: '',
+    eventType: '',
+    netReportedToBoard: false,
+    thankYousSent: false,
+    lessonsDocumented: false,
+    postNotes: '',
+  },
+  sponsorship: {
+    recognitionMethods: [],
+    recognitionOther: '',
+    recognitionVolunteer: '',
+    potentialSponsors: '',
+    outreachActions: [],
+    outreachOther: '',
+    outreachVolunteer: '',
+    intentionalInvites: '',
+    otherNotes: '',
+    sponsorsInvolved: '',
+    recognitionDelivered: '',
+    futureNotes: '',
+    committeeThoughts: '',
+    postOtherNotes: '',
+  },
+  interiors: {
+    historicApproach: '',
+    moreInfo: '',
+    decorAdded: '',
+    decorCost: '',
+    removalReasons: [],
+    removalOther: '',
+    otherNotes: '',
+    historicIssues: '',
+    wearDamage: '',
+    futureAdjustments: '',
+    postOtherNotes: '',
+  },
+  marketing: {
+    channels: {},
+    otherChannel: '',
+    otherChannelDone: false,
+    notes: '',
+  },
+};
+
 const formComponents = {
   overall: OverallStatusForm,
   programs: ProgramsForm,
@@ -73,6 +240,23 @@ function getStoredFormData(eventId, areaKey) {
   }
 }
 
+function mergeWithDefaults(defaultData, savedData) {
+  if (Array.isArray(defaultData)) {
+    if (Array.isArray(savedData) && savedData.length > 0) return savedData;
+    return defaultData;
+  }
+  if (typeof defaultData === 'object' && defaultData !== null) {
+    const result = { ...defaultData };
+    if (savedData && typeof savedData === 'object') {
+      Object.keys(savedData).forEach((key) => {
+        result[key] = mergeWithDefaults(defaultData[key], savedData[key]);
+      });
+    }
+    return result;
+  }
+  return savedData !== undefined ? savedData : defaultData;
+}
+
 function formatLabel(label) {
   return label
     .replace(/_/g, ' ')
@@ -88,57 +272,19 @@ function isEmptyValue(value) {
   return false;
 }
 
-function RenderValue({ value }) {
-  if (isEmptyValue(value)) return null;
+function displayValue(value) {
+  if (isEmptyValue(value)) return '—';
+  if (Array.isArray(value)) return value.filter(v => v !== '').join(', ') || '—';
+  if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+  return String(value);
+}
 
-  if (Array.isArray(value)) {
-    if (value.every((v) => typeof v !== 'object' || v === null)) {
-      return <span className="text-sm text-ink">{value.filter(v => v !== '').join(', ')}</span>;
-    }
-    return (
-      <div className="space-y-2">
-        {value.map((item, index) => (
-          <div key={index} className="border border-sand-dark/60 rounded-lg p-3 bg-white">
-            {typeof item === 'object' && item !== null ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {Object.entries(item).map(([k, v]) => (
-                  !isEmptyValue(v) && (
-                    <div key={k} className="text-sm text-ink">
-                      <span className="font-semibold">{formatLabel(k)}:</span> {String(v)}
-                    </div>
-                  )
-                ))}
-              </div>
-            ) : (
-              <span className="text-sm text-ink">{String(item)}</span>
-            )}
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  if (typeof value === 'object') {
-    const entries = Object.entries(value).filter(([, v]) => !isEmptyValue(v));
-    if (entries.length === 0) return null;
-    const onlyBooleans = entries.every(([, v]) => typeof v === 'boolean');
-    if (onlyBooleans) {
-      const trueKeys = entries.filter(([, v]) => v).map(([k]) => formatLabel(k));
-      if (trueKeys.length === 0) return <span className="text-sm text-ink">None</span>;
-      return <span className="text-sm text-ink">{trueKeys.join(', ')}</span>;
-    }
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-        {entries.map(([k, v]) => (
-          <div key={k} className="text-sm text-ink">
-            <span className="font-semibold">{formatLabel(k)}:</span> {String(v)}
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  return <span className="text-sm text-ink">{String(value)}</span>;
+function Field({ label, value }) {
+  return (
+    <div className="text-sm text-ink">
+      <span className="font-semibold">{label}:</span> {displayValue(value)}
+    </div>
+  );
 }
 
 export default function EventsDashboard() {
@@ -283,10 +429,8 @@ export default function EventsDashboard() {
           <div className="bg-white border border-sand-dark rounded-2xl p-5">
             <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
               <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-ink-light">Event Snapshot</p>
-                <h2 className="text-2xl font-bold text-gold mt-1">
-                  {selectedEvent.name}
-                </h2>
+                <p className="text-xs uppercase tracking-[0.3em] text-ink-light">Event Overview</p>
+                <h2 className="text-2xl font-bold text-gold mt-1">{selectedEvent.name}</h2>
               </div>
               <div className="text-sm text-ink-light">
                 {selectedEvent.dayTime && <span>{selectedEvent.dayTime}</span>}
@@ -297,8 +441,8 @@ export default function EventsDashboard() {
 
             <div className="max-h-[520px] overflow-y-auto pr-2 space-y-6">
               {committeeAreas.map((area) => {
-                const data = getStoredFormData(selectedEvent.id, area.key);
-                const hasData = data && Object.values(data).some((v) => !isEmptyValue(v));
+                const stored = getStoredFormData(selectedEvent.id, area.key) || {};
+                const data = mergeWithDefaults(defaultFormData[area.key] || {}, stored);
                 const Icon = areaIcons[area.key];
                 return (
                   <div key={area.key} className="relative">
@@ -317,21 +461,345 @@ export default function EventsDashboard() {
                     </div>
 
                     <div className="pt-3">
-                      {!hasData && (
-                        <p className="text-sm text-ink-light italic">No updates yet.</p>
-                      )}
-                      {hasData && (
+                      {area.key === 'overall' && (
                         <div className="space-y-4">
-                          {Object.entries(data).map(([key, value]) => (
-                            !isEmptyValue(value) && (
-                              <div key={key} className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
-                                <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">
-                                  {formatLabel(key)}
-                                </p>
-                                <RenderValue value={value} />
+                          {(data.statusUpdates || []).map((entry, idx) => (
+                            <div key={idx} className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                              <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">
+                                Status Update {idx + 1}
+                              </p>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                <Field label="Date" value={entry.date} />
+                                <Field label="Status" value={entry.status} />
+                                <Field label="Decisions Needed" value={entry.decisions} />
+                                <Field label="Notes" value={entry.notes} />
                               </div>
-                            )
+                            </div>
                           ))}
+                          <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Final Notes</p>
+                            <Field label="Notes" value={data.finalNotes} />
+                          </div>
+                        </div>
+                      )}
+
+                      {area.key === 'programs' && (
+                        <div className="space-y-4">
+                          <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Planning</p>
+                            <div className="space-y-2">
+                              <Field label="Purpose" value={(data.purpose || []).join(', ')} />
+                              <Field label="Vendor Forms" value={data.vendorFormsSent} />
+                              <Field label="Transitions" value={data.transitions} />
+                              <Field label="Other Notes" value={data.otherNotes} />
+                            </div>
+                            <div className="mt-3 space-y-2">
+                              <p className="text-xs uppercase tracking-[0.2em] text-ink-light">Performers / Vendors</p>
+                              {(data.performers || []).map((item, idx) => (
+                                <div key={idx} className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                  <Field label="Name" value={item.name} />
+                                  <Field label="Contact" value={item.contact} />
+                                </div>
+                              ))}
+                            </div>
+                            <div className="mt-3 space-y-2">
+                              <p className="text-xs uppercase tracking-[0.2em] text-ink-light">Activities</p>
+                              {(data.activities || []).map((item, idx) => (
+                                <div key={idx} className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                                  <Field label="Activity" value={item.activity} />
+                                  <Field label="Time Frame" value={item.timeFrame} />
+                                  <Field label="Volunteers" value={item.volunteers} />
+                                </div>
+                              ))}
+                            </div>
+                            <div className="mt-3 space-y-2">
+                              <p className="text-xs uppercase tracking-[0.2em] text-ink-light">Action Items</p>
+                              {(data.actionItems || []).map((item, idx) => (
+                                <div key={idx} className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                                  <Field label="Item" value={item.item} />
+                                  <Field label="Due Date" value={item.dueDate} />
+                                  <Field label="Volunteer" value={item.volunteer} />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Post-Event</p>
+                            <div className="space-y-2">
+                              <Field label="Flow & Timing" value={data.flowTiming} />
+                              <Field label="Pinch Points" value={data.pinchPoints} />
+                              <Field label="Repeat Format" value={data.repeatFormat} />
+                              <Field label="Committee Notes" value={data.committeeNotes} />
+                              <Field label="Other Notes" value={data.postOtherNotes} />
+                            </div>
+                            <div className="mt-3 space-y-2">
+                              <p className="text-xs uppercase tracking-[0.2em] text-ink-light">Activity Review</p>
+                              {(data.activityReview || []).map((item, idx) => (
+                                <div key={idx} className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                  <Field label="Activity" value={item.activity} />
+                                  <Field label="Notes" value={item.notes} />
+                                  <Field label="What Worked" value={item.whatWorked} />
+                                  <Field label="What Didn't" value={item.whatDidnt} />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {area.key === 'volunteers' && (
+                        <div className="space-y-4">
+                          <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Planning</p>
+                            <div className="space-y-2">
+                              <Field label="Volunteers Assigned" value={data.volunteersAssigned} />
+                              <Field label="Board Contacted" value={data.boardContacted} />
+                              <Field label="Board Contacted Date" value={data.boardContactedDate} />
+                              <Field label="Event Support Contacted" value={data.eventSupportContacted} />
+                              <Field label="Event Support Date" value={data.eventSupportDate} />
+                              <Field label="Volunteer Briefing Sent" value={data.volunteerBriefingSent} />
+                              <Field label="Volunteer Briefing Date" value={data.volunteerBriefingDate} />
+                              <Field label="Other Notes" value={data.otherNotes} />
+                            </div>
+                            <div className="mt-3">
+                              <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Volunteer Roles</p>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                {volunteerRoles.map((role) => {
+                                  const roleData = (data.roles || {})[role] || {};
+                                  return (
+                                    <div key={role} className="border border-sand-dark/50 rounded-lg p-2 bg-white">
+                                      <p className="text-sm font-semibold text-ink">{role}</p>
+                                      <p className="text-xs text-ink-light">
+                                        Needed: {roleData.needed ? 'Yes' : 'No'} · Count: {displayValue(roleData.count)}
+                                      </p>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Post-Event</p>
+                            <div className="space-y-2">
+                              <Field label="Average Hours On Site" value={data.avgHoursOnSite} />
+                              <Field label="Total Volunteer Hours" value={data.totalVolunteerHours} />
+                              <Field label="What We Learned" value={data.whatWeLearned} />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {area.key === 'logistics' && (
+                        <div className="space-y-4">
+                          <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Planning</p>
+                            <div className="space-y-2">
+                              <Field label="Proposed Attendance" value={data.proposedAttendance} />
+                              <Field label="Event Locations" value={data.eventLocations} />
+                              <Field label="Setup Plan" value={data.setupPlan} />
+                              <Field label="Volunteers Assisting" value={data.volunteersAssisting} />
+                              <Field label="Equipment Needed" value={data.equipmentNeeded} />
+                              <Field label="Safety Considerations" value={data.safetyConsiderations} />
+                              <Field label="Could Impact Success" value={data.couldImpactSuccess} />
+                              <Field label="Backup Plan" value={data.backupPlan} />
+                              <Field label="Other Notes" value={data.otherNotes} />
+                            </div>
+                          </div>
+                          <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Post-Event</p>
+                            <div className="space-y-2">
+                              <Field label="Setup vs Reality" value={data.setupVsReality} />
+                              <Field label="Adjustments Made" value={data.adjustmentsMade} />
+                              <Field label="Layout Support Needs" value={data.layoutSupportNeeds} />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {area.key === 'hospitality' && (
+                        <div className="space-y-4">
+                          <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Planning</p>
+                            <div className="space-y-2">
+                              <Field label="Serving Style" value={(data.servingStyle || []).join(', ')} />
+                              <Field label="Alcohol Involved" value={data.alcoholInvolved} />
+                              <Field label="Cleanup Plan" value={data.cleanupPlan} />
+                              <Field label="Volunteers Assisting" value={data.volunteersAssisting} />
+                              <Field label="Other Notes" value={data.otherNotes} />
+                            </div>
+                            <div className="mt-3 space-y-2">
+                              <p className="text-xs uppercase tracking-[0.2em] text-ink-light">Food & Beverage Plan</p>
+                              {(data.foodBevPlan || []).map((item, idx) => (
+                                <div key={idx} className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                  <Field label="Item" value={item.item} />
+                                  <Field label="Volunteer" value={item.volunteer} />
+                                </div>
+                              ))}
+                            </div>
+                            <div className="mt-3 space-y-2">
+                              <p className="text-xs uppercase tracking-[0.2em] text-ink-light">Shopping List</p>
+                              {(data.shoppingList || []).map((item, idx) => (
+                                <div key={idx} className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                  <Field label="Item" value={item.item} />
+                                  <Field label="Volunteer" value={item.volunteer} />
+                                </div>
+                              ))}
+                            </div>
+                            <div className="mt-3 space-y-2">
+                              <p className="text-xs uppercase tracking-[0.2em] text-ink-light">Rental Equipment</p>
+                              {(data.rentalEquipment || []).map((item, idx) => (
+                                <div key={idx} className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                  <Field label="Equipment" value={item.item} />
+                                  <Field label="Volunteer" value={item.volunteer} />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Post-Event</p>
+                            <div className="space-y-2">
+                              <Field label="Food & Beverage Outcome" value={data.fbOutcome} />
+                              <Field label="Ran Out Of" value={data.fbOutcomeRanOut} />
+                              <Field label="Guest Flow" value={data.guestFlow} />
+                              <Field label="Guest Comments" value={data.guestComments} />
+                              <Field label="Committee Thoughts" value={data.committeeThoughts} />
+                              <Field label="Other Notes" value={data.postOtherNotes} />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {area.key === 'finance' && (
+                        <div className="space-y-4">
+                          <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Projected Expenses</p>
+                            <div className="space-y-2">
+                              {(data.expenses || []).map((row, idx) => (
+                                <div key={idx} className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                                  <Field label="Category" value={row.category} />
+                                  <Field label="Estimated" value={row.estimated} />
+                                  <Field label="Actual" value={row.actual} />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Projected Income</p>
+                            <div className="space-y-2">
+                              {(data.income || []).map((row, idx) => (
+                                <div key={idx} className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                                  <Field label="Source" value={row.source} />
+                                  <Field label="Estimated" value={row.estimated} />
+                                  <Field label="Actual" value={row.actual} />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Notes & Post-Event</p>
+                            <div className="space-y-2">
+                              <Field label="Financial Notes" value={data.financialNotes} />
+                              <Field label="Receipts Collected" value={data.receiptsCollected} />
+                              <Field label="Receipts Dates" value={[data.receiptsDate1, data.receiptsDate2, data.receiptsDate3].filter(Boolean).join(', ')} />
+                              <Field label="Reimbursements Needed" value={data.reimbursementsNeeded} />
+                              <Field label="Reimbursement Amount" value={data.reimbursementAmount} />
+                              <Field label="Submitted By" value={data.reimbursementSubmittedBy} />
+                              <Field label="Final Expenses" value={data.finalExpenses} />
+                              <Field label="Final Income" value={data.finalIncome} />
+                              <Field label="Final Net" value={data.finalNet} />
+                              <Field label="Event Type" value={data.eventType} />
+                              <Field label="Net Reported To Board" value={data.netReportedToBoard} />
+                              <Field label="Thank Yous Sent" value={data.thankYousSent} />
+                              <Field label="Lessons Documented" value={data.lessonsDocumented} />
+                              <Field label="Post Notes" value={data.postNotes} />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {area.key === 'sponsorship' && (
+                        <div className="space-y-4">
+                          <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Planning</p>
+                            <div className="space-y-2">
+                              <Field label="Recognition Methods" value={(data.recognitionMethods || []).join(', ')} />
+                              <Field label="Other Recognition" value={data.recognitionOther} />
+                              <Field label="Recognition Volunteer" value={data.recognitionVolunteer} />
+                              <Field label="Potential Sponsors" value={data.potentialSponsors} />
+                              <Field label="Outreach Actions" value={(data.outreachActions || []).join(', ')} />
+                              <Field label="Other Outreach" value={data.outreachOther} />
+                              <Field label="Outreach Volunteer" value={data.outreachVolunteer} />
+                              <Field label="Intentional Invites" value={data.intentionalInvites} />
+                              <Field label="Other Notes" value={data.otherNotes} />
+                            </div>
+                          </div>
+                          <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Post-Event</p>
+                            <div className="space-y-2">
+                              <Field label="Sponsors Involved" value={data.sponsorsInvolved} />
+                              <Field label="Recognition Delivered" value={data.recognitionDelivered} />
+                              <Field label="Future Notes" value={data.futureNotes} />
+                              <Field label="Committee Thoughts" value={data.committeeThoughts} />
+                              <Field label="Other Notes" value={data.postOtherNotes} />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {area.key === 'interiors' && (
+                        <div className="space-y-4">
+                          <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Planning</p>
+                            <div className="space-y-2">
+                              <Field label="Historic Approach" value={data.historicApproach} />
+                              <Field label="More Info" value={data.moreInfo} />
+                              <Field label="Decor Added" value={data.decorAdded} />
+                              <Field label="Decor Cost" value={data.decorCost} />
+                              <Field label="Removal Reasons" value={(data.removalReasons || []).join(', ')} />
+                              <Field label="Removal Other" value={data.removalOther} />
+                              <Field label="Other Notes" value={data.otherNotes} />
+                            </div>
+                          </div>
+                          <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Post-Event</p>
+                            <div className="space-y-2">
+                              <Field label="Historic Issues" value={data.historicIssues} />
+                              <Field label="Wear / Damage" value={data.wearDamage} />
+                              <Field label="Future Adjustments" value={data.futureAdjustments} />
+                              <Field label="Other Notes" value={data.postOtherNotes} />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {area.key === 'marketing' && (
+                        <div className="space-y-4">
+                          <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Marketing Channels</p>
+                            <div className="space-y-2">
+                              {marketingChannels.map((channel) => {
+                                const channelData = (data.channels || {})[channel] || {};
+                                return (
+                                  <div key={channel} className="border border-sand-dark/50 rounded-lg p-2 bg-white">
+                                    <p className="text-sm font-semibold text-ink">{channel}</p>
+                                    <p className="text-xs text-ink-light">
+                                      Status: {channelData.done ? 'Done' : 'Not done'} · Date: {displayValue(channelData.date)} · Notes: {displayValue(channelData.notes)}
+                                    </p>
+                                  </div>
+                                );
+                              })}
+                              <div className="border border-sand-dark/50 rounded-lg p-2 bg-white">
+                                <p className="text-sm font-semibold text-ink">Other Channel</p>
+                                <p className="text-xs text-ink-light">
+                                  Name: {displayValue(data.otherChannel)} · Done: {data.otherChannelDone ? 'Yes' : 'No'}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Additional Notes</p>
+                            <Field label="Notes" value={data.notes} />
+                          </div>
                         </div>
                       )}
                     </div>
