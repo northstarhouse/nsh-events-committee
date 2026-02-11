@@ -371,17 +371,6 @@ export default function EventsDashboard() {
           </button>
 
           <div className="mb-6">
-            <h1 className="text-2xl md:text-3xl font-bold text-gold">Event Overview</h1>
-            {(selectedEvent.date || selectedEvent.dayTime) && (
-              <p className="text-sm text-ink-light mt-2">
-                {selectedEvent.dayTime && selectedEvent.dayTime}
-                {selectedEvent.date && selectedEvent.dayTime && ', '}
-                {selectedEvent.date && selectedEvent.date}
-              </p>
-            )}
-          </div>
-
-          <div className="mb-6">
             <button
               onClick={() => setShowAreas((prev) => !prev)}
               className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-white px-5 py-2 text-sm font-semibold text-gold shadow-sm transition hover:border-gold hover:shadow-md"
