@@ -123,11 +123,11 @@ export const committeeAreas = [
   { key: 'programs', label: 'Activities & Programs', role: 'Programs', person: 'Gerrie Kopec' },
   { key: 'volunteers', label: 'Volunteer Coordination', role: 'Volunteers', person: 'Haley Wright' },
   { key: 'logistics', label: 'Event Logistics', role: 'Logistics & Operations', person: 'Vince LoFranco' },
-  { key: 'marketing', label: 'Marketing', role: 'Marketing', person: 'Haley Wright' },
   { key: 'hospitality', label: 'Hospitality', role: 'Hospitality', person: 'Barb Kusha' },
   { key: 'finance', label: 'Finance & Budget', role: 'Finance and Budget', person: 'Ken Underwood' },
   { key: 'sponsorship', label: 'Sponsorships & Partnerships', role: 'Sponsorship & Partnership', person: 'Derek Cheeseman' },
   { key: 'interiors', label: 'Interiors', role: 'Interiors', person: 'Rebekah Freeman' },
+  { key: 'marketing', label: 'Marketing', role: 'Marketing', person: 'Haley Wright' },
 ];
 
 export function getEventsByMonth() {

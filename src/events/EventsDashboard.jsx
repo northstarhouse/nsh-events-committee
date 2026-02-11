@@ -19,11 +19,11 @@ const areaIcons = {
   programs: Music2,
   volunteers: Users,
   logistics: MapPin,
-  marketing: Megaphone,
   hospitality: Coffee,
   finance: DollarSign,
   sponsorship: Handshake,
   interiors: Paintbrush,
+  marketing: Megaphone,
 };
 
 const marketingChannels = [
