@@ -452,8 +452,10 @@ export default function EventsDashboard() {
                   {committeeAreas.map((area) => {
                     const stored = getStoredFormData(selectedEvent.id, area.key) || {};
                     const data = mergeWithDefaults(defaultFormData[area.key] || {}, stored);
+                    const Icon = areaIcons[area.key];
                     return (
                       <div key={`pre-${area.key}`} className="border border-sand-dark/60 rounded-xl p-4 bg-white">
+                        <AreaHeader Icon={Icon} area={area} />
                         {area.key === 'overall' && (() => {
                           const updates = data.statusUpdates || [];
                           const latest = [...updates].reverse().find((entry) =>
@@ -671,8 +673,10 @@ export default function EventsDashboard() {
                   {committeeAreas.map((area) => {
                     const stored = getStoredFormData(selectedEvent.id, area.key) || {};
                     const data = mergeWithDefaults(defaultFormData[area.key] || {}, stored);
+                    const Icon = areaIcons[area.key];
                     return (
                       <div key={`post-${area.key}`} className="border border-sand-dark/60 rounded-xl p-4 bg-white">
+                        <AreaHeader Icon={Icon} area={area} />
                         {area.key === 'overall' && (
                           <Field label="Final Notes" value={data.finalNotes} />
                         )}
