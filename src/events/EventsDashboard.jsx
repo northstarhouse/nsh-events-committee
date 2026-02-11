@@ -299,7 +299,7 @@ export default function EventsDashboard() {
   const navigateToEvent = useCallback((eventId) => {
     setSelectedEventId(eventId);
     setView('detail');
-    setShowAreas(true);
+    setShowAreas(false);
     window.scrollTo(0, 0);
   }, []);
 
