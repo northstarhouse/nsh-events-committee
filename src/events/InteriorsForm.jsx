@@ -16,8 +16,13 @@ const defaultData = {
   postOtherNotes: '',
 };
 
-export default function InteriorsForm({ event }) {
+export default function InteriorsForm({ event, onSubmitted }) {
   const { data, updateField, saveStatus, saveNow } = useFormData(event.id, 'interiors', defaultData);
+
+  const handleSubmit = async () => {
+    const ok = await saveNow();
+    if (ok && onSubmitted) onSubmitted();
+  };
 
   return (
     <div>
@@ -72,7 +77,7 @@ export default function InteriorsForm({ event }) {
           onChange={(val) => updateField('otherNotes', val)}
           rows={4}
         />
-        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
       </Section>
 
       <Section title="Post Event Notes">
@@ -103,7 +108,7 @@ export default function InteriorsForm({ event }) {
           onChange={(val) => updateField('postOtherNotes', val)}
           rows={3}
         />
-        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
       </Section>
     </div>
   );

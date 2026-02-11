@@ -17,8 +17,13 @@ const defaultData = {
   layoutSupportNeeds: '',
 };
 
-export default function LogisticsForm({ event }) {
+export default function LogisticsForm({ event, onSubmitted }) {
   const { data, updateField, saveStatus, saveNow } = useFormData(event.id, 'logistics', defaultData);
+
+  const handleSubmit = async () => {
+    const ok = await saveNow();
+    if (ok && onSubmitted) onSubmitted();
+  };
 
   return (
     <div>
@@ -90,7 +95,7 @@ export default function LogisticsForm({ event }) {
           onChange={(val) => updateField('otherNotes', val)}
           rows={4}
         />
-        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
       </Section>
 
       <Section title="Post Event Notes">
@@ -114,7 +119,7 @@ export default function LogisticsForm({ event }) {
           value={data.layoutSupportNeeds}
           onChange={(val) => updateField('layoutSupportNeeds', val)}
         />
-        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
       </Section>
     </div>
   );

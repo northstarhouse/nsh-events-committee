@@ -27,8 +27,13 @@ const defaultData = {
   notes: '',
 };
 
-export default function MarketingForm({ event }) {
+export default function MarketingForm({ event, onSubmitted }) {
   const { data, updateField, saveStatus, saveNow } = useFormData(event.id, 'marketing', defaultData);
+
+  const handleSubmit = async () => {
+    const ok = await saveNow();
+    if (ok && onSubmitted) onSubmitted();
+  };
 
   const toggleChannel = (channel) => {
     const channels = { ...(data.channels || {}) };
@@ -131,7 +136,7 @@ export default function MarketingForm({ event }) {
             rows={4}
           />
         </div>
-        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
       </Section>
     </div>
   );

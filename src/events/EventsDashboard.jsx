@@ -116,7 +116,7 @@ export default function EventsDashboard() {
             </p>
           </div>
 
-          <FormComponent event={selectedEvent} />
+          <FormComponent event={selectedEvent} onSubmitted={navigateBack} />
         </div>
       </div>
     );

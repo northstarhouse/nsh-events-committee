@@ -62,11 +62,13 @@ export function useFormData(eventId, formType, defaultData = {}) {
     if (!silent) setSaveStatus('saving');
     const localOk = persistToLocal(payload);
     const remoteOk = await persistToRemote(payload);
-    if (localOk && remoteOk) {
+    const ok = localOk && remoteOk;
+    if (ok) {
       setSaveStatus('saved');
     } else {
       setSaveStatus('error');
     }
+    return ok;
   }, [persistToLocal, persistToRemote]);
 
   const updateField = useCallback((field, value) => {
@@ -165,9 +167,9 @@ export function useFormData(eventId, formType, defaultData = {}) {
     };
   }, [data, persistAll]);
 
-  const saveNow = useCallback(() => {
+  const saveNow = useCallback(async () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    persistAll(data);
+    return await persistAll(data);
   }, [data, persistAll]);
 
   return { data, updateField, updateNestedField, addToArray, removeFromArray, saveStatus, saveNow };

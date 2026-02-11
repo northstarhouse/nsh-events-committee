@@ -55,8 +55,13 @@ function DynamicTable({ label, items, onUpdate, onAdd, onRemove, col1Label, col2
   );
 }
 
-export default function HospitalityForm({ event }) {
+export default function HospitalityForm({ event, onSubmitted }) {
   const { data, updateField, updateNestedField, addToArray, removeFromArray, saveStatus, saveNow } = useFormData(event.id, 'hospitality', defaultData);
+
+  const handleSubmit = async () => {
+    const ok = await saveNow();
+    if (ok && onSubmitted) onSubmitted();
+  };
 
   return (
     <div>
@@ -124,7 +129,7 @@ export default function HospitalityForm({ event }) {
           onChange={(val) => updateField('otherNotes', val)}
           rows={4}
         />
-        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
       </Section>
 
       <Section title="Post Event Notes">
@@ -172,7 +177,7 @@ export default function HospitalityForm({ event }) {
           onChange={(val) => updateField('postOtherNotes', val)}
           rows={4}
         />
-        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
       </Section>
     </div>
   );

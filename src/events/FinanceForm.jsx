@@ -41,8 +41,13 @@ const defaultData = {
   postNotes: '',
 };
 
-export default function FinanceForm({ event }) {
+export default function FinanceForm({ event, onSubmitted }) {
   const { data, updateField, updateNestedField, saveStatus, saveNow } = useFormData(event.id, 'finance', defaultData);
+
+  const handleSubmit = async () => {
+    const ok = await saveNow();
+    if (ok && onSubmitted) onSubmitted();
+  };
 
   const calcTotal = (items, field) => {
     return (items || []).reduce((sum, item) => {
@@ -160,7 +165,7 @@ export default function FinanceForm({ event }) {
           placeholder="Include budget overruns, pending sponsorships, ticket pacing concerns, or approval requests..."
           rows={4}
         />
-        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
       </Section>
 
       <Section title="After Event Data">
@@ -254,7 +259,7 @@ export default function FinanceForm({ event }) {
           onChange={(val) => updateField('postNotes', val)}
           rows={4}
         />
-        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
       </Section>
     </div>
   );

@@ -23,8 +23,13 @@ const defaultData = {
   whatWeLearned: '',
 };
 
-export default function VolunteerForm({ event }) {
+export default function VolunteerForm({ event, onSubmitted }) {
   const { data, updateField, saveStatus, saveNow } = useFormData(event.id, 'volunteers', defaultData);
+
+  const handleSubmit = async () => {
+    const ok = await saveNow();
+    if (ok && onSubmitted) onSubmitted();
+  };
 
   const updateRole = (role, field, value) => {
     const roles = { ...(data.roles || {}) };
@@ -105,7 +110,7 @@ export default function VolunteerForm({ event }) {
           onChange={(val) => updateField('otherNotes', val)}
           rows={4}
         />
-        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
       </Section>
 
       <Section title="Post Event Notes">
@@ -130,7 +135,7 @@ export default function VolunteerForm({ event }) {
           placeholder="Key takeaways about volunteer coordination for this event..."
           rows={4}
         />
-        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
       </Section>
     </div>
   );

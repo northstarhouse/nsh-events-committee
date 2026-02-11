@@ -20,8 +20,13 @@ const defaultData = {
   postOtherNotes: '',
 };
 
-export default function ProgramsForm({ event }) {
+export default function ProgramsForm({ event, onSubmitted }) {
   const { data, updateField, updateNestedField, addToArray, removeFromArray, saveStatus, saveNow } = useFormData(event.id, 'programs', defaultData);
+
+  const handleSubmit = async () => {
+    const ok = await saveNow();
+    if (ok && onSubmitted) onSubmitted();
+  };
 
   return (
     <div>
@@ -157,7 +162,7 @@ export default function ProgramsForm({ event }) {
           onChange={(val) => updateField('otherNotes', val)}
           rows={4}
         />
-        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
       </Section>
 
       <Section title="Program & Activities Review (Post-Event)">
@@ -239,7 +244,7 @@ export default function ProgramsForm({ event }) {
           value={data.postOtherNotes}
           onChange={(val) => updateField('postOtherNotes', val)}
         />
-        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
       </Section>
     </div>
   );

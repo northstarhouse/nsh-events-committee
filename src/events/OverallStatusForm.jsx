@@ -12,11 +12,16 @@ const defaultData = {
   finalNotes: '',
 };
 
-export default function OverallStatusForm({ event }) {
+export default function OverallStatusForm({ event, onSubmitted }) {
   const { data, updateField, updateNestedField, saveStatus, saveNow } = useFormData(event.id, 'overall', defaultData);
 
   const updateStatusEntry = (index, field, value) => {
     updateNestedField('statusUpdates', index, field, value);
+  };
+
+  const handleSubmit = async () => {
+    const ok = await saveNow();
+    if (ok && onSubmitted) onSubmitted();
   };
 
   return (
@@ -71,7 +76,7 @@ export default function OverallStatusForm({ event }) {
           </div>
         ))}
 
-        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
       </Section>
 
       <Section title="Final Notes">
@@ -81,7 +86,7 @@ export default function OverallStatusForm({ event }) {
           placeholder="Final notes and overall reflections on this event..."
           rows={6}
         />
-        <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
       </Section>
     </div>
   );
