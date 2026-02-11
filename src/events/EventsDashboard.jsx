@@ -544,15 +544,7 @@ export default function EventsDashboard() {
 
                         {area.key === 'volunteers' && (
                           <div className="space-y-2">
-                            <Field label="Volunteers Assigned" value={data.volunteersAssigned} />
-                            <Field label="Board Contacted" value={data.boardContacted} />
-                            <Field label="Board Contacted Date" value={data.boardContactedDate} />
-                            <Field label="Event Support Contacted" value={data.eventSupportContacted} />
-                            <Field label="Event Support Date" value={data.eventSupportDate} />
-                            <Field label="Volunteer Briefing Sent" value={data.volunteerBriefingSent} />
-                            <Field label="Volunteer Briefing Date" value={data.volunteerBriefingDate} />
-                            <Field label="Other Notes" value={data.otherNotes} />
-                            <div className="mt-3">
+                            <div className="mb-3">
                               <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Volunteer Roles</p>
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                 {volunteerRoles.map((role) => {
@@ -568,6 +560,14 @@ export default function EventsDashboard() {
                                 })}
                               </div>
                             </div>
+                            <Field label="Volunteers Assigned" value={data.volunteersAssigned} />
+                            <Field label="Board Contacted" value={data.boardContacted} />
+                            <Field label="Board Contacted Date" value={data.boardContactedDate} />
+                            <Field label="Event Support Contacted" value={data.eventSupportContacted} />
+                            <Field label="Event Support Date" value={data.eventSupportDate} />
+                            <Field label="Volunteer Briefing Sent" value={data.volunteerBriefingSent} />
+                            <Field label="Volunteer Briefing Date" value={data.volunteerBriefingDate} />
+                            <Field label="Other Notes" value={data.otherNotes} />
                           </div>
                         )}
 
