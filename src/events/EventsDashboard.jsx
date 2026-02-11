@@ -448,12 +448,12 @@ export default function EventsDashboard() {
             <div className="space-y-8">
               <div className="border border-sand-dark/60 rounded-2xl p-5 bg-sand-light/30">
                 <h3 className="text-lg font-semibold text-gold mb-4">Pre-Event</h3>
-                <div className="space-y-4">
+                <div className="space-y-6">
                   {committeeAreas.map((area) => {
                     const stored = getStoredFormData(selectedEvent.id, area.key) || {};
                     const data = mergeWithDefaults(defaultFormData[area.key] || {}, stored);
                     return (
-                      <div key={`pre-${area.key}`}>
+                      <div key={`pre-${area.key}`} className="border border-sand-dark/60 rounded-xl p-4 bg-white">
                         {area.key === 'overall' && (() => {
                           const updates = data.statusUpdates || [];
                           const latest = [...updates].reverse().find((entry) =>
@@ -667,12 +667,12 @@ export default function EventsDashboard() {
 
               <div className="border border-sand-dark/60 rounded-2xl p-5 bg-sand-light/30">
                 <h3 className="text-lg font-semibold text-gold mb-4">Post-Event</h3>
-                <div className="space-y-4">
+                <div className="space-y-6">
                   {committeeAreas.map((area) => {
                     const stored = getStoredFormData(selectedEvent.id, area.key) || {};
                     const data = mergeWithDefaults(defaultFormData[area.key] || {}, stored);
                     return (
-                      <div key={`post-${area.key}`}>
+                      <div key={`post-${area.key}`} className="border border-sand-dark/60 rounded-xl p-4 bg-white">
                         {area.key === 'overall' && (
                           <Field label="Final Notes" value={data.finalNotes} />
                         )}
