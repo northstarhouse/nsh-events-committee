@@ -391,37 +391,26 @@ export default function EventsDashboard() {
             </button>
 
             {showAreas && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-                {committeeAreas.map((area) => {
-                  const Icon = areaIcons[area.key];
-                  const hasData = hasFormData(selectedEvent.id, area.key);
-                  return (
-                    <button
-                      key={area.key}
-                      onClick={() => navigateToForm(area.key)}
-                      className="bg-white border border-sand-dark rounded-xl p-5 text-left hover:border-gold hover:shadow-md transition-all group cursor-pointer relative"
-                    >
-                      {hasData && (
-                        <div className="absolute top-3 right-3">
-                          <CheckCircle2 size={16} className="text-green-500" />
-                        </div>
-                      )}
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 rounded-lg bg-sand flex items-center justify-center group-hover:bg-gold/10 transition-colors">
-                          <Icon size={20} className="text-gold" />
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-ink text-sm">{area.label}</h3>
-                          <p className="text-xs text-ink-light">{area.role}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between mt-3">
-                        <span className="text-xs text-gold font-medium">{area.person}</span>
-                        <ChevronRight size={14} className="text-ink-light group-hover:text-gold transition-colors" />
-                      </div>
-                    </button>
-                  );
-                })}
+              <div className="mt-4 w-full max-w-md rounded-2xl border border-sand-dark bg-white p-3 shadow-sm">
+                <ul className="divide-y divide-sand-dark/40">
+                  {committeeAreas.map((area) => {
+                    const hasData = hasFormData(selectedEvent.id, area.key);
+                    return (
+                      <li key={area.key}>
+                        <button
+                          onClick={() => navigateToForm(area.key)}
+                          className="w-full flex items-center justify-between gap-3 py-3 text-left text-sm font-semibold text-ink hover:text-gold transition-colors"
+                        >
+                          <span>{area.label}</span>
+                          <span className="flex items-center gap-2 text-xs text-ink-light">
+                            {hasData && <CheckCircle2 size={14} className="text-green-500" />}
+                            <ChevronRight size={14} />
+                          </span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
               </div>
             )}
           </div>
