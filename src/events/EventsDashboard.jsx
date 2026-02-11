@@ -465,29 +465,27 @@ export default function EventsDashboard() {
                     <div className="pt-3">
                       {area.key === 'overall' && (
                         <div className="space-y-4">
-                          {(() => {
-                            const updates = data.statusUpdates || [];
-                            const latest = [...updates].reverse().find((entry) =>
-                              entry && Object.values(entry).some((v) => !isEmptyValue(v))
-                            );
-                            const entry = latest || updates[updates.length - 1] || {};
-                            return (
-                              <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
-                                <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">
-                                  Status Update (Most Recent)
-                                </p>
+                          <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Pre-Event</p>
+                            {(() => {
+                              const updates = data.statusUpdates || [];
+                              const latest = [...updates].reverse().find((entry) =>
+                                entry && Object.values(entry).some((v) => !isEmptyValue(v))
+                              );
+                              const entry = latest || updates[updates.length - 1] || {};
+                              return (
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                   <Field label="Date" value={entry.date} />
                                   <Field label="Status" value={entry.status} />
                                   <Field label="Decisions Needed" value={entry.decisions} />
                                   <Field label="Notes" value={entry.notes} />
                                 </div>
-                              </div>
-                            );
-                          })()}
+                              );
+                            })()}
+                          </div>
                           <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
-                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Final Notes</p>
-                            <Field label="Notes" value={data.finalNotes} />
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Post-Event</p>
+                            <Field label="Final Notes" value={data.finalNotes} />
                           </div>
                         </div>
                       )}
@@ -495,7 +493,7 @@ export default function EventsDashboard() {
                       {area.key === 'programs' && (
                         <div className="space-y-4">
                           <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
-                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Planning</p>
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Pre-Event</p>
                             <div className="space-y-2">
                               <Field label="Purpose" value={(data.purpose || []).join(', ')} />
                               <Field label="Vendor Forms" value={data.vendorFormsSent} />
@@ -559,7 +557,7 @@ export default function EventsDashboard() {
                       {area.key === 'volunteers' && (
                         <div className="space-y-4">
                           <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
-                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Planning</p>
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Pre-Event</p>
                             <div className="space-y-2">
                               <Field label="Volunteers Assigned" value={data.volunteersAssigned} />
                               <Field label="Board Contacted" value={data.boardContacted} />
@@ -601,7 +599,7 @@ export default function EventsDashboard() {
                       {area.key === 'logistics' && (
                         <div className="space-y-4">
                           <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
-                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Planning</p>
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Pre-Event</p>
                             <div className="space-y-2">
                               <Field label="Proposed Attendance" value={data.proposedAttendance} />
                               <Field label="Event Locations" value={data.eventLocations} />
@@ -628,7 +626,7 @@ export default function EventsDashboard() {
                       {area.key === 'hospitality' && (
                         <div className="space-y-4">
                           <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
-                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Planning</p>
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Pre-Event</p>
                             <div className="space-y-2">
                               <Field label="Serving Style" value={(data.servingStyle || []).join(', ')} />
                               <Field label="Alcohol Involved" value={data.alcoholInvolved} />
@@ -681,6 +679,7 @@ export default function EventsDashboard() {
                       {area.key === 'finance' && (
                         <div className="space-y-4">
                           <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Pre-Event</p>
                             <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Projected Expenses</p>
                             <div className="space-y-2">
                               {(data.expenses || []).map((row, idx) => (
@@ -691,23 +690,25 @@ export default function EventsDashboard() {
                                 </div>
                               ))}
                             </div>
-                          </div>
-                          <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
-                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Projected Income</p>
-                            <div className="space-y-2">
-                              {(data.income || []).map((row, idx) => (
-                                <div key={idx} className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                                  <Field label="Source" value={row.source} />
-                                  <Field label="Estimated" value={row.estimated} />
-                                  <Field label="Actual" value={row.actual} />
-                                </div>
-                              ))}
+                            <div className="mt-3">
+                              <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Projected Income</p>
+                              <div className="space-y-2">
+                                {(data.income || []).map((row, idx) => (
+                                  <div key={idx} className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                                    <Field label="Source" value={row.source} />
+                                    <Field label="Estimated" value={row.estimated} />
+                                    <Field label="Actual" value={row.actual} />
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="mt-3 space-y-2">
+                              <Field label="Financial Notes" value={data.financialNotes} />
                             </div>
                           </div>
                           <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
-                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Notes & Post-Event</p>
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Post-Event</p>
                             <div className="space-y-2">
-                              <Field label="Financial Notes" value={data.financialNotes} />
                               <Field label="Receipts Collected" value={data.receiptsCollected} />
                               <Field label="Receipts Dates" value={[data.receiptsDate1, data.receiptsDate2, data.receiptsDate3].filter(Boolean).join(', ')} />
                               <Field label="Reimbursements Needed" value={data.reimbursementsNeeded} />
@@ -729,7 +730,7 @@ export default function EventsDashboard() {
                       {area.key === 'sponsorship' && (
                         <div className="space-y-4">
                           <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
-                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Planning</p>
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Pre-Event</p>
                             <div className="space-y-2">
                               <Field label="Recognition Methods" value={(data.recognitionMethods || []).join(', ')} />
                               <Field label="Other Recognition" value={data.recognitionOther} />
@@ -758,7 +759,7 @@ export default function EventsDashboard() {
                       {area.key === 'interiors' && (
                         <div className="space-y-4">
                           <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
-                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Planning</p>
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Pre-Event</p>
                             <div className="space-y-2">
                               <Field label="Historic Approach" value={data.historicApproach} />
                               <Field label="More Info" value={data.moreInfo} />
@@ -784,6 +785,7 @@ export default function EventsDashboard() {
                       {area.key === 'marketing' && (
                         <div className="space-y-4">
                           <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Pre-Event</p>
                             <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Marketing Channels</p>
                             <div className="space-y-2">
                               {marketingChannels.map((channel) => {
@@ -804,10 +806,14 @@ export default function EventsDashboard() {
                                 </p>
                               </div>
                             </div>
+                            <div className="mt-3">
+                              <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Additional Notes</p>
+                              <Field label="Notes" value={data.notes} />
+                            </div>
                           </div>
                           <div className="border border-sand-dark/60 rounded-xl p-4 bg-sand-light/40">
-                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Additional Notes</p>
-                            <Field label="Notes" value={data.notes} />
+                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Post-Event</p>
+                            <p className="text-sm text-ink-light italic">No post-event fields for Marketing.</p>
                           </div>
                         </div>
                       )}
