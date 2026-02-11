@@ -313,7 +313,7 @@ function displayValue(value) {
 
 function Field({ label, value }) {
   return (
-    <div className="text-sm text-ink">
+    <div className="text-sm text-ink pb-2 mb-2 border-b border-gold/30">
       <span className="font-semibold">{label}:</span> {displayValue(value)}
     </div>
   );
