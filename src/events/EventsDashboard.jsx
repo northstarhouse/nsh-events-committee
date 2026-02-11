@@ -67,6 +67,7 @@ export default function EventsDashboard() {
   const [view, setView] = useState('overview');
   const [selectedEventId, setSelectedEventId] = useState(null);
   const [selectedArea, setSelectedArea] = useState(null);
+  const [showAreas, setShowAreas] = useState(true);
 
   const eventsByMonth = getEventsByMonth();
   const selectedEvent = selectedEventId ? getEventById(selectedEventId) : null;
@@ -74,6 +75,7 @@ export default function EventsDashboard() {
   const navigateToEvent = useCallback((eventId) => {
     setSelectedEventId(eventId);
     setView('detail');
+    setShowAreas(true);
     window.scrollTo(0, 0);
   }, []);
 
@@ -131,6 +133,8 @@ export default function EventsDashboard() {
   }
 
   if (view === 'detail' && selectedEvent) {
+    const completedAreasCount = committeeAreas.filter(area => hasFormData(selectedEvent.id, area.key)).length;
+    const totalAreas = committeeAreas.length;
     return (
       <div className="min-h-screen bg-sand-light">
         <div className="max-w-4xl mx-auto px-4 py-6">
@@ -154,39 +158,61 @@ export default function EventsDashboard() {
           </div>
 
           <div className="mb-6">
-            <h2 className="text-2xl font-bold text-gold text-center mb-6">Update Event Area Notes</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {committeeAreas.map((area) => {
-                const Icon = areaIcons[area.key];
-                const hasData = hasFormData(selectedEvent.id, area.key);
-                return (
-                  <button
-                    key={area.key}
-                    onClick={() => navigateToForm(area.key)}
-                    className="bg-white border border-sand-dark rounded-xl p-5 text-left hover:border-gold hover:shadow-md transition-all group cursor-pointer relative"
-                  >
-                    {hasData && (
-                      <div className="absolute top-3 right-3">
-                        <CheckCircle2 size={16} className="text-green-500" />
-                      </div>
-                    )}
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="w-10 h-10 rounded-lg bg-sand flex items-center justify-center group-hover:bg-gold/10 transition-colors">
-                        <Icon size={20} className="text-gold" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-ink text-sm">{area.label}</h3>
-                        <p className="text-xs text-ink-light">{area.role}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between mt-3">
-                      <span className="text-xs text-gold font-medium">{area.person}</span>
-                      <ChevronRight size={14} className="text-ink-light group-hover:text-gold transition-colors" />
-                    </div>
-                  </button>
-                );
-              })}
+            <div className="flex flex-col items-center gap-3">
+              <button
+                onClick={() => setShowAreas((prev) => !prev)}
+                className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-white px-5 py-2 text-sm font-semibold text-gold shadow-sm transition hover:border-gold hover:shadow-md"
+              >
+                Update Event Area Notes
+                <ChevronRight size={16} className={`transition-transform ${showAreas ? 'rotate-90' : ''}`} />
+              </button>
+              <div className="w-full max-w-2xl bg-white border border-sand-dark rounded-xl p-4 text-center">
+                <p className="text-sm text-ink-light uppercase tracking-[0.2em]">Event Snapshot</p>
+                <p className="text-lg font-semibold text-ink mt-2">
+                  {completedAreasCount} of {totalAreas} areas updated
+                </p>
+                <div className="mt-3 flex flex-wrap items-center justify-center gap-3 text-xs text-ink-light">
+                  {selectedEvent.date && <span>{selectedEvent.date}</span>}
+                  {selectedEvent.dayTime && <span>• {selectedEvent.dayTime}</span>}
+                  <span>• <DaysUntilBadge isoDate={selectedEvent.isoDate} /></span>
+                </div>
+              </div>
             </div>
+
+            {showAreas && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+                {committeeAreas.map((area) => {
+                  const Icon = areaIcons[area.key];
+                  const hasData = hasFormData(selectedEvent.id, area.key);
+                  return (
+                    <button
+                      key={area.key}
+                      onClick={() => navigateToForm(area.key)}
+                      className="bg-white border border-sand-dark rounded-xl p-5 text-left hover:border-gold hover:shadow-md transition-all group cursor-pointer relative"
+                    >
+                      {hasData && (
+                        <div className="absolute top-3 right-3">
+                          <CheckCircle2 size={16} className="text-green-500" />
+                        </div>
+                      )}
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-10 h-10 rounded-lg bg-sand flex items-center justify-center group-hover:bg-gold/10 transition-colors">
+                          <Icon size={20} className="text-gold" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-ink text-sm">{area.label}</h3>
+                          <p className="text-xs text-ink-light">{area.role}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between mt-3">
+                        <span className="text-xs text-gold font-medium">{area.person}</span>
+                        <ChevronRight size={14} className="text-ink-light group-hover:text-gold transition-colors" />
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
       </div>
