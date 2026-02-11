@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import {
   ArrowLeft, Calendar, ChevronRight, ClipboardList, Music2, Users,
-  MapPin, Megaphone, Coffee, DollarSign, Handshake, Paintbrush, Save, CheckCircle2
+  MapPin, Megaphone, Coffee, DollarSign, Handshake, Paintbrush, Save, Star
 } from 'lucide-react';
 import { events2026, months, committeeAreas, getEventsByMonth, getEventById, getEventDisplayName, getDaysUntil } from './eventsData';
 import OverallStatusForm from './OverallStatusForm';
@@ -409,7 +409,7 @@ export default function EventsDashboard() {
                       >
                         {hasData && (
                           <div className="absolute top-3 right-3">
-                            <CheckCircle2 size={16} className="text-green-500" />
+                            <Star size={16} className="text-gold fill-gold" />
                           </div>
                         )}
                         <div className="flex items-center gap-3 mb-2">
