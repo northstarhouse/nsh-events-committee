@@ -622,25 +622,72 @@ export default function EventsDashboard() {
                           </div>
                         )}
 
-                        {area.key === 'finance' && (
-                          <div className="space-y-2">
-                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light">Projected Expenses</p>
-                            {(data.expenses || []).map((row, idx) => (
-                              <p key={idx} className="text-sm text-ink">
-                                {displayValue(row.category)} <span className="text-ink-light">-- Est: {displayValue(row.estimated)} / Actual: {displayValue(row.actual)}</span>
-                              </p>
-                            ))}
-                            <p className="text-xs uppercase tracking-[0.2em] text-ink-light mt-3">Projected Income</p>
-                            {(data.income || []).map((row, idx) => (
-                              <p key={idx} className="text-sm text-ink">
-                                {displayValue(row.source)} <span className="text-ink-light">-- Est: {displayValue(row.estimated)} / Actual: {displayValue(row.actual)}</span>
-                              </p>
-                            ))}
-                            <div className="mt-3">
+                        {area.key === 'finance' && (() => {
+                          const calcTotal = (items, field) =>
+                            (items || []).reduce((sum, item) => sum + (parseFloat(item[field]) || 0), 0).toFixed(2);
+                          const fmt = (v) => v ? `$${v}` : '$';
+                          return (
+                            <div className="space-y-6">
+                              <div>
+                                <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Projected Expenses</p>
+                                <div className="overflow-x-auto">
+                                  <table className="w-full text-sm">
+                                    <thead>
+                                      <tr className="border-b border-sand-dark">
+                                        <th className="text-left py-2 pr-4 font-semibold text-ink">Category</th>
+                                        <th className="text-left py-2 pr-4 font-semibold text-ink">Estimated Amount</th>
+                                        <th className="text-left py-2 font-semibold text-ink">Actual Amount</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {(data.expenses || []).map((row, idx) => (
+                                        <tr key={idx} className="border-b border-sand-dark/50">
+                                          <td className="py-2 pr-4 text-ink">{displayValue(row.category)}</td>
+                                          <td className="py-2 pr-4 text-ink">{fmt(row.estimated)}</td>
+                                          <td className="py-2 text-ink">{fmt(row.actual)}</td>
+                                        </tr>
+                                      ))}
+                                      <tr className="font-semibold">
+                                        <td className="py-2 pr-4 text-ink">Total Projected Expenses</td>
+                                        <td className="py-2 pr-4 text-ink">${calcTotal(data.expenses, 'estimated')}</td>
+                                        <td className="py-2 text-ink">${calcTotal(data.expenses, 'actual')}</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                              <div>
+                                <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Projected Income</p>
+                                <div className="overflow-x-auto">
+                                  <table className="w-full text-sm">
+                                    <thead>
+                                      <tr className="border-b border-sand-dark">
+                                        <th className="text-left py-2 pr-4 font-semibold text-ink">Source</th>
+                                        <th className="text-left py-2 pr-4 font-semibold text-ink">Estimated Amount</th>
+                                        <th className="text-left py-2 font-semibold text-ink">Actual Amount</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {(data.income || []).map((row, idx) => (
+                                        <tr key={idx} className="border-b border-sand-dark/50">
+                                          <td className="py-2 pr-4 text-ink">{displayValue(row.source)}</td>
+                                          <td className="py-2 pr-4 text-ink">{fmt(row.estimated)}</td>
+                                          <td className="py-2 text-ink">{fmt(row.actual)}</td>
+                                        </tr>
+                                      ))}
+                                      <tr className="font-semibold">
+                                        <td className="py-2 pr-4 text-ink">Total Projected Income</td>
+                                        <td className="py-2 pr-4 text-ink">${calcTotal(data.income, 'estimated')}</td>
+                                        <td className="py-2 text-ink">${calcTotal(data.income, 'actual')}</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
                               <Field label="Financial Notes" value={data.financialNotes} />
                             </div>
-                          </div>
-                        )}
+                          );
+                        })()}
 
                         {area.key === 'sponsorship' && (
                           <div className="space-y-2">
