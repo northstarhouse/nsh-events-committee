@@ -74,6 +74,8 @@ export default function OverallStatusForm({ event }) {
         ))}
       </Section>
 
+      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+
       <Section title="Final Notes">
         <TextArea
           value={data.finalNotes}

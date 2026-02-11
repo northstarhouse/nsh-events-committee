@@ -161,6 +161,8 @@ export default function ProgramsForm({ event }) {
         />
       </Section>
 
+      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+
       <Section title="Program & Activities Review (Post-Event)">
         <div className="mb-4">
           <label className="block text-sm font-semibold text-ink mb-2">Activities / Program Elements Review</label>

@@ -164,6 +164,8 @@ export default function FinanceForm({ event }) {
         />
       </Section>
 
+      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+
       <Section title="After Event Data">
         <RadioGroup
           label="Receipts Collected"

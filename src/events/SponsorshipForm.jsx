@@ -102,6 +102,8 @@ export default function SponsorshipForm({ event }) {
         />
       </Section>
 
+      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+
       <Section title="Post Event Notes">
         <TextArea
           label="Sponsors involved"

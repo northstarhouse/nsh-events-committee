@@ -76,6 +76,8 @@ export default function InteriorsForm({ event }) {
         />
       </Section>
 
+      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+
       <Section title="Post Event Notes">
         <RadioGroup
           label="Any issues with historic spaces or furnishings?"

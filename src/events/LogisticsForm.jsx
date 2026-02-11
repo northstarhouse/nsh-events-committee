@@ -94,6 +94,8 @@ export default function LogisticsForm({ event }) {
         />
       </Section>
 
+      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+
       <Section title="Post Event Notes">
         <RadioGroup
           label="Setup plan vs. reality"

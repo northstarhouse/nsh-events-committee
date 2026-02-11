@@ -109,6 +109,8 @@ export default function VolunteerForm({ event }) {
         />
       </Section>
 
+      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+
       <Section title="Post Event Notes">
         <TextInput
           label="Average hours on site"

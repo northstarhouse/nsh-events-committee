@@ -36,7 +36,7 @@ export function useFormData(eventId, formType, defaultData = {}) {
     try {
       const response = await fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        // Use text/plain to avoid CORS preflight for Apps Script.
         body: JSON.stringify({
           action: 'saveFormData',
           eventId,
@@ -44,7 +44,13 @@ export function useFormData(eventId, formType, defaultData = {}) {
           data: payload,
         }),
       });
-      const result = await response.json();
+      if (!response.ok) return false;
+      let result = null;
+      try {
+        result = await response.json();
+      } catch {
+        return false;
+      }
       return Boolean(result && result.success);
     } catch (err) {
       console.error('Failed to save form data to Google Sheets:', err);

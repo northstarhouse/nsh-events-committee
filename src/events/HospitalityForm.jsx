@@ -128,6 +128,8 @@ export default function HospitalityForm({ event }) {
         />
       </Section>
 
+      <FormActions saveStatus={saveStatus} onSave={saveNow} align="right" showStatus={false} />
+
       <Section title="Post Event Notes">
         <div className="mb-4">
           <RadioGroup
