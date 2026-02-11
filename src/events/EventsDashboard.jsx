@@ -291,7 +291,7 @@ export default function EventsDashboard() {
   const [view, setView] = useState('overview');
   const [selectedEventId, setSelectedEventId] = useState(null);
   const [selectedArea, setSelectedArea] = useState(null);
-  const [showAreas, setShowAreas] = useState(true);
+  const [showAreas, setShowAreas] = useState(false);
 
   const eventsByMonth = getEventsByMonth();
   const selectedEvent = selectedEventId ? getEventById(selectedEventId) : null;
