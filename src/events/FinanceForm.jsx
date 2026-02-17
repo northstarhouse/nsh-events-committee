@@ -61,11 +61,11 @@ export default function FinanceForm({ event, onSubmitted }) {
     <div>
       <Section title="Projected Expenses">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm table-fixed">
+          <table className="w-full text-sm">
             <colgroup>
-              <col className="w-[44%]" />
-              <col className="w-[28%]" />
-              <col className="w-[28%]" />
+              <col />
+              <col className="w-[220px]" />
+              <col className="w-[220px]" />
             </colgroup>
             <thead>
               <tr className="border-b border-sand-dark">
@@ -79,26 +79,26 @@ export default function FinanceForm({ event, onSubmitted }) {
                 <tr key={i} className="border-b border-sand-dark/50">
                   <td className="py-2 pr-4 text-ink">{row.category}</td>
                   <td className="py-2 pr-4">
-                    <div className="flex items-center">
+                    <div className="flex items-center w-[170px]">
                       <span className="text-ink-light mr-1">$</span>
                       <input
                         type="number"
                         step="0.01"
                         value={row.estimated || ''}
                         onChange={(e) => updateNestedField('expenses', i, 'estimated', e.target.value)}
-                        className="w-28 border border-sand-dark rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-gold bg-white"
+                        className="w-full border border-sand-dark rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-gold bg-white"
                       />
                     </div>
                   </td>
                   <td className="py-2">
-                    <div className="flex items-center">
+                    <div className="flex items-center w-[170px]">
                       <span className="text-ink-light mr-1">$</span>
                       <input
                         type="number"
                         step="0.01"
                         value={row.actual || ''}
                         onChange={(e) => updateNestedField('expenses', i, 'actual', e.target.value)}
-                        className="w-28 border border-sand-dark rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-gold bg-white"
+                        className="w-full border border-sand-dark rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-gold bg-white"
                       />
                     </div>
                   </td>
@@ -116,11 +116,11 @@ export default function FinanceForm({ event, onSubmitted }) {
 
       <Section title="Projected Income">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm table-fixed">
+          <table className="w-full text-sm">
             <colgroup>
-              <col className="w-[44%]" />
-              <col className="w-[28%]" />
-              <col className="w-[28%]" />
+              <col />
+              <col className="w-[220px]" />
+              <col className="w-[220px]" />
             </colgroup>
             <thead>
               <tr className="border-b border-sand-dark">
@@ -134,26 +134,26 @@ export default function FinanceForm({ event, onSubmitted }) {
                 <tr key={i} className="border-b border-sand-dark/50">
                   <td className="py-2 pr-4 text-ink">{row.source}</td>
                   <td className="py-2 pr-4">
-                    <div className="flex items-center">
+                    <div className="flex items-center w-[170px]">
                       <span className="text-ink-light mr-1">$</span>
                       <input
                         type="number"
                         step="0.01"
                         value={row.estimated || ''}
                         onChange={(e) => updateNestedField('income', i, 'estimated', e.target.value)}
-                        className="w-28 border border-sand-dark rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-gold bg-white"
+                        className="w-full border border-sand-dark rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-gold bg-white"
                       />
                     </div>
                   </td>
                   <td className="py-2">
-                    <div className="flex items-center">
+                    <div className="flex items-center w-[170px]">
                       <span className="text-ink-light mr-1">$</span>
                       <input
                         type="number"
                         step="0.01"
                         value={row.actual || ''}
                         onChange={(e) => updateNestedField('income', i, 'actual', e.target.value)}
-                        className="w-28 border border-sand-dark rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-gold bg-white"
+                        className="w-full border border-sand-dark rounded-lg px-2 py-1 text-sm focus:outline-none focus:border-gold bg-white"
                       />
                     </div>
                   </td>

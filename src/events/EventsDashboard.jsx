@@ -856,16 +856,63 @@ export default function EventsDashboard() {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                             <Field label="Receipts Collected" value={data.receiptsCollected} />
                             <Field label="Receipts Dates" value={[data.receiptsDate1, data.receiptsDate2, data.receiptsDate3].filter(Boolean).join(', ')} />
-                            <Field label="Reimbursements Needed" value={data.reimbursementsNeeded} />
+                            <div className="text-sm text-ink pb-2 mb-2 border-b border-gold/30">
+                              <span className="font-semibold">Reimbursements Needed:</span>
+                              <span className="ml-2 inline-flex items-center gap-2">
+                                {['Yes', 'No'].map((opt) => (
+                                  <span
+                                    key={opt}
+                                    className={`inline-flex items-center justify-center min-w-10 px-2 py-0.5 rounded-full text-xs border ${
+                                      data.reimbursementsNeeded === opt
+                                        ? 'bg-gold text-white border-gold'
+                                        : 'bg-white text-ink-light border-sand-dark'
+                                    }`}
+                                  >
+                                    {opt}
+                                  </span>
+                                ))}
+                              </span>
+                            </div>
                             <Field label="Reimbursement Amount" value={data.reimbursementAmount} />
                             <Field label="Submitted By" value={data.reimbursementSubmittedBy} />
                             <Field label="Final Expenses" value={data.finalExpenses} />
                             <Field label="Final Income" value={data.finalIncome} />
                             <Field label="Final Net" value={data.finalNet} />
-                            <Field label="Event Type" value={data.eventType} />
                             <Field label="Net Reported To Board" value={data.netReportedToBoard} />
-                            <Field label="Thank Yous Sent" value={data.thankYousSent} />
-                            <Field label="Lessons Documented" value={data.lessonsDocumented} />
+                            <div className="text-sm text-ink pb-2 mb-2 border-b border-gold/30">
+                              <span className="font-semibold">Thank Yous Sent:</span>
+                              <span className="ml-2 inline-flex items-center gap-2">
+                                {['Yes', 'No'].map((opt) => (
+                                  <span
+                                    key={opt}
+                                    className={`inline-flex items-center justify-center min-w-10 px-2 py-0.5 rounded-full text-xs border ${
+                                      (data.thankYousSent ? 'Yes' : 'No') === opt
+                                        ? 'bg-gold text-white border-gold'
+                                        : 'bg-white text-ink-light border-sand-dark'
+                                    }`}
+                                  >
+                                    {opt}
+                                  </span>
+                                ))}
+                              </span>
+                            </div>
+                            <div className="text-sm text-ink pb-2 mb-2 border-b border-gold/30">
+                              <span className="font-semibold">Lessons Documented:</span>
+                              <span className="ml-2 inline-flex items-center gap-2">
+                                {['Yes', 'No'].map((opt) => (
+                                  <span
+                                    key={opt}
+                                    className={`inline-flex items-center justify-center min-w-10 px-2 py-0.5 rounded-full text-xs border ${
+                                      (data.lessonsDocumented ? 'Yes' : 'No') === opt
+                                        ? 'bg-gold text-white border-gold'
+                                        : 'bg-white text-ink-light border-sand-dark'
+                                    }`}
+                                  >
+                                    {opt}
+                                  </span>
+                                ))}
+                              </span>
+                            </div>
                             <div className="md:col-span-2">
                               <Field label="Committee Notes" value={data.committeeNotes} />
                             </div>
