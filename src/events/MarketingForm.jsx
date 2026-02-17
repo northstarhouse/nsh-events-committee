@@ -1,5 +1,5 @@
 import { useFormData } from './useFormData';
-import { FormActions, SaveIndicator, Section, TextArea } from './FormWrapper';
+import { FormActions, Section, TextArea, TextInput, CheckboxGroup } from './FormWrapper';
 
 const marketingChannels = [
   'Create Press Release',
@@ -26,6 +26,12 @@ const defaultData = {
   otherChannelDone: false,
   notes: '',
   committeeNotes: '',
+  ticketSalesPattern: [],
+  photosTaken: false,
+  uploadedToSharedDrive: false,
+  emailsCollected: '',
+  donationsRelatedToEvent: '',
+  formsGrabbed: '',
 };
 
 export default function MarketingForm({ event, onSubmitted }) {
@@ -141,6 +147,52 @@ export default function MarketingForm({ event, onSubmitted }) {
       </Section>
 
       <Section title="Post Event Notes">
+        <CheckboxGroup
+          label="Tickets sold"
+          options={['Early majority', 'Steady flow', 'Mostly last week', 'Mostly last 48 hours']}
+          values={data.ticketSalesPattern}
+          onChange={(val) => updateField('ticketSalesPattern', val)}
+        />
+
+        <div className="mb-4 pb-4 border-b border-gold/30 space-y-3">
+          <label className="flex items-center gap-2 text-sm cursor-pointer">
+            <input
+              type="checkbox"
+              checked={data.photosTaken || false}
+              onChange={(e) => updateField('photosTaken', e.target.checked)}
+              className="rounded border-sand-dark text-gold focus:ring-gold/30 accent-gold"
+            />
+            Photos taken
+          </label>
+          <label className="flex items-center gap-2 text-sm cursor-pointer">
+            <input
+              type="checkbox"
+              checked={data.uploadedToSharedDrive || false}
+              onChange={(e) => updateField('uploadedToSharedDrive', e.target.checked)}
+              className="rounded border-sand-dark text-gold focus:ring-gold/30 accent-gold"
+            />
+            Uploaded to Shared Drive
+          </label>
+        </div>
+
+        <TextInput
+          label="Emails collected"
+          value={data.emailsCollected}
+          onChange={(val) => updateField('emailsCollected', val)}
+        />
+
+        <TextInput
+          label="Donations related to event"
+          value={data.donationsRelatedToEvent}
+          onChange={(val) => updateField('donationsRelatedToEvent', val)}
+        />
+
+        <TextInput
+          label="Forms grabbed"
+          value={data.formsGrabbed}
+          onChange={(val) => updateField('formsGrabbed', val)}
+        />
+
         <TextArea
           label="Committee Notes"
           value={data.committeeNotes}

@@ -198,6 +198,12 @@ const defaultFormData = {
     otherChannelDone: false,
     notes: '',
     committeeNotes: '',
+    ticketSalesPattern: [],
+    photosTaken: false,
+    uploadedToSharedDrive: false,
+    emailsCollected: '',
+    donationsRelatedToEvent: '',
+    formsGrabbed: '',
   },
 };
 
@@ -839,7 +845,7 @@ export default function EventsDashboard() {
                           </div>
                         )}
                         {area.key === 'finance' && (
-                          <div className="space-y-2">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                             <Field label="Receipts Collected" value={data.receiptsCollected} />
                             <Field label="Receipts Dates" value={[data.receiptsDate1, data.receiptsDate2, data.receiptsDate3].filter(Boolean).join(', ')} />
                             <Field label="Reimbursements Needed" value={data.reimbursementsNeeded} />
@@ -852,8 +858,12 @@ export default function EventsDashboard() {
                             <Field label="Net Reported To Board" value={data.netReportedToBoard} />
                             <Field label="Thank Yous Sent" value={data.thankYousSent} />
                             <Field label="Lessons Documented" value={data.lessonsDocumented} />
-                            <Field label="Committee Notes" value={data.committeeNotes} />
-                            <Field label="Post Notes" value={data.postNotes} />
+                            <div className="md:col-span-2">
+                              <Field label="Committee Notes" value={data.committeeNotes} />
+                            </div>
+                            <div className="md:col-span-2">
+                              <Field label="Post Notes" value={data.postNotes} />
+                            </div>
                           </div>
                         )}
                         {area.key === 'sponsorship' && (
@@ -875,7 +885,15 @@ export default function EventsDashboard() {
                           </div>
                         )}
                         {area.key === 'marketing' && (
-                          <Field label="Committee Notes" value={data.committeeNotes} />
+                          <div className="space-y-2">
+                            <Field label="Tickets Sold" value={(data.ticketSalesPattern || []).join(', ')} />
+                            <Field label="Photos Taken" value={data.photosTaken} />
+                            <Field label="Uploaded to Shared Drive" value={data.uploadedToSharedDrive} />
+                            <Field label="Emails Collected" value={data.emailsCollected} />
+                            <Field label="Donations Related to Event" value={data.donationsRelatedToEvent} />
+                            <Field label="Forms Grabbed" value={data.formsGrabbed} />
+                            <Field label="Committee Notes" value={data.committeeNotes} />
+                          </div>
                         )}
                       </div>
                     );
