@@ -354,6 +354,7 @@ export default function EventsDashboard() {
   const [selectedEventId, setSelectedEventId] = useState(null);
   const [selectedArea, setSelectedArea] = useState(null);
   const [showAreas, setShowAreas] = useState(false);
+  const [selectedResource, setSelectedResource] = useState(null);
 
   const eventsByMonth = getEventsByMonth();
   const selectedEvent = selectedEventId ? getEventById(selectedEventId) : null;
@@ -1005,9 +1006,83 @@ export default function EventsDashboard() {
 
       {view === 'resources' && (
         <div className="max-w-6xl mx-auto px-4 py-6">
-          <div className="bg-white border border-sand-dark rounded-xl p-6">
+          <div className="bg-white border border-sand-dark rounded-xl p-6 space-y-5">
             <h2 className="text-2xl font-bold text-gold mb-4">Resources</h2>
-            <p className="text-ink-light">Resources coming soon.</p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <button
+                onClick={() => setSelectedResource('committee')}
+                className={`w-full text-left border rounded-lg px-4 py-3 transition-colors ${
+                  selectedResource === 'committee'
+                    ? 'border-gold bg-white'
+                    : 'border-sand-dark bg-sand-light/40 hover:border-gold hover:bg-white'
+                }`}
+              >
+                <p className="text-sm font-semibold text-ink">Committee Members and Contact Info</p>
+              </button>
+              <button
+                onClick={() => setSelectedResource('sponsors')}
+                className={`w-full text-left border rounded-lg px-4 py-3 transition-colors ${
+                  selectedResource === 'sponsors'
+                    ? 'border-gold bg-white'
+                    : 'border-sand-dark bg-sand-light/40 hover:border-gold hover:bg-white'
+                }`}
+              >
+                <p className="text-sm font-semibold text-ink">Sponsor List</p>
+              </button>
+              <button
+                onClick={() => setSelectedResource('inventory')}
+                className={`w-full text-left border rounded-lg px-4 py-3 transition-colors ${
+                  selectedResource === 'inventory'
+                    ? 'border-gold bg-white'
+                    : 'border-sand-dark bg-sand-light/40 hover:border-gold hover:bg-white'
+                }`}
+              >
+                <p className="text-sm font-semibold text-ink">Current Inventory List</p>
+              </button>
+            </div>
+
+            {selectedResource === 'committee' && (
+              <div className="border border-sand-dark rounded-xl overflow-hidden">
+                <div className="px-4 py-3 bg-sand-light/50 border-b border-sand-dark">
+                  <p className="text-sm font-semibold text-ink">Committee Members and Contact Info</p>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-sand-dark bg-white">
+                        <th className="text-left py-2.5 px-4 font-semibold text-ink">Name</th>
+                        <th className="text-left py-2.5 px-4 font-semibold text-ink">Role</th>
+                        <th className="text-left py-2.5 px-4 font-semibold text-ink">Phone Number</th>
+                        <th className="text-left py-2.5 px-4 font-semibold text-ink">Email</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {committeeAreas.map((area) => (
+                        <tr key={`resource-${area.key}`} className="border-b border-sand-dark/40 last:border-b-0">
+                          <td className="py-2.5 px-4 text-ink">{area.person}</td>
+                          <td className="py-2.5 px-4 text-ink">{area.role}</td>
+                          <td className="py-2.5 px-4 text-ink-light">--</td>
+                          <td className="py-2.5 px-4 text-ink-light">--</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {selectedResource === 'sponsors' && (
+              <div className="border border-sand-dark rounded-xl p-4 bg-sand-light/30">
+                <p className="text-sm text-ink-light">Sponsor List content coming soon.</p>
+              </div>
+            )}
+
+            {selectedResource === 'inventory' && (
+              <div className="border border-sand-dark rounded-xl p-4 bg-sand-light/30">
+                <p className="text-sm text-ink-light">Current Inventory List content coming soon.</p>
+              </div>
+            )}
           </div>
         </div>
       )}
