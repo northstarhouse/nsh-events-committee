@@ -61,7 +61,12 @@ export default function FinanceForm({ event, onSubmitted }) {
     <div>
       <Section title="Projected Expenses">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm table-fixed">
+            <colgroup>
+              <col className="w-[44%]" />
+              <col className="w-[28%]" />
+              <col className="w-[28%]" />
+            </colgroup>
             <thead>
               <tr className="border-b border-sand-dark">
                 <th className="text-left py-2 pr-4 font-semibold text-ink">Category</th>
@@ -111,7 +116,12 @@ export default function FinanceForm({ event, onSubmitted }) {
 
       <Section title="Projected Income">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm table-fixed">
+            <colgroup>
+              <col className="w-[44%]" />
+              <col className="w-[28%]" />
+              <col className="w-[28%]" />
+            </colgroup>
             <thead>
               <tr className="border-b border-sand-dark">
                 <th className="text-left py-2 pr-4 font-semibold text-ink">Source</th>

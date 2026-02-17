@@ -42,28 +42,26 @@ export default function VolunteerForm({ event, onSubmitted }) {
     <div>
       <Section title="Volunteer Coordination - Planning">
         <div className="mb-4">
-          <label className="block text-sm font-semibold text-ink mb-3">Volunteer roles & amount needed</label>
+          <label className="block text-sm font-semibold text-ink mb-3">Volunteer roles</label>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {volunteerRoles.map((role) => {
               const roleData = (data.roles || {})[role] || {};
               return (
                 <div key={role} className="flex items-center gap-3 bg-sand-light/50 rounded-lg p-3 border border-sand-dark">
-                  <label className="flex items-center gap-2 text-sm cursor-pointer flex-1">
+                  <label className="flex items-center gap-2 text-sm cursor-pointer flex-1 min-w-0">
                     <input
                       type="checkbox"
                       checked={roleData.needed || false}
                       onChange={(e) => updateRole(role, 'needed', e.target.checked)}
                       className="rounded border-sand-dark text-gold accent-gold"
                     />
-                    {role}
+                    <span className="truncate">{role}</span>
                   </label>
                   <input
-                    type="number"
-                    min="0"
+                    type="text"
                     value={roleData.count || ''}
                     onChange={(e) => updateRole(role, 'count', e.target.value)}
-                    placeholder="#"
-                    className="w-16 border border-sand-dark rounded-lg px-2 py-1 text-sm text-center focus:outline-none focus:border-gold bg-white"
+                    className="w-20 border border-sand-dark rounded-lg px-2 py-1 text-sm text-center focus:outline-none focus:border-gold bg-white"
                   />
                 </div>
               );

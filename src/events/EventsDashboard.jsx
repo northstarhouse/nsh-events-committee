@@ -565,10 +565,18 @@ export default function EventsDashboard() {
                                   const roleData = (data.roles || {})[role] || {};
                                   return (
                                     <div key={role} className="border border-sand-dark/50 rounded-lg p-2 bg-sand-light/40">
-                                      <p className="text-sm font-semibold text-ink">{role}</p>
-                                      <p className="text-xs text-ink-light">
-                                        Needed: {roleData.needed ? 'Yes' : 'No'} - Count: {displayValue(roleData.count)}
-                                      </p>
+                                      <div className="flex items-center justify-between gap-2">
+                                        <div className="flex items-center gap-2 min-w-0">
+                                          <input
+                                            type="checkbox"
+                                            checked={roleData.needed || false}
+                                            readOnly
+                                            className="rounded border-sand-dark text-gold accent-gold h-3.5 w-3.5 pointer-events-none"
+                                          />
+                                          <p className="text-sm font-semibold text-ink truncate">{role}</p>
+                                        </div>
+                                        <span className="text-xs text-ink-light whitespace-nowrap">{displayValue(roleData.count)}</span>
+                                      </div>
                                     </div>
                                   );
                                 })}
@@ -800,11 +808,6 @@ export default function EventsDashboard() {
                         )}
                         {area.key === 'programs' && (
                           <div className="space-y-2">
-                            <Field label="Flow & Timing" value={data.flowTiming} />
-                            <Field label="Pinch Points" value={data.pinchPoints} />
-                            <Field label="Repeat Format" value={data.repeatFormat} />
-                            <Field label="Committee Notes" value={data.committeeNotes} />
-                            <Field label="Other Notes" value={data.postOtherNotes} />
                             <div className="mt-3 space-y-2">
                               <p className="text-xs uppercase tracking-[0.2em] text-ink-light">Activity Review</p>
                               {(data.activityReview || []).map((item, idx) => (
@@ -816,6 +819,11 @@ export default function EventsDashboard() {
                                 </div>
                               ))}
                             </div>
+                            <Field label="Flow & Timing" value={data.flowTiming} />
+                            <Field label="Pinch Points" value={data.pinchPoints} />
+                            <Field label="Repeat Format" value={data.repeatFormat} />
+                            <Field label="Committee Notes" value={data.committeeNotes} />
+                            <Field label="Other Notes" value={data.postOtherNotes} />
                           </div>
                         )}
                         {area.key === 'volunteers' && (
