@@ -726,37 +726,39 @@ export default function EventsDashboard() {
                         {area.key === 'marketing' && (
                           <div className="space-y-2">
                             <p className="text-xs uppercase tracking-[0.2em] text-ink-light">Marketing Channels</p>
-                            {marketingChannels.map((channel) => {
-                              const channelData = (data.channels || {})[channel] || {};
-                              return (
-                                <div key={channel} className="border border-sand-dark/50 rounded-lg p-2 bg-sand-light/40">
-                                  <p className="text-sm font-semibold text-ink">{channel}</p>
-                                  <div className="mt-1 flex items-center gap-2 text-xs text-ink-light">
-                                    <input
-                                      type="checkbox"
-                                      checked={channelData.done || false}
-                                      readOnly
-                                      className="rounded border-sand-dark text-gold accent-gold h-3.5 w-3.5 pointer-events-none"
-                                    />
-                                    <span>Completed</span>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                              {marketingChannels.map((channel) => {
+                                const channelData = (data.channels || {})[channel] || {};
+                                return (
+                                  <div key={channel} className="border border-sand-dark/50 rounded-lg p-2 bg-sand-light/40">
+                                    <p className="text-sm font-semibold text-ink">{channel}</p>
+                                    <div className="mt-1 flex items-center gap-2 text-xs text-ink-light">
+                                      <input
+                                        type="checkbox"
+                                        checked={channelData.done || false}
+                                        readOnly
+                                        className="rounded border-sand-dark text-gold accent-gold h-3.5 w-3.5 pointer-events-none"
+                                      />
+                                      <span>Completed</span>
+                                    </div>
+                                    <p className="text-xs text-ink-light mt-1">
+                                      Date: {displayValue(channelData.date)} - Notes: {displayValue(channelData.notes)}
+                                    </p>
                                   </div>
-                                  <p className="text-xs text-ink-light mt-1">
-                                    Date: {displayValue(channelData.date)} - Notes: {displayValue(channelData.notes)}
-                                  </p>
+                                );
+                              })}
+                              <div className="border border-sand-dark/50 rounded-lg p-2 bg-sand-light/40 md:col-span-2">
+                                <p className="text-sm font-semibold text-ink">Other Channel</p>
+                                <p className="text-xs text-ink-light">Name: {displayValue(data.otherChannel)}</p>
+                                <div className="mt-1 flex items-center gap-2 text-xs text-ink-light">
+                                  <input
+                                    type="checkbox"
+                                    checked={data.otherChannelDone || false}
+                                    readOnly
+                                    className="rounded border-sand-dark text-gold accent-gold h-3.5 w-3.5 pointer-events-none"
+                                  />
+                                  <span>Completed</span>
                                 </div>
-                              );
-                            })}
-                            <div className="border border-sand-dark/50 rounded-lg p-2 bg-sand-light/40">
-                              <p className="text-sm font-semibold text-ink">Other Channel</p>
-                              <p className="text-xs text-ink-light">Name: {displayValue(data.otherChannel)}</p>
-                              <div className="mt-1 flex items-center gap-2 text-xs text-ink-light">
-                                <input
-                                  type="checkbox"
-                                  checked={data.otherChannelDone || false}
-                                  readOnly
-                                  className="rounded border-sand-dark text-gold accent-gold h-3.5 w-3.5 pointer-events-none"
-                                />
-                                <span>Completed</span>
                               </div>
                             </div>
                             <div className="mt-3">
