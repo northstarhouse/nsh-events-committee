@@ -25,6 +25,7 @@ const defaultData = {
   otherChannel: '',
   otherChannelDone: false,
   notes: '',
+  committeeNotes: '',
 };
 
 export default function MarketingForm({ event, onSubmitted }) {
@@ -136,6 +137,16 @@ export default function MarketingForm({ event, onSubmitted }) {
             rows={4}
           />
         </div>
+        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
+      </Section>
+
+      <Section title="Post Event Notes">
+        <TextArea
+          label="Committee Notes"
+          value={data.committeeNotes}
+          onChange={(val) => updateField('committeeNotes', val)}
+          rows={4}
+        />
         <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
       </Section>
     </div>

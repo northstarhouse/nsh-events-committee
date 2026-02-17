@@ -60,6 +60,7 @@ const defaultFormData = {
       { date: '', status: '', decisions: '', notes: '' },
       { date: '', status: '', decisions: '', notes: '' },
     ],
+    committeeNotes: '',
     finalNotes: '',
   },
   programs: {
@@ -91,6 +92,7 @@ const defaultFormData = {
     avgHoursOnSite: '',
     totalVolunteerHours: '',
     whatWeLearned: '',
+    committeeNotes: '',
   },
   logistics: {
     proposedAttendance: '',
@@ -105,6 +107,7 @@ const defaultFormData = {
     setupVsReality: '',
     adjustmentsMade: '',
     layoutSupportNeeds: '',
+    committeeNotes: '',
   },
   hospitality: {
     foodBevPlan: [{ item: '', volunteer: '' }],
@@ -119,6 +122,7 @@ const defaultFormData = {
     fbOutcomeRanOut: '',
     guestFlow: '',
     guestComments: '',
+    committeeNotes: '',
     committeeThoughts: '',
     postOtherNotes: '',
   },
@@ -154,6 +158,7 @@ const defaultFormData = {
     netReportedToBoard: false,
     thankYousSent: false,
     lessonsDocumented: false,
+    committeeNotes: '',
     postNotes: '',
   },
   sponsorship: {
@@ -169,6 +174,7 @@ const defaultFormData = {
     sponsorsInvolved: '',
     recognitionDelivered: '',
     futureNotes: '',
+    committeeNotes: '',
     committeeThoughts: '',
     postOtherNotes: '',
   },
@@ -183,6 +189,7 @@ const defaultFormData = {
     historicIssues: '',
     wearDamage: '',
     futureAdjustments: '',
+    committeeNotes: '',
     postOtherNotes: '',
   },
   marketing: {
@@ -190,6 +197,7 @@ const defaultFormData = {
     otherChannel: '',
     otherChannelDone: false,
     notes: '',
+    committeeNotes: '',
   },
 };
 
@@ -731,33 +739,29 @@ export default function EventsDashboard() {
                                 const channelData = (data.channels || {})[channel] || {};
                                 return (
                                   <div key={channel} className="border border-sand-dark/50 rounded-lg p-2 bg-sand-light/40">
-                                    <p className="text-sm font-semibold text-ink">{channel}</p>
-                                    <div className="mt-1 flex items-center gap-2 text-xs text-ink-light">
+                                    <div className="flex items-center justify-between gap-2">
+                                      <p className="text-sm font-semibold text-ink">{channel}</p>
                                       <input
                                         type="checkbox"
                                         checked={channelData.done || false}
                                         readOnly
                                         className="rounded border-sand-dark text-gold accent-gold h-3.5 w-3.5 pointer-events-none"
                                       />
-                                      <span>Completed</span>
                                     </div>
-                                    <p className="text-xs text-ink-light mt-1">
-                                      Date: {displayValue(channelData.date)} - Notes: {displayValue(channelData.notes)}
-                                    </p>
                                   </div>
                                 );
                               })}
                               <div className="border border-sand-dark/50 rounded-lg p-2 bg-sand-light/40 md:col-span-2">
-                                <p className="text-sm font-semibold text-ink">Other Channel</p>
-                                <p className="text-xs text-ink-light">Name: {displayValue(data.otherChannel)}</p>
-                                <div className="mt-1 flex items-center gap-2 text-xs text-ink-light">
+                                <div className="flex items-center justify-between gap-2">
+                                  <p className="text-sm font-semibold text-ink">
+                                    Other Channel: {displayValue(data.otherChannel)}
+                                  </p>
                                   <input
                                     type="checkbox"
                                     checked={data.otherChannelDone || false}
                                     readOnly
                                     className="rounded border-sand-dark text-gold accent-gold h-3.5 w-3.5 pointer-events-none"
                                   />
-                                  <span>Completed</span>
                                 </div>
                               </div>
                             </div>
@@ -783,7 +787,10 @@ export default function EventsDashboard() {
                       <div key={`post-${area.key}`} className="border border-sand-dark/60 rounded-xl p-4 bg-white">
                         <AreaHeader Icon={Icon} area={area} />
                         {area.key === 'overall' && (
-                          <Field label="Final Notes" value={data.finalNotes} />
+                          <div className="space-y-2">
+                            <Field label="Committee Notes" value={data.committeeNotes} />
+                            <Field label="Final Notes" value={data.finalNotes} />
+                          </div>
                         )}
                         {area.key === 'programs' && (
                           <div className="space-y-2">
@@ -810,6 +817,7 @@ export default function EventsDashboard() {
                             <Field label="Average Hours On Site" value={data.avgHoursOnSite} />
                             <Field label="Total Volunteer Hours" value={data.totalVolunteerHours} />
                             <Field label="What We Learned" value={data.whatWeLearned} />
+                            <Field label="Committee Notes" value={data.committeeNotes} />
                           </div>
                         )}
                         {area.key === 'logistics' && (
@@ -817,6 +825,7 @@ export default function EventsDashboard() {
                             <Field label="Setup vs Reality" value={data.setupVsReality} />
                             <Field label="Adjustments Made" value={data.adjustmentsMade} />
                             <Field label="Layout Support Needs" value={data.layoutSupportNeeds} />
+                            <Field label="Committee Notes" value={data.committeeNotes} />
                           </div>
                         )}
                         {area.key === 'hospitality' && (
@@ -825,7 +834,7 @@ export default function EventsDashboard() {
                             <Field label="Ran Out Of" value={data.fbOutcomeRanOut} />
                             <Field label="Guest Flow" value={data.guestFlow} />
                             <Field label="Guest Comments" value={data.guestComments} />
-                            <Field label="Committee Thoughts" value={data.committeeThoughts} />
+                            <Field label="Committee Notes" value={data.committeeNotes || data.committeeThoughts} />
                             <Field label="Other Notes" value={data.postOtherNotes} />
                           </div>
                         )}
@@ -843,6 +852,7 @@ export default function EventsDashboard() {
                             <Field label="Net Reported To Board" value={data.netReportedToBoard} />
                             <Field label="Thank Yous Sent" value={data.thankYousSent} />
                             <Field label="Lessons Documented" value={data.lessonsDocumented} />
+                            <Field label="Committee Notes" value={data.committeeNotes} />
                             <Field label="Post Notes" value={data.postNotes} />
                           </div>
                         )}
@@ -851,7 +861,7 @@ export default function EventsDashboard() {
                             <Field label="Sponsors Involved" value={data.sponsorsInvolved} />
                             <Field label="Recognition Delivered" value={data.recognitionDelivered} />
                             <Field label="Future Notes" value={data.futureNotes} />
-                            <Field label="Committee Thoughts" value={data.committeeThoughts} />
+                            <Field label="Committee Notes" value={data.committeeNotes || data.committeeThoughts} />
                             <Field label="Other Notes" value={data.postOtherNotes} />
                           </div>
                         )}
@@ -860,11 +870,12 @@ export default function EventsDashboard() {
                             <Field label="Historic Issues" value={data.historicIssues} />
                             <Field label="Wear / Damage" value={data.wearDamage} />
                             <Field label="Future Adjustments" value={data.futureAdjustments} />
+                            <Field label="Committee Notes" value={data.committeeNotes} />
                             <Field label="Other Notes" value={data.postOtherNotes} />
                           </div>
                         )}
                         {area.key === 'marketing' && (
-                          <p className="text-sm text-ink-light italic">No post-event fields for Marketing.</p>
+                          <Field label="Committee Notes" value={data.committeeNotes} />
                         )}
                       </div>
                     );

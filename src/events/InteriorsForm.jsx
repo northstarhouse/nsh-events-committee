@@ -13,6 +13,7 @@ const defaultData = {
   historicIssues: '',
   wearDamage: '',
   futureAdjustments: '',
+  committeeNotes: '',
   postOtherNotes: '',
 };
 
@@ -99,6 +100,13 @@ export default function InteriorsForm({ event, onSubmitted }) {
           label="Interior adjustments to consider for future events"
           value={data.futureAdjustments}
           onChange={(val) => updateField('futureAdjustments', val)}
+          rows={3}
+        />
+
+        <TextArea
+          label="Committee Notes"
+          value={data.committeeNotes}
+          onChange={(val) => updateField('committeeNotes', val)}
           rows={3}
         />
 

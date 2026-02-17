@@ -38,6 +38,7 @@ const defaultData = {
   netReportedToBoard: false,
   thankYousSent: false,
   lessonsDocumented: false,
+  committeeNotes: '',
   postNotes: '',
 };
 
@@ -254,7 +255,14 @@ export default function FinanceForm({ event, onSubmitted }) {
         </div>
 
         <TextArea
-          label="Notes"
+          label="Committee Notes"
+          value={data.committeeNotes}
+          onChange={(val) => updateField('committeeNotes', val)}
+          rows={4}
+        />
+
+        <TextArea
+          label="Other Notes"
           value={data.postNotes}
           onChange={(val) => updateField('postNotes', val)}
           rows={4}

@@ -9,6 +9,7 @@ const defaultData = {
     { date: '', status: '', decisions: '', notes: '' },
     { date: '', status: '', decisions: '', notes: '' },
   ],
+  committeeNotes: '',
   finalNotes: '',
 };
 
@@ -83,6 +84,15 @@ export default function OverallStatusForm({ event, onSubmitted }) {
 
       <Section title="Final Notes">
         <TextArea
+          label="Committee Notes"
+          value={data.committeeNotes}
+          onChange={(val) => updateField('committeeNotes', val)}
+          placeholder="Committee notes after the event..."
+          rows={4}
+        />
+
+        <TextArea
+          label="Final Notes"
           value={data.finalNotes}
           onChange={(val) => updateField('finalNotes', val)}
           placeholder="Final notes and overall reflections on this event..."

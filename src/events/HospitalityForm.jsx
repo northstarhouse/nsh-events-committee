@@ -16,6 +16,7 @@ const defaultData = {
   fbOutcomeRanOut: '',
   guestFlow: '',
   guestComments: '',
+  committeeNotes: '',
   committeeThoughts: '',
   postOtherNotes: '',
 };
@@ -165,9 +166,9 @@ export default function HospitalityForm({ event, onSubmitted }) {
         />
 
         <TextArea
-          label="Committee Thoughts"
-          value={data.committeeThoughts}
-          onChange={(val) => updateField('committeeThoughts', val)}
+          label="Committee Notes"
+          value={data.committeeNotes ?? data.committeeThoughts ?? ''}
+          onChange={(val) => updateField('committeeNotes', val)}
           rows={4}
         />
 

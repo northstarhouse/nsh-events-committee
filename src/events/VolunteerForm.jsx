@@ -21,6 +21,7 @@ const defaultData = {
   avgHoursOnSite: '',
   totalVolunteerHours: '',
   whatWeLearned: '',
+  committeeNotes: '',
 };
 
 export default function VolunteerForm({ event, onSubmitted }) {
@@ -133,6 +134,13 @@ export default function VolunteerForm({ event, onSubmitted }) {
           value={data.whatWeLearned}
           onChange={(val) => updateField('whatWeLearned', val)}
           placeholder="Key takeaways about volunteer coordination for this event..."
+          rows={4}
+        />
+
+        <TextArea
+          label="Committee Notes"
+          value={data.committeeNotes}
+          onChange={(val) => updateField('committeeNotes', val)}
           rows={4}
         />
         <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />

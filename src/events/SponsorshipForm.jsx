@@ -15,6 +15,7 @@ const defaultData = {
   sponsorsInvolved: '',
   recognitionDelivered: '',
   futureNotes: '',
+  committeeNotes: '',
   committeeThoughts: '',
   postOtherNotes: '',
 };
@@ -127,9 +128,9 @@ export default function SponsorshipForm({ event, onSubmitted }) {
         />
 
         <TextArea
-          label="Committee thoughts"
-          value={data.committeeThoughts}
-          onChange={(val) => updateField('committeeThoughts', val)}
+          label="Committee Notes"
+          value={data.committeeNotes ?? data.committeeThoughts ?? ''}
+          onChange={(val) => updateField('committeeNotes', val)}
         />
 
         <TextArea

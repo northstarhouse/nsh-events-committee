@@ -15,6 +15,7 @@ const defaultData = {
   setupVsReality: '',
   adjustmentsMade: '',
   layoutSupportNeeds: '',
+  committeeNotes: '',
 };
 
 export default function LogisticsForm({ event, onSubmitted }) {
@@ -118,6 +119,13 @@ export default function LogisticsForm({ event, onSubmitted }) {
           options={['Yes', 'Mostly', 'No']}
           value={data.layoutSupportNeeds}
           onChange={(val) => updateField('layoutSupportNeeds', val)}
+        />
+
+        <TextArea
+          label="Committee Notes"
+          value={data.committeeNotes}
+          onChange={(val) => updateField('committeeNotes', val)}
+          rows={4}
         />
         <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
       </Section>
