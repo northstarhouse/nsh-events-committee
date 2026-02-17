@@ -655,13 +655,25 @@ export default function EventsDashboard() {
                         {area.key === 'finance' && (() => {
                           const calcTotal = (items, field) =>
                             (items || []).reduce((sum, item) => sum + (parseFloat(item[field]) || 0), 0).toFixed(2);
-                          const fmt = (v) => v ? `$${v}` : '$';
+                          const renderAmount = (v) => {
+                            const hasValue = v !== '' && v !== null && v !== undefined;
+                            return (
+                              <span className="inline-block min-w-[84px] tabular-nums">
+                                {hasValue ? `$${v}` : '$'}
+                              </span>
+                            );
+                          };
                           return (
                             <div className="space-y-6">
                               <div>
                                 <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Projected Expenses</p>
                                 <div className="overflow-x-auto">
-                                  <table className="w-full text-sm">
+                                  <table className="w-full text-sm table-fixed">
+                                    <colgroup>
+                                      <col />
+                                      <col className="w-[220px]" />
+                                      <col className="w-[220px]" />
+                                    </colgroup>
                                     <thead>
                                       <tr className="border-b border-sand-dark">
                                         <th className="text-left py-2 pr-4 font-semibold text-ink">Category</th>
@@ -673,8 +685,8 @@ export default function EventsDashboard() {
                                       {(data.expenses || []).map((row, idx) => (
                                         <tr key={idx} className="border-b border-sand-dark/50">
                                           <td className="py-2 pr-4 text-ink">{displayValue(row.category)}</td>
-                                          <td className="py-2 pr-4 text-ink">{fmt(row.estimated)}</td>
-                                          <td className="py-2 text-ink">{fmt(row.actual)}</td>
+                                          <td className="py-2 pr-4 text-ink">{renderAmount(row.estimated)}</td>
+                                          <td className="py-2 text-ink">{renderAmount(row.actual)}</td>
                                         </tr>
                                       ))}
                                       <tr className="font-semibold">
@@ -689,7 +701,12 @@ export default function EventsDashboard() {
                               <div>
                                 <p className="text-xs uppercase tracking-[0.2em] text-ink-light mb-2">Projected Income</p>
                                 <div className="overflow-x-auto">
-                                  <table className="w-full text-sm">
+                                  <table className="w-full text-sm table-fixed">
+                                    <colgroup>
+                                      <col />
+                                      <col className="w-[220px]" />
+                                      <col className="w-[220px]" />
+                                    </colgroup>
                                     <thead>
                                       <tr className="border-b border-sand-dark">
                                         <th className="text-left py-2 pr-4 font-semibold text-ink">Source</th>
@@ -701,8 +718,8 @@ export default function EventsDashboard() {
                                       {(data.income || []).map((row, idx) => (
                                         <tr key={idx} className="border-b border-sand-dark/50">
                                           <td className="py-2 pr-4 text-ink">{displayValue(row.source)}</td>
-                                          <td className="py-2 pr-4 text-ink">{fmt(row.estimated)}</td>
-                                          <td className="py-2 text-ink">{fmt(row.actual)}</td>
+                                          <td className="py-2 pr-4 text-ink">{renderAmount(row.estimated)}</td>
+                                          <td className="py-2 text-ink">{renderAmount(row.actual)}</td>
                                         </tr>
                                       ))}
                                       <tr className="font-semibold">
