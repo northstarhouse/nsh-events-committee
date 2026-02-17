@@ -862,7 +862,7 @@ export default function EventsDashboard() {
                               <Field label="Committee Notes" value={data.committeeNotes} />
                             </div>
                             <div className="md:col-span-2">
-                              <Field label="Post Notes" value={data.postNotes} />
+                              <Field label="Other Notes" value={data.postNotes} />
                             </div>
                           </div>
                         )}
