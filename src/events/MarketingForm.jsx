@@ -68,26 +68,26 @@ export default function MarketingForm({ event, onSubmitted }) {
           Check off each marketing channel as it is completed for this event.
         </p>
 
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {marketingChannels.map((channel) => {
             const channelData = (data.channels || {})[channel] || {};
             return (
               <div
                 key={channel}
-                className={`border rounded-lg p-3 transition-colors ${
+                className={`border rounded-lg p-2.5 transition-colors ${
                   channelData.done
                     ? 'bg-green-50 border-green-200'
                     : 'bg-white border-sand-dark'
                 }`}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
                     checked={channelData.done || false}
                     onChange={() => toggleChannel(channel)}
                     className="rounded border-sand-dark text-gold accent-gold h-4 w-4 cursor-pointer"
                   />
-                  <span className={`text-sm font-medium flex-1 ${channelData.done ? 'text-green-800 line-through' : 'text-ink'}`}>
+                  <span className={`text-sm font-medium flex-1 leading-tight ${channelData.done ? 'text-green-800 line-through' : 'text-ink'}`}>
                     {channel}
                   </span>
                   <input
@@ -97,7 +97,7 @@ export default function MarketingForm({ event, onSubmitted }) {
                     className="border border-sand-dark rounded-lg px-2 py-1 text-xs focus:outline-none focus:border-gold bg-white"
                   />
                 </div>
-                <div className="mt-2 ml-7">
+                <div className="mt-2 ml-6">
                   <input
                     placeholder="Notes..."
                     value={channelData.notes || ''}
@@ -109,7 +109,7 @@ export default function MarketingForm({ event, onSubmitted }) {
             );
           })}
 
-          <div className="border border-sand-dark rounded-lg p-3 bg-white">
+          <div className="border border-sand-dark rounded-lg p-3 bg-white md:col-span-2">
             <div className="flex items-center gap-3">
               <input
                 type="checkbox"

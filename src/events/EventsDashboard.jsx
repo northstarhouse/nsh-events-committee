@@ -561,13 +561,21 @@ export default function EventsDashboard() {
                               </div>
                             </div>
                             <Field label="Volunteers Assigned" value={data.volunteersAssigned} />
-                            <Field label="Board Contacted" value={data.boardContacted} />
-                            <Field label="Board Contacted Date" value={data.boardContactedDate} />
-                            <Field label="Event Support Contacted" value={data.eventSupportContacted} />
-                            <Field label="Event Support Date" value={data.eventSupportDate} />
-                            <Field label="Volunteer Briefing Sent" value={data.volunteerBriefingSent} />
-                            <Field label="Volunteer Briefing Date" value={data.volunteerBriefingDate} />
-                            <Field label="Other Notes" value={data.otherNotes} />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                              <Field
+                                label="Board Contacted"
+                                value={`${displayValue(data.boardContacted)} - Date: ${displayValue(data.boardContactedDate)}`}
+                              />
+                              <Field
+                                label="Event Support Contacted"
+                                value={`${displayValue(data.eventSupportContacted)} - Date: ${displayValue(data.eventSupportDate)}`}
+                              />
+                              <Field
+                                label="Volunteer Briefing Sent"
+                                value={`${displayValue(data.volunteerBriefingSent)} - Date: ${displayValue(data.volunteerBriefingDate)}`}
+                              />
+                              <Field label="Other Notes" value={data.otherNotes} />
+                            </div>
                           </div>
                         )}
 
@@ -723,17 +731,33 @@ export default function EventsDashboard() {
                               return (
                                 <div key={channel} className="border border-sand-dark/50 rounded-lg p-2 bg-sand-light/40">
                                   <p className="text-sm font-semibold text-ink">{channel}</p>
-                                  <p className="text-xs text-ink-light">
-                                    Status: {channelData.done ? 'Done' : 'Not done'} - Date: {displayValue(channelData.date)} - Notes: {displayValue(channelData.notes)}
+                                  <div className="mt-1 flex items-center gap-2 text-xs text-ink-light">
+                                    <input
+                                      type="checkbox"
+                                      checked={channelData.done || false}
+                                      readOnly
+                                      className="rounded border-sand-dark text-gold accent-gold h-3.5 w-3.5 pointer-events-none"
+                                    />
+                                    <span>Completed</span>
+                                  </div>
+                                  <p className="text-xs text-ink-light mt-1">
+                                    Date: {displayValue(channelData.date)} - Notes: {displayValue(channelData.notes)}
                                   </p>
                                 </div>
                               );
                             })}
                             <div className="border border-sand-dark/50 rounded-lg p-2 bg-sand-light/40">
                               <p className="text-sm font-semibold text-ink">Other Channel</p>
-                              <p className="text-xs text-ink-light">
-                                Name: {displayValue(data.otherChannel)} - Done: {data.otherChannelDone ? 'Yes' : 'No'}
-                              </p>
+                              <p className="text-xs text-ink-light">Name: {displayValue(data.otherChannel)}</p>
+                              <div className="mt-1 flex items-center gap-2 text-xs text-ink-light">
+                                <input
+                                  type="checkbox"
+                                  checked={data.otherChannelDone || false}
+                                  readOnly
+                                  className="rounded border-sand-dark text-gold accent-gold h-3.5 w-3.5 pointer-events-none"
+                                />
+                                <span>Completed</span>
+                              </div>
                             </div>
                             <div className="mt-3">
                               <Field label="Notes" value={data.notes} />
@@ -855,13 +879,38 @@ export default function EventsDashboard() {
   // Overview
   return (
     <div className="min-h-screen bg-sand-light">
-      <div className="bg-white border-b border-sand-dark py-6 mb-6">
+      <div className="bg-white border-b border-sand-dark py-6">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <h1 className="text-3xl md:text-4xl font-bold text-gold">North Star House Events Committee Dashboard</h1>
-          <p className="text-lg text-ink-light mt-3">2026 Events Overview</p>
+          <div className="flex justify-center gap-6 mt-4">
+            {['Events', 'Resources'].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setView(tab === 'Events' ? 'overview' : 'resources')}
+                className={`text-sm font-semibold pb-1 border-b-2 transition-colors cursor-pointer ${
+                  (tab === 'Events' && view === 'overview') || (tab === 'Resources' && view === 'resources')
+                    ? 'border-gold text-gold'
+                    : 'border-transparent text-ink-light hover:text-gold'
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
-      <div className="max-w-6xl mx-auto px-4 pb-6">
+
+      {view === 'resources' && (
+        <div className="max-w-6xl mx-auto px-4 py-6">
+          <div className="bg-white border border-sand-dark rounded-xl p-6">
+            <h2 className="text-2xl font-bold text-gold mb-4">Resources</h2>
+            <p className="text-ink-light">Resources coming soon.</p>
+          </div>
+        </div>
+      )}
+
+      {view === 'overview' && (
+      <div className="max-w-6xl mx-auto px-4 py-6">
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {months.map((month, monthIdx) => {
@@ -912,6 +961,7 @@ export default function EventsDashboard() {
           })}
         </div>
       </div>
+      )}
     </div>
   );
 }
