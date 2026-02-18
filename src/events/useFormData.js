@@ -2,6 +2,21 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 
 const GOOGLE_SCRIPT_URL = import.meta.env.VITE_GOOGLE_SCRIPT_URL || '';
 
+function isSuccessResponse(result, action) {
+  if (!result || typeof result !== 'object') return false;
+  if (result.success === true) return true;
+  if (action === 'saveFormData' && result.status === 'saved') return true;
+  if (action === 'getFormData' && result.status === 'ok') return true;
+  return false;
+}
+
+function extractFormData(result) {
+  if (!result || typeof result !== 'object') return null;
+  if (result.data && typeof result.data === 'object') return result.data;
+  if (result.result && result.result.data && typeof result.result.data === 'object') return result.result.data;
+  return null;
+}
+
 export function useFormData(eventId, formType, defaultData = {}) {
   const key = `nsh-events-${eventId}-${formType}`;
   const remoteEnabled = Boolean(GOOGLE_SCRIPT_URL);
@@ -51,7 +66,7 @@ export function useFormData(eventId, formType, defaultData = {}) {
       } catch {
         return false;
       }
-      return Boolean(result && result.success);
+      return isSuccessResponse(result, 'saveFormData');
     } catch (err) {
       console.error('Failed to save form data to Google Sheets:', err);
       return false;
@@ -123,10 +138,10 @@ export function useFormData(eventId, formType, defaultData = {}) {
           signal: controller.signal,
         });
         const result = await response.json();
-        if (!result || !result.success) throw new Error(result?.error || 'Load failed');
+        if (!isSuccessResponse(result, 'getFormData')) throw new Error(result?.error || 'Load failed');
         if (cancelled || localChangeRef.current) return;
         hydratingRef.current = true;
-        const merged = { ...defaultData, ...(result.data || {}) };
+        const merged = { ...defaultData, ...(extractFormData(result) || {}) };
         setData(merged);
         persistToLocal(merged);
         setSaveStatus('saved');
