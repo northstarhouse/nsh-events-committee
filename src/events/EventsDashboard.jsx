@@ -220,13 +220,13 @@ const formComponents = {
 };
 
 const committeeContacts = [
-  { name: 'Barbara Kusha', role: 'Event Chair / Hospitality', phone: '925-200-0705', email: 'barbarakusha@gmail.com' },
+  { name: 'Barbara Kusha', role: 'Event Chair + Hospitality', phone: '925-200-0705', email: 'barbarakusha@gmail.com' },
   { name: 'Derek Cheeseman', role: 'Sponsorship & Partnership', phone: '650-339-21073', email: 'derekcheeseman@comcast.net' },
   { name: 'Gerrie Kopec', role: 'Programs', phone: '530-913-5568', email: 'gkopec333@gmail.com' },
   { name: 'Ken Underwood', role: 'Finance and Budget', phone: '530-537-5051', email: 'underwood.kenneth@gmail.com' },
   { name: 'Rebekah Freeman', role: 'Interiors', phone: '209-401-6986', email: 'onediva2b7580@gmail.com' },
   { name: 'Vince LoFranco', role: 'Logistics & Operations', phone: '831-216-4399', email: 'felton95018@gmail.com' },
-  { name: 'Haley Wright', role: 'Volunteers / Marketing', phone: '530-913-6348', email: 'media@thenorthstarhouse.org' },
+  { name: 'Haley Wright', role: 'Volunteers + Marketing', phone: '530-913-6348', email: 'media@thenorthstarhouse.org' },
 ];
 
 const eventSupportContacts = [
@@ -1073,34 +1073,8 @@ export default function EventsDashboard() {
                       </tr>
                     </thead>
                     <tbody>
-                      {committeeContacts.map((contact) => (
+                      {[...committeeContacts, ...eventSupportContacts].map((contact) => (
                         <tr key={`resource-committee-${contact.email}`} className="border-b border-sand-dark/40 last:border-b-0">
-                          <td className="py-2.5 px-4 text-ink">{contact.name}</td>
-                          <td className="py-2.5 px-4 text-ink">{contact.role}</td>
-                          <td className="py-2.5 px-4 text-ink-light">{contact.phone}</td>
-                          <td className="py-2.5 px-4 text-ink">{contact.email}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                <div className="px-4 py-3 bg-sand-light/50 border-y border-sand-dark">
-                  <p className="text-sm font-semibold text-ink">Event Support</p>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b border-sand-dark bg-white">
-                        <th className="text-left py-2.5 px-4 font-semibold text-ink">Name</th>
-                        <th className="text-left py-2.5 px-4 font-semibold text-ink">Role</th>
-                        <th className="text-left py-2.5 px-4 font-semibold text-ink">Phone Number</th>
-                        <th className="text-left py-2.5 px-4 font-semibold text-ink">Email</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {eventSupportContacts.map((contact) => (
-                        <tr key={`resource-support-${contact.email}`} className="border-b border-sand-dark/40 last:border-b-0">
                           <td className="py-2.5 px-4 text-ink">{contact.name}</td>
                           <td className="py-2.5 px-4 text-ink">{contact.role}</td>
                           <td className="py-2.5 px-4 text-ink-light">{contact.phone}</td>
