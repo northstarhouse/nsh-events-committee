@@ -234,6 +234,74 @@ const eventSupportContacts = [
   { name: 'Diana Cushway', role: 'Event Support', phone: '415-516-9549', email: 'dgcushway@icloud.com' },
 ];
 
+const sponsorList = [
+  {
+    organization: 'Acton Arboriculture',
+    contact: 'Zeno & Erin Acton',
+    value: 'TBD',
+    category: 'Grounds',
+    phone: '--',
+    email: 'ActonArboriculture@mail.singleops.com',
+    address: 'PO Box 17 Grass Valley, CA 95945',
+    date: 'January 25, 2026',
+    status: 'Pending',
+    notes: '--',
+    lead: 'Paula Campbell',
+  },
+  {
+    organization: 'New Wave Green',
+    contact: 'Molly Breen',
+    value: '5000',
+    category: 'Garden & Grounds',
+    phone: '5309130295',
+    email: 'gardens.newwave@gmail.com',
+    address: '16318 Indian Flat Rd Nevada City, CA 95959',
+    date: 'December 31, 2025',
+    status: 'Pending',
+    notes: '--',
+    lead: 'Paula Campbell',
+  },
+  {
+    organization: 'Timeless Arches - Event Rentals',
+    contact: 'Heather Dodd',
+    value: '$1200-2500',
+    category: 'Venue & Events',
+    phone: '777-800-6190',
+    email: 'heather@timelessarches.com',
+    address: '--',
+    date: 'January 23, 2025',
+    status: 'Pending',
+    notes: 'This is an offer - need to take them up on it - Sierra at the Wedding Fair',
+    lead: 'Sierra Gionnoni',
+  },
+  {
+    organization: 'Russell Davidson Architecture & Design',
+    contact: 'Russell Davidson',
+    value: '$170/hr',
+    category: 'Restoration',
+    phone: '530-913-2370',
+    email: 'russ@davidsonarch.com',
+    address: '149 Crown Point Ct. Grass Valley, CA 95945',
+    date: '--',
+    status: 'Pending',
+    notes: '--',
+    lead: 'Gary Emanuel',
+  },
+  {
+    organization: 'The History Mill',
+    contact: 'Derek Cheeseman',
+    value: 'Booklets, research, publications, etc',
+    category: 'General',
+    phone: '650-339-21073',
+    email: '--',
+    address: '--',
+    date: '--',
+    status: 'Pending',
+    notes: '--',
+    lead: '--',
+  },
+];
+
 function DaysUntilBadge({ isoDate }) {
   const days = getDaysUntil(isoDate);
   if (days === null) return <span className="text-xs text-ink-light italic">Date TBD</span>;
@@ -1088,8 +1156,46 @@ export default function EventsDashboard() {
             )}
 
             {selectedResource === 'sponsors' && (
-              <div className="border border-sand-dark rounded-xl p-4 bg-sand-light/30">
-                <p className="text-sm text-ink-light">Sponsor List content coming soon.</p>
+              <div className="border border-sand-dark rounded-xl overflow-hidden">
+                <div className="px-4 py-3 bg-sand-light/50 border-b border-sand-dark">
+                  <p className="text-sm font-semibold text-ink">Sponsor List</p>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-sand-dark bg-white">
+                        <th className="text-left py-2.5 px-4 font-semibold text-ink">Organization</th>
+                        <th className="text-left py-2.5 px-4 font-semibold text-ink">Contact</th>
+                        <th className="text-left py-2.5 px-4 font-semibold text-ink">Value</th>
+                        <th className="text-left py-2.5 px-4 font-semibold text-ink">Category</th>
+                        <th className="text-left py-2.5 px-4 font-semibold text-ink">Phone</th>
+                        <th className="text-left py-2.5 px-4 font-semibold text-ink">Email</th>
+                        <th className="text-left py-2.5 px-4 font-semibold text-ink">Address</th>
+                        <th className="text-left py-2.5 px-4 font-semibold text-ink">Date</th>
+                        <th className="text-left py-2.5 px-4 font-semibold text-ink">Status</th>
+                        <th className="text-left py-2.5 px-4 font-semibold text-ink">Notes</th>
+                        <th className="text-left py-2.5 px-4 font-semibold text-ink">Lead</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sponsorList.map((sponsor) => (
+                        <tr key={`resource-sponsor-${sponsor.organization}`} className="border-b border-sand-dark/40 last:border-b-0">
+                          <td className="py-2.5 px-4 text-ink">{sponsor.organization}</td>
+                          <td className="py-2.5 px-4 text-ink">{sponsor.contact}</td>
+                          <td className="py-2.5 px-4 text-ink">{sponsor.value}</td>
+                          <td className="py-2.5 px-4 text-ink">{sponsor.category}</td>
+                          <td className="py-2.5 px-4 text-ink-light">{sponsor.phone}</td>
+                          <td className="py-2.5 px-4 text-ink">{sponsor.email}</td>
+                          <td className="py-2.5 px-4 text-ink-light">{sponsor.address}</td>
+                          <td className="py-2.5 px-4 text-ink-light">{sponsor.date}</td>
+                          <td className="py-2.5 px-4 text-ink">{sponsor.status}</td>
+                          <td className="py-2.5 px-4 text-ink-light">{sponsor.notes}</td>
+                          <td className="py-2.5 px-4 text-ink-light">{sponsor.lead}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             )}
 
