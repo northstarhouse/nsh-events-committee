@@ -329,6 +329,12 @@ const inventoryItems = [
   { quantity: '2', item: '6ft rectangle tables' },
   { quantity: '1', item: 'Card table' },
   { quantity: '1', item: 'Cocktail table' },
+  { quantity: 'Unknown', item: 'Outdoor glass tables' },
+  { quantity: 'Unknown', item: 'Black table cloths' },
+  { quantity: 'Unknown', item: 'White table cloths' },
+  { quantity: 'Unknown', item: 'Green table cloths' },
+  { quantity: 'Unknown', item: 'Floral outdoor table cloths' },
+  { quantity: 'Unknown', item: 'Umbrellas' },
 ];
 
 function DaysUntilBadge({ isoDate }) {
