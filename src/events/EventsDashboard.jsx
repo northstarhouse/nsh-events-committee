@@ -321,6 +321,16 @@ const resourceForms = [
   },
 ];
 
+const inventoryItems = [
+  { quantity: '200', item: 'White Chairs' },
+  { quantity: '45', item: 'Black meeting chairs (indoor use only)' },
+  { quantity: '25', item: '60 inch round tables' },
+  { quantity: '4', item: '8ft rectangle tables' },
+  { quantity: '2', item: '6ft rectangle tables' },
+  { quantity: '1', item: 'Card table' },
+  { quantity: '1', item: 'Cocktail table' },
+];
+
 function DaysUntilBadge({ isoDate }) {
   const days = getDaysUntil(isoDate);
   if (days === null) return <span className="text-xs text-ink-light italic">Date TBD</span>;
@@ -1248,8 +1258,28 @@ export default function EventsDashboard() {
             )}
 
             {selectedResource === 'inventory' && (
-              <div className="border border-sand-dark rounded-xl p-4 bg-sand-light/30">
-                <p className="text-sm text-ink-light">Current Inventory List content coming soon.</p>
+              <div className="border border-sand-dark rounded-xl overflow-hidden">
+                <div className="px-4 py-3 bg-sand-light/50 border-b border-sand-dark">
+                  <p className="text-sm font-semibold text-ink">Current Inventory List</p>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-sand-dark bg-white">
+                        <th className="text-left py-2.5 px-4 font-semibold text-ink w-32">Quantity</th>
+                        <th className="text-left py-2.5 px-4 font-semibold text-ink">Item</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {inventoryItems.map((entry, idx) => (
+                        <tr key={`resource-inventory-${idx}`} className="border-b border-sand-dark/40 last:border-b-0">
+                          <td className="py-2.5 px-4 text-ink">{entry.quantity}</td>
+                          <td className="py-2.5 px-4 text-ink">{entry.item}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             )}
           </div>
