@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   ArrowLeft, Calendar, ChevronRight, ClipboardList, Music2, Users,
   MapPin, Megaphone, Coffee, DollarSign, Handshake, Paintbrush, Save, Star,
@@ -484,6 +484,26 @@ export default function EventsDashboard() {
   const [addEventForm, setAddEventForm] = useState({
     name: '', month: 'January', date: '', dayTime: '', isoDate: '',
   });
+  const [showGeneralNotes, setShowGeneralNotes] = useState(false);
+  const [generalNotesText, setGeneralNotesText] = useState('');
+  const [generalNotesSaved, setGeneralNotesSaved] = useState(false);
+
+  useEffect(() => {
+    if (selectedEventId) {
+      try {
+        const saved = localStorage.getItem(`nsh-events-${selectedEventId}-general-notes`);
+        setGeneralNotesText(saved || '');
+      } catch { setGeneralNotesText(''); }
+    }
+    setShowGeneralNotes(false);
+  }, [selectedEventId]);
+
+  const handleSaveGeneralNotes = useCallback(() => {
+    if (!selectedEventId) return;
+    localStorage.setItem(`nsh-events-${selectedEventId}-general-notes`, generalNotesText);
+    setGeneralNotesSaved(true);
+    setTimeout(() => setGeneralNotesSaved(false), 2000);
+  }, [selectedEventId, generalNotesText]);
 
   const allEvents = [...events2026, ...customEvents];
   const eventsByMonth = months.reduce((acc, month) => {
@@ -581,13 +601,46 @@ export default function EventsDashboard() {
           </button>
 
           <div className="mb-6">
-            <button
-              onClick={() => setShowAreas((prev) => !prev)}
-              className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-white px-5 py-2 text-sm font-semibold text-gold shadow-sm transition hover:border-gold hover:shadow-md"
-            >
-              Update Event Area Notes
-              <ChevronRight size={16} className={`transition-transform ${showAreas ? 'rotate-90' : ''}`} />
-            </button>
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={() => setShowAreas((prev) => !prev)}
+                className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-white px-5 py-2 text-sm font-semibold text-gold shadow-sm transition hover:border-gold hover:shadow-md"
+              >
+                Update Event Area Notes
+                <ChevronRight size={16} className={`transition-transform ${showAreas ? 'rotate-90' : ''}`} />
+              </button>
+              <button
+                onClick={() => setShowGeneralNotes((prev) => !prev)}
+                className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-white px-5 py-2 text-sm font-semibold text-gold shadow-sm transition hover:border-gold hover:shadow-md"
+              >
+                General Notes
+                <ChevronRight size={16} className={`transition-transform ${showGeneralNotes ? 'rotate-90' : ''}`} />
+              </button>
+            </div>
+
+            {showGeneralNotes && (
+              <div className="mt-6">
+                <div className="bg-white border border-sand-dark rounded-xl p-5">
+                  <h3 className="text-sm font-semibold text-ink mb-3">Team General Notes</h3>
+                  <textarea
+                    value={generalNotesText}
+                    onChange={e => setGeneralNotesText(e.target.value)}
+                    placeholder="Add general notes, reminders, or updates for the team..."
+                    rows={5}
+                    className="w-full border border-sand-dark rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:border-gold resize-none"
+                  />
+                  <div className="flex justify-end mt-3">
+                    <button
+                      onClick={handleSaveGeneralNotes}
+                      className="inline-flex items-center gap-2 rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-white hover:bg-gold-dark transition-colors cursor-pointer"
+                    >
+                      <Save size={14} />
+                      {generalNotesSaved ? 'Saved!' : 'Save Notes'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {showAreas && (
               <div className="mt-6">
