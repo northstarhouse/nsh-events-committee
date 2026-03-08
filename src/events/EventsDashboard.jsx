@@ -498,12 +498,18 @@ export default function EventsDashboard() {
     setShowGeneralNotes(false);
   }, [selectedEventId]);
 
-  const handleSaveGeneralNotes = useCallback(() => {
-    if (!selectedEventId) return;
-    localStorage.setItem(`nsh-events-${selectedEventId}-general-notes`, generalNotesText);
-    setGeneralNotesSaved(true);
-    setTimeout(() => setGeneralNotesSaved(false), 2000);
-  }, [selectedEventId, generalNotesText]);
+  const generalNotesRef = { id: selectedEventId, text: generalNotesText };
+  const handleSaveGeneralNotes = () => {
+    const { id, text } = generalNotesRef;
+    if (!id) return;
+    try {
+      localStorage.setItem(`nsh-events-${id}-general-notes`, text);
+      setGeneralNotesSaved(true);
+      setTimeout(() => setGeneralNotesSaved(false), 2000);
+    } catch (err) {
+      console.error('Failed to save general notes:', err);
+    }
+  };
 
   const allEvents = [...events2026, ...customEvents];
   const eventsByMonth = months.reduce((acc, month) => {
