@@ -40,22 +40,6 @@ export const events2026 = [
     isoDate: '2026-05-11',
   },
   {
-    id: 'jun-mixer',
-    month: 'June',
-    name: 'Chamber Mixer',
-    date: 'TBD',
-    dayTime: 'Thursday Evening',
-    isoDate: null,
-  },
-  {
-    id: 'jul-open',
-    month: 'July',
-    name: 'Open',
-    date: '',
-    dayTime: '',
-    isoDate: null,
-  },
-  {
     id: 'aug-volunteer',
     month: 'August',
     name: 'Volunteer Appreciation Party',
