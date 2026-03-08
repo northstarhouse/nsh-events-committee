@@ -784,104 +784,69 @@ export default function EventsDashboard() {
       @page { margin: 0.75in; size: letter; }
       * { box-sizing: border-box; }
       body { font-family: Georgia, serif; font-size: 13px; color: #2b251a; margin: 0; line-height: 1.5; }
-      .area { page-break-before: always; }
+      .area { page-break-before: always; display: flex; flex-direction: column; height: 9.5in; }
       .area:first-child { page-break-before: avoid; }
-      .ev-hdr { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2.5px solid #886c44; margin-bottom: 22px; padding-bottom: 12px; }
+      .area-body { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+      .ev-hdr { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2.5px solid #886c44; margin-bottom: 22px; padding-bottom: 12px; flex-shrink: 0; }
       .ev-name { font-size: 22px; font-weight: bold; color: #886c44; }
       .ev-sub { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: #4a4235; margin-bottom: 4px; }
       .ev-badge { display: inline-block; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; color: #fff; background: #886c44; padding: 2px 8px; border-radius: 10px; margin-left: 10px; vertical-align: middle; }
       .ev-dt { font-size: 12px; color: #4a4235; text-align: right; }
-      .area-title { margin-bottom: 18px; border-left: 4px solid #886c44; padding-left: 10px; }
+      .area-title { margin-bottom: 18px; border-left: 4px solid #886c44; padding-left: 10px; flex-shrink: 0; }
       .area-title h2 { font-size: 17px; font-weight: bold; color: #886c44; margin: 0 0 2px 0; }
       .area-title p { font-size: 11px; color: #4a4235; margin: 0; }
-      .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; }
-      .fld { margin-bottom: 18px; }
-      .fld-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #886c44; margin-bottom: 5px; }
-      .fld-val { font-size: 13px; min-height: 48px; color: #2b251a; padding: 6px 8px; border: 1px solid #ccc; border-radius: 3px; background: #fafaf8; line-height: 1.6; }
+      .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; flex-shrink: 0; }
+      .fld { display: flex; flex-direction: column; margin-bottom: 14px; flex: 1; min-height: 0; }
+      .fld.fixed { flex: 0 0 auto; }
+      .fld-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #886c44; margin-bottom: 5px; flex-shrink: 0; }
+      .fld-val { font-size: 13px; flex: 1; min-height: 60px; color: #2b251a; padding: 6px 8px; border: 1px solid #ccc; border-radius: 3px; background: #fafaf8; line-height: 1.6; }
       .fld-val.empty { color: #aaa; }
-      .yn { display: inline-flex; align-items: center; gap: 16px; font-size: 13px; padding: 6px 0; }
+      .yn { display: inline-flex; align-items: center; gap: 16px; font-size: 13px; padding: 6px 0; flex-shrink: 0; }
       .yn-opt { display: flex; align-items: center; gap: 7px; }
       .yn-box { width: 18px; height: 18px; border: 1.5px solid #886c44; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 13px; color: #886c44; font-weight: bold; border-radius: 2px; }
-      table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-bottom: 20px; }
+      table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-bottom: 16px; flex-shrink: 0; }
       th { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #886c44; text-align: left; padding: 6px 10px; border-bottom: 2px solid #886c44; background: #faf7f2; }
       td { padding: 10px 10px; border-bottom: 1px solid #d8d0c5; color: #2b251a; vertical-align: top; }
-      .sec-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #4a4235; margin: 20px 0 8px 0; border-bottom: 1px solid #e8dfd2; padding-bottom: 4px; }
+      .sec-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #4a4235; margin: 14px 0 6px 0; border-bottom: 1px solid #e8dfd2; padding-bottom: 4px; flex-shrink: 0; }
     `;
     const hdr = `<div class="ev-hdr"><div><div class="ev-sub">North Star House Events Committee <span class="ev-badge">Post-Event</span></div><div class="ev-name">${selectedEvent.name}</div></div><div class="ev-dt">${[selectedEvent.dayTime, selectedEvent.date].filter(Boolean).join(' · ')}</div></div>`;
     const fld = (label, val) => `<div class="fld"><div class="fld-label">${label}</div><div class="fld-val${!val ? ' empty' : ''}">${val || '&nbsp;'}</div></div>`;
-    const fld2 = (l1, v1, l2, v2) => `<div class="row2"><div class="fld"><div class="fld-label">${l1}</div><div class="fld-val${!v1?' empty':''}">${v1||'&nbsp;'}</div></div><div class="fld"><div class="fld-label">${l2}</div><div class="fld-val${!v2?' empty':''}">${v2||'&nbsp;'}</div></div></div>`;
-    const yn = (label, val) => `<div class="fld"><div class="fld-label">${label}</div><div class="yn"><div class="yn-opt"><div class="yn-box">${val===true||val==='Yes'?'✓':''}</div> Yes</div><div class="yn-opt"><div class="yn-box">${val===false||val==='No'?'✓':''}</div> No</div></div></div>`;
+    const fld2 = (l1, v1, l2, v2) => `<div class="row2 fixed"><div class="fld fixed"><div class="fld-label">${l1}</div><div class="fld-val${!v1?' empty':''}">${v1||'&nbsp;'}</div></div><div class="fld fixed"><div class="fld-label">${l2}</div><div class="fld-val${!v2?' empty':''}">${v2||'&nbsp;'}</div></div></div>`;
+    const yn = (label, val) => `<div class="fld fixed"><div class="fld-label">${label}</div><div class="yn"><div class="yn-opt"><div class="yn-box">${val===true||val==='Yes'?'✓':''}</div> Yes</div><div class="yn-opt"><div class="yn-box">${val===false||val==='No'?'✓':''}</div> No</div></div></div>`;
     const tblRows = (cols, rows) => `<table><thead><tr>${cols.map(([l,,w])=>`<th${w?` style="width:${w}"`:''}>${l}</th>`).join('')}</tr></thead><tbody>${(rows.length?rows:[{}]).map(r=>`<tr>${cols.map(([,k])=>`<td>${v(r[k])}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
 
     const O = D('overall'), PR = D('programs'), VL = D('volunteers'), LG = D('logistics');
     const HO = D('hospitality'), FI = D('finance'), SP = D('sponsorship'), IN = D('interiors'), MK = D('marketing');
 
+    const w = (content) => `<div class="area-body">${content}</div>`;
     const areas = [
       `${hdr}<div class="area-title"><h2>Overall Event Status</h2><p>Event Chair · Barb Kusha</p></div>
-       ${fld('Committee Notes',v(O.committeeNotes))}${fld('Final Notes',v(O.finalNotes))}`,
+       ${w(fld('Committee Notes',v(O.committeeNotes))+fld('Final Notes',v(O.finalNotes)))}`,
 
       `${hdr}<div class="area-title"><h2>Activities & Programs — Post-Event</h2><p>Programs · Gerrie Kopec</p></div>
-       <div class="sec-label">Activity Review</div>${tblRows([['Activity','activity','40%'],['What Worked','whatWorked'],['What Didn\'t','whatDidnt'],['Notes','notes']],PR.activityReview||[])}
-       ${fld('Flow & Timing',v(PR.flowTiming))}
-       ${fld('Pinch Points',v(PR.pinchPoints))}
-       ${fld('Repeat Format?',v(PR.repeatFormat))}
-       ${fld('Committee Notes',v(PR.committeeNotes))}
-       ${fld('Other Notes',v(PR.postOtherNotes))}`,
+       ${w(`<div class="sec-label">Activity Review</div>${tblRows([['Activity','activity','40%'],['What Worked','whatWorked'],['What Didn\'t','whatDidnt'],['Notes','notes']],PR.activityReview||[])}
+       ${fld('Flow & Timing',v(PR.flowTiming))}${fld('Pinch Points',v(PR.pinchPoints))}${fld('Repeat Format?',v(PR.repeatFormat))}${fld('Committee Notes',v(PR.committeeNotes))}${fld('Other Notes',v(PR.postOtherNotes))}`)}`,
 
       `${hdr}<div class="area-title"><h2>Volunteer Coordination — Post-Event</h2><p>Volunteers · Haley Wright</p></div>
-       ${fld2('Average Hours On Site',v(VL.avgHoursOnSite),'Total Volunteer Hours',v(VL.totalVolunteerHours))}
-       ${fld('What We Learned',v(VL.whatWeLearned))}
-       ${fld('Committee Notes',v(VL.committeeNotes))}`,
+       ${w(fld2('Average Hours On Site',v(VL.avgHoursOnSite),'Total Volunteer Hours',v(VL.totalVolunteerHours))+fld('What We Learned',v(VL.whatWeLearned))+fld('Committee Notes',v(VL.committeeNotes)))}`,
 
       `${hdr}<div class="area-title"><h2>Event Logistics — Post-Event</h2><p>Logistics & Operations · Vince LoFranco</p></div>
-       ${fld('Setup vs Reality',v(LG.setupVsReality))}
-       ${fld('Adjustments Made',v(LG.adjustmentsMade))}
-       ${fld('Layout Support Needs for Next Time',v(LG.layoutSupportNeeds))}
-       ${fld('Committee Notes',v(LG.committeeNotes))}`,
+       ${w(fld('Setup vs Reality',v(LG.setupVsReality))+fld('Adjustments Made',v(LG.adjustmentsMade))+fld('Layout Support Needs for Next Time',v(LG.layoutSupportNeeds))+fld('Committee Notes',v(LG.committeeNotes)))}`,
 
       `${hdr}<div class="area-title"><h2>Hospitality — Post-Event</h2><p>Hospitality · Barb Kusha</p></div>
-       ${fld('Food & Beverage Outcome',v(HO.fbOutcome))}
-       ${fld('Ran Out Of',v(HO.fbOutcomeRanOut))}
-       ${fld('Guest Flow',v(HO.guestFlow))}
-       ${fld('Guest Comments',v(HO.guestComments))}
-       ${fld('Committee Notes',v(HO.committeeNotes||HO.committeeThoughts))}
-       ${fld('Other Notes',v(HO.postOtherNotes))}`,
+       ${w(fld('Food & Beverage Outcome',v(HO.fbOutcome))+fld('Ran Out Of',v(HO.fbOutcomeRanOut))+fld('Guest Flow',v(HO.guestFlow))+fld('Guest Comments',v(HO.guestComments))+fld('Committee Notes',v(HO.committeeNotes||HO.committeeThoughts))+fld('Other Notes',v(HO.postOtherNotes)))}`,
 
       `${hdr}<div class="area-title"><h2>Finance & Budget — Post-Event</h2><p>Finance and Budget · Ken Underwood</p></div>
-       ${fld('Receipts Collected',v(FI.receiptsCollected))}
-       ${fld('Receipt Dates',[v(FI.receiptsDate1),v(FI.receiptsDate2),v(FI.receiptsDate3)].filter(Boolean).join(', '))}
-       ${yn('Reimbursements Needed?',FI.reimbursementsNeeded)}
-       ${fld2('Reimbursement Amount',v(FI.reimbursementAmount),'Submitted By',v(FI.reimbursementSubmittedBy))}
-       ${fld2('Final Expenses',v(FI.finalExpenses)?'$'+v(FI.finalExpenses):'',' Final Income',v(FI.finalIncome)?'$'+v(FI.finalIncome):'')}
-       ${fld('Final Net',v(FI.finalNet)?'$'+v(FI.finalNet):'')}
-       ${yn('Net Reported to Board?',FI.netReportedToBoard)}
-       ${yn('Thank Yous Sent?',FI.thankYousSent)}
-       ${yn('Lessons Documented?',FI.lessonsDocumented)}
-       ${fld('Committee Notes',v(FI.committeeNotes))}
-       ${fld('Other Notes',v(FI.postNotes))}`,
+       ${w(fld2('Receipts Collected',v(FI.receiptsCollected),'Receipt Dates',[v(FI.receiptsDate1),v(FI.receiptsDate2),v(FI.receiptsDate3)].filter(Boolean).join(', '))+yn('Reimbursements Needed?',FI.reimbursementsNeeded)+fld2('Reimbursement Amount',v(FI.reimbursementAmount),'Submitted By',v(FI.reimbursementSubmittedBy))+fld2('Final Expenses',v(FI.finalExpenses)?'$'+v(FI.finalExpenses):'','Final Income',v(FI.finalIncome)?'$'+v(FI.finalIncome):'')+fld2('Final Net',v(FI.finalNet)?'$'+v(FI.finalNet):'',' Event Type',v(FI.eventType))+yn('Net Reported to Board?',FI.netReportedToBoard)+yn('Thank Yous Sent?',FI.thankYousSent)+yn('Lessons Documented?',FI.lessonsDocumented)+fld('Committee Notes',v(FI.committeeNotes))+fld('Other Notes',v(FI.postNotes)))}`,
 
       `${hdr}<div class="area-title"><h2>Sponsorships & Partnerships — Post-Event</h2><p>Sponsorship & Partnership · Derek Cheeseman</p></div>
-       ${fld('Sponsors Involved',v(SP.sponsorsInvolved))}
-       ${fld('Recognition Delivered',v(SP.recognitionDelivered))}
-       ${fld('Future Notes',v(SP.futureNotes))}
-       ${fld('Committee Notes',v(SP.committeeNotes||SP.committeeThoughts))}
-       ${fld('Other Notes',v(SP.postOtherNotes))}`,
+       ${w(fld('Sponsors Involved',v(SP.sponsorsInvolved))+fld('Recognition Delivered',v(SP.recognitionDelivered))+fld('Future Notes',v(SP.futureNotes))+fld('Committee Notes',v(SP.committeeNotes||SP.committeeThoughts))+fld('Other Notes',v(SP.postOtherNotes)))}`,
 
       `${hdr}<div class="area-title"><h2>Interiors — Post-Event</h2><p>Interiors · Rebekah Freeman</p></div>
-       ${fld('Historic Issues',v(IN.historicIssues))}
-       ${fld('Wear / Damage',v(IN.wearDamage))}
-       ${fld('Future Adjustments',v(IN.futureAdjustments))}
-       ${fld('Committee Notes',v(IN.committeeNotes))}
-       ${fld('Other Notes',v(IN.postOtherNotes))}`,
+       ${w(fld('Historic Issues',v(IN.historicIssues))+fld('Wear / Damage',v(IN.wearDamage))+fld('Future Adjustments',v(IN.futureAdjustments))+fld('Committee Notes',v(IN.committeeNotes))+fld('Other Notes',v(IN.postOtherNotes)))}`,
 
       `${hdr}<div class="area-title"><h2>Marketing — Post-Event</h2><p>Marketing · Haley Wright</p></div>
-       ${fld('Ticket Sales Pattern',(MK.ticketSalesPattern||[]).join(', '))}
-       ${yn('Photos Taken?',MK.photosTaken)}
-       ${yn('Uploaded to Shared Drive?',MK.uploadedToSharedDrive)}
-       ${fld('Emails Collected',v(MK.emailsCollected))}
-       ${fld('Donations Related to Event',v(MK.donationsRelatedToEvent))}
-       ${fld('Forms Grabbed',v(MK.formsGrabbed))}
-       ${fld('Committee Notes',v(MK.committeeNotes))}`,
+       ${w(fld('Ticket Sales Pattern',(MK.ticketSalesPattern||[]).join(', '))+yn('Photos Taken?',MK.photosTaken)+yn('Uploaded to Shared Drive?',MK.uploadedToSharedDrive)+fld('Emails Collected',v(MK.emailsCollected))+fld('Donations Related to Event',v(MK.donationsRelatedToEvent))+fld('Forms Grabbed',v(MK.formsGrabbed))+fld('Committee Notes',v(MK.committeeNotes)))}`,
     ];
 
     const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>NSH Post-Event – ${selectedEvent.name}</title><style>${css}</style></head><body>
