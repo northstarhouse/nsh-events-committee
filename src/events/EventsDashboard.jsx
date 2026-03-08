@@ -1,7 +1,8 @@
 import { useState, useCallback } from 'react';
 import {
   ArrowLeft, Calendar, ChevronRight, ClipboardList, Music2, Users,
-  MapPin, Megaphone, Coffee, DollarSign, Handshake, Paintbrush, Save, Star
+  MapPin, Megaphone, Coffee, DollarSign, Handshake, Paintbrush, Save, Star,
+  Plus, X
 } from 'lucide-react';
 import { events2026, months, committeeAreas, getEventsByMonth, getEventById, getEventDisplayName, getDaysUntil } from './eventsData';
 import OverallStatusForm from './OverallStatusForm';
@@ -473,9 +474,37 @@ export default function EventsDashboard() {
   const [selectedArea, setSelectedArea] = useState(null);
   const [showAreas, setShowAreas] = useState(false);
   const [selectedResource, setSelectedResource] = useState(null);
+  const [customEvents, setCustomEvents] = useState(() => {
+    try {
+      const saved = localStorage.getItem('nsh-custom-events');
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
+  const [showAddEvent, setShowAddEvent] = useState(false);
+  const [addEventForm, setAddEventForm] = useState({
+    name: '', month: 'January', date: '', dayTime: '', isoDate: '',
+  });
 
-  const eventsByMonth = getEventsByMonth();
-  const selectedEvent = selectedEventId ? getEventById(selectedEventId) : null;
+  const allEvents = [...events2026, ...customEvents];
+  const eventsByMonth = months.reduce((acc, month) => {
+    acc[month] = allEvents.filter(e => e.month === month);
+    return acc;
+  }, {});
+  const selectedEvent = selectedEventId ? allEvents.find(e => e.id === selectedEventId) : null;
+
+  const handleAddEvent = useCallback(() => {
+    if (!addEventForm.name.trim()) return;
+    const newEvent = {
+      ...addEventForm,
+      id: `custom-${Date.now()}`,
+      isoDate: addEventForm.isoDate || null,
+    };
+    const updated = [...customEvents, newEvent];
+    setCustomEvents(updated);
+    localStorage.setItem('nsh-custom-events', JSON.stringify(updated));
+    setShowAddEvent(false);
+    setAddEventForm({ name: '', month: 'January', date: '', dayTime: '', isoDate: '' });
+  }, [addEventForm, customEvents]);
 
   const navigateToEvent = useCallback((eventId) => {
     setSelectedEventId(eventId);
@@ -1295,6 +1324,98 @@ export default function EventsDashboard() {
       {view === 'overview' && (
       <div className="max-w-6xl mx-auto px-4 py-6">
 
+        <div className="flex justify-end mb-4">
+          <button
+            onClick={() => setShowAddEvent(true)}
+            className="inline-flex items-center gap-2 rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gold-dark transition-colors cursor-pointer"
+          >
+            <Plus size={16} />
+            Add Event
+          </button>
+        </div>
+
+        {showAddEvent && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+              <div className="flex items-center justify-between mb-5">
+                <h2 className="text-xl font-bold text-gold">Add New Event</h2>
+                <button
+                  onClick={() => setShowAddEvent(false)}
+                  className="text-ink-light hover:text-ink transition-colors cursor-pointer"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-ink mb-1">Event Name <span className="text-gold">*</span></label>
+                  <input
+                    type="text"
+                    value={addEventForm.name}
+                    onChange={e => setAddEventForm(f => ({ ...f, name: e.target.value }))}
+                    placeholder="e.g. Spring Fundraiser"
+                    className="w-full border border-sand-dark rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:border-gold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-ink mb-1">Month</label>
+                  <select
+                    value={addEventForm.month}
+                    onChange={e => setAddEventForm(f => ({ ...f, month: e.target.value }))}
+                    className="w-full border border-sand-dark rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:border-gold bg-white"
+                  >
+                    {months.map(m => <option key={m} value={m}>{m}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-ink mb-1">Date</label>
+                  <input
+                    type="text"
+                    value={addEventForm.date}
+                    onChange={e => setAddEventForm(f => ({ ...f, date: e.target.value }))}
+                    placeholder="e.g. March 15th or TBD"
+                    className="w-full border border-sand-dark rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:border-gold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-ink mb-1">Day &amp; Time</label>
+                  <input
+                    type="text"
+                    value={addEventForm.dayTime}
+                    onChange={e => setAddEventForm(f => ({ ...f, dayTime: e.target.value }))}
+                    placeholder="e.g. Sunday 1-4pm"
+                    className="w-full border border-sand-dark rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:border-gold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-ink mb-1">ISO Date <span className="text-ink-light font-normal">(optional — for countdown)</span></label>
+                  <input
+                    type="date"
+                    value={addEventForm.isoDate}
+                    onChange={e => setAddEventForm(f => ({ ...f, isoDate: e.target.value }))}
+                    className="w-full border border-sand-dark rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:border-gold"
+                  />
+                </div>
+              </div>
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={() => setShowAddEvent(false)}
+                  className="flex-1 rounded-lg border border-sand-dark px-4 py-2 text-sm font-semibold text-ink hover:border-gold transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleAddEvent}
+                  disabled={!addEventForm.name.trim()}
+                  className="flex-1 rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-white hover:bg-gold-dark transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  Add Event
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {months.map((month, monthIdx) => {
             const monthEvents = eventsByMonth[month];
@@ -1303,14 +1424,14 @@ export default function EventsDashboard() {
             return (
               <div
                 key={month}
-                className="bg-white border border-sand-dark rounded-xl p-4 flex flex-col relative"
+                className={`border border-sand-dark rounded-xl p-4 flex flex-col relative transition-opacity ${isPast ? 'bg-sand-light/50 opacity-50' : 'bg-white'}`}
               >
                 {isPast && (
                   <div className="absolute top-3 right-3">
                     <Star size={14} className="text-gold fill-gold" />
                   </div>
                 )}
-                <h3 className="font-bold text-ink text-lg mb-3 flex items-center gap-2">
+                <h3 className={`font-bold text-lg mb-3 flex items-center gap-2 ${isPast ? 'text-ink-light' : 'text-ink'}`}>
                   <Calendar size={16} className="text-gold" />
                   {month}
                 </h3>
