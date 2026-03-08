@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import {
   ArrowLeft, Calendar, ChevronRight, ClipboardList, Music2, Users,
   MapPin, Megaphone, Coffee, DollarSign, Handshake, Paintbrush, Save, Star,
-  Plus, X
+  Plus, X, Send
 } from 'lucide-react';
 import { events2026, months, committeeAreas, getEventsByMonth, getEventById, getEventDisplayName, getDaysUntil } from './eventsData';
 
@@ -407,6 +407,14 @@ function isEmptyValue(value) {
   return false;
 }
 
+function formatMessageTime(ts) {
+  if (!ts) return '';
+  try {
+    const d = new Date(ts);
+    return d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+  } catch { return ''; }
+}
+
 const dayExpand = { Sun: 'Sunday', Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thursday', Fri: 'Friday', Sat: 'Saturday' };
 
 function expandDay(d) {
@@ -487,46 +495,62 @@ export default function EventsDashboard() {
     name: '', month: 'January', date: '', dayTime: '', isoDate: '',
   });
   const [showGeneralNotes, setShowGeneralNotes] = useState(false);
-  const [generalNotesText, setGeneralNotesText] = useState('');
-  const [generalNotesSaved, setGeneralNotesSaved] = useState(false);
+  const [generalMessages, setGeneralMessages] = useState([]);
+  const [newMessageText, setNewMessageText] = useState('');
+
+  const loadGeneralMessages = (raw) => {
+    if (!raw) return [];
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed.messages)) return parsed.messages;
+      // Migrate old { notes: string } format
+      if (parsed.notes && typeof parsed.notes === 'string' && parsed.notes.trim()) {
+        return [{ text: parsed.notes, ts: new Date().toISOString() }];
+      }
+      return [];
+    } catch {
+      // Very old format: raw plain string
+      return raw.trim() ? [{ text: raw.trim(), ts: new Date().toISOString() }] : [];
+    }
+  };
 
   useEffect(() => {
     setShowGeneralNotes(false);
-    if (!selectedEventId) return;
-    // Load from localStorage immediately
-    try {
-      const saved = localStorage.getItem(`nsh-events-${selectedEventId}-general-notes`);
-      setGeneralNotesText(saved || '');
-    } catch { setGeneralNotesText(''); }
-    // Also sync from Google Sheets if configured
+    setNewMessageText('');
+    if (!selectedEventId) { setGeneralMessages([]); return; }
+    const raw = localStorage.getItem(`nsh-events-${selectedEventId}-general-notes`);
+    setGeneralMessages(loadGeneralMessages(raw));
     if (GOOGLE_SCRIPT_URL) {
       const params = new URLSearchParams({ action: 'getFormData', eventId: selectedEventId, formType: 'general-notes' });
       fetch(`${GOOGLE_SCRIPT_URL}?${params.toString()}`)
         .then(r => r.json())
         .then(result => {
-          if (result.success && result.data && result.data.notes !== undefined) {
-            setGeneralNotesText(result.data.notes);
-            localStorage.setItem(`nsh-events-${selectedEventId}-general-notes`, result.data.notes);
+          if (result.success && result.data) {
+            const msgs = Array.isArray(result.data.messages) ? result.data.messages : loadGeneralMessages(result.data.notes || '');
+            setGeneralMessages(msgs);
+            localStorage.setItem(`nsh-events-${selectedEventId}-general-notes`, JSON.stringify({ messages: msgs }));
           }
         })
         .catch(() => {});
     }
   }, [selectedEventId]);
 
-  const generalNotesRef = { id: selectedEventId, text: generalNotesText };
-  const handleSaveGeneralNotes = () => {
-    const { id, text } = generalNotesRef;
-    if (!id) return;
+  const generalRef = { id: selectedEventId, messages: generalMessages, newText: newMessageText };
+  const handleSendMessage = () => {
+    const { id, messages, newText } = generalRef;
+    if (!id || !newText.trim()) return;
+    const updated = [...messages, { text: newText.trim(), ts: new Date().toISOString() }];
+    setGeneralMessages(updated);
+    setNewMessageText('');
     try {
-      localStorage.setItem(`nsh-events-${id}-general-notes`, text);
+      const payload = JSON.stringify({ messages: updated });
+      localStorage.setItem(`nsh-events-${id}-general-notes`, payload);
       if (GOOGLE_SCRIPT_URL) {
         fetch(GOOGLE_SCRIPT_URL, {
           method: 'POST',
-          body: JSON.stringify({ action: 'saveFormData', eventId: id, formType: 'general-notes', data: { notes: text } }),
+          body: JSON.stringify({ action: 'saveFormData', eventId: id, formType: 'general-notes', data: { messages: updated } }),
         }).catch(() => {});
       }
-      setGeneralNotesSaved(true);
-      setTimeout(() => setGeneralNotesSaved(false), 2000);
     } catch (err) {
       console.error('Failed to save general notes:', err);
     }
@@ -647,22 +671,41 @@ export default function EventsDashboard() {
 
             {showGeneralNotes && (
               <div className="mt-6">
-                <div className="bg-white border border-sand-dark rounded-xl p-5">
-                  <h3 className="text-sm font-semibold text-ink mb-3">Team General Notes</h3>
-                  <textarea
-                    value={generalNotesText}
-                    onChange={e => setGeneralNotesText(e.target.value)}
-                    placeholder="Add general notes, reminders, or updates for the team..."
-                    rows={5}
-                    className="w-full border border-sand-dark rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:border-gold resize-none"
-                  />
-                  <div className="flex justify-end mt-3">
+                <div className="bg-white border border-sand-dark rounded-xl overflow-hidden">
+                  <div className="px-5 py-3 border-b border-sand-dark/40 bg-sand-light/40">
+                    <p className="text-sm font-semibold text-ink">Team General Notes</p>
+                    <p className="text-xs text-ink-light">Visible to all committee members</p>
+                  </div>
+                  <div className="px-5 py-4 space-y-3 min-h-[80px] max-h-[320px] overflow-y-auto">
+                    {generalMessages.length === 0 ? (
+                      <p className="text-sm text-ink-light italic text-center py-6">No notes yet. Add the first one below.</p>
+                    ) : (
+                      generalMessages.map((msg, idx) => (
+                        <div key={idx} className="flex flex-col gap-1">
+                          <div className="inline-block max-w-[90%] bg-sand-light border border-sand-dark/30 rounded-2xl rounded-tl-sm px-4 py-2.5 shadow-sm">
+                            <p className="text-sm text-ink whitespace-pre-wrap leading-relaxed">{msg.text}</p>
+                          </div>
+                          <p className="text-xs text-ink-light pl-1">{formatMessageTime(msg.ts)}</p>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  <div className="px-5 py-4 border-t border-sand-dark/40 flex gap-3 items-end">
+                    <textarea
+                      value={newMessageText}
+                      onChange={e => setNewMessageText(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } }}
+                      placeholder="Type a note... (Enter to post, Shift+Enter for new line)"
+                      rows={2}
+                      className="flex-1 border border-sand-dark rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:border-gold resize-none"
+                    />
                     <button
-                      onClick={handleSaveGeneralNotes}
-                      className="inline-flex items-center gap-2 rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-white hover:bg-gold-dark transition-colors cursor-pointer"
+                      onClick={handleSendMessage}
+                      disabled={!newMessageText.trim()}
+                      className="inline-flex items-center gap-2 rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-white hover:bg-gold-dark transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
                     >
-                      <Save size={14} />
-                      {generalNotesSaved ? 'Saved!' : 'Save Notes'}
+                      <Send size={14} />
+                      Post
                     </button>
                   </div>
                 </div>
