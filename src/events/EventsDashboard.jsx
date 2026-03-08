@@ -490,6 +490,21 @@ export default function EventsDashboard() {
       return saved ? JSON.parse(saved) : [];
     } catch { return []; }
   });
+
+  // Load custom events from Google Sheets on mount
+  useEffect(() => {
+    if (!GOOGLE_SCRIPT_URL) return;
+    const params = new URLSearchParams({ action: 'getFormData', eventId: 'nsh-dashboard', formType: 'custom-events' });
+    fetch(`${GOOGLE_SCRIPT_URL}?${params.toString()}`)
+      .then(r => r.json())
+      .then(result => {
+        if (result.success && result.data && Array.isArray(result.data.events) && result.data.events.length > 0) {
+          setCustomEvents(result.data.events);
+          localStorage.setItem('nsh-custom-events', JSON.stringify(result.data.events));
+        }
+      })
+      .catch(() => {});
+  }, []);
   const [showAddEvent, setShowAddEvent] = useState(false);
   const [addEventForm, setAddEventForm] = useState({
     name: '', month: 'January', date: '', dayTime: '', isoDate: '',
@@ -594,6 +609,12 @@ export default function EventsDashboard() {
     const updated = [...customEvents, newEvent];
     setCustomEvents(updated);
     localStorage.setItem('nsh-custom-events', JSON.stringify(updated));
+    if (GOOGLE_SCRIPT_URL) {
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'saveFormData', eventId: 'nsh-dashboard', formType: 'custom-events', data: { events: updated } }),
+      }).catch(() => {});
+    }
     setShowAddEvent(false);
     setAddEventForm({ name: '', month: 'January', date: '', dayTime: '', isoDate: '' });
   }, [addEventForm, customEvents]);
