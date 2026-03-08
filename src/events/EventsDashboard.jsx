@@ -497,6 +497,7 @@ export default function EventsDashboard() {
   const [showGeneralNotes, setShowGeneralNotes] = useState(false);
   const [generalMessages, setGeneralMessages] = useState([]);
   const [newMessageText, setNewMessageText] = useState('');
+  const [detailDataVersion, setDetailDataVersion] = useState(0);
 
   const loadGeneralMessages = (raw) => {
     if (!raw) return [];
@@ -534,6 +535,26 @@ export default function EventsDashboard() {
         .catch(() => {});
     }
   }, [selectedEventId]);
+
+  // Sync all committee area form data from Google Sheets when entering detail view
+  useEffect(() => {
+    if (view !== 'detail' || !selectedEventId || !GOOGLE_SCRIPT_URL) return;
+    let cancelled = false;
+    committeeAreas.forEach(({ key: formType }) => {
+      const params = new URLSearchParams({ action: 'getFormData', eventId: selectedEventId, formType });
+      fetch(`${GOOGLE_SCRIPT_URL}?${params.toString()}`)
+        .then(r => r.json())
+        .then(result => {
+          if (cancelled) return;
+          if (result.success && result.data && Object.keys(result.data).length > 0) {
+            localStorage.setItem(`nsh-events-${selectedEventId}-${formType}`, JSON.stringify(result.data));
+            setDetailDataVersion(v => v + 1);
+          }
+        })
+        .catch(() => {});
+    });
+    return () => { cancelled = true; };
+  }, [selectedEventId, view]);
 
   const generalRef = { id: selectedEventId, messages: generalMessages, newText: newMessageText };
   const handleSendMessage = () => {
@@ -638,6 +659,7 @@ export default function EventsDashboard() {
   }
 
   if (view === 'detail' && selectedEvent) {
+    void detailDataVersion; // causes re-render when remote data arrives
     const completedAreasCount = committeeAreas.filter(area => hasFormData(selectedEvent.id, area.key)).length;
     const totalAreas = committeeAreas.length;
     return (
