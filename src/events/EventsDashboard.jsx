@@ -645,10 +645,10 @@ export default function EventsDashboard() {
 
   const handlePrint = () => {
     if (!selectedEvent) return;
-    const D = (key) => mergeWithDefaults(defaultFormData[key] || {}, getStoredFormData(selectedEvent.id, key) || {});
+    const D = (key) => getStoredFormData(selectedEvent.id, key) || {};
     const v = (val) => {
-      if (val === null || val === undefined || val === '') return '';
-      if (typeof val === 'boolean') return val ? 'Yes' : 'No';
+      if (val === null || val === undefined || val === '' || val === false) return '';
+      if (val === true) return 'Yes';
       if (Array.isArray(val)) return val.filter(Boolean).join(', ');
       return String(val);
     };
@@ -773,10 +773,10 @@ export default function EventsDashboard() {
 
   const handlePrintPost = () => {
     if (!selectedEvent) return;
-    const D = (key) => mergeWithDefaults(defaultFormData[key] || {}, getStoredFormData(selectedEvent.id, key) || {});
+    const D = (key) => getStoredFormData(selectedEvent.id, key) || {};
     const v = (val) => {
-      if (val === null || val === undefined || val === '') return '';
-      if (typeof val === 'boolean') return val ? 'Yes' : 'No';
+      if (val === null || val === undefined || val === '' || val === false) return '';
+      if (val === true) return 'Yes';
       if (Array.isArray(val)) return val.filter(Boolean).join(', ');
       return String(val);
     };
