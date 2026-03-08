@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import {
   ArrowLeft, Calendar, ChevronRight, ClipboardList, Music2, Users,
   MapPin, Megaphone, Coffee, DollarSign, Handshake, Paintbrush, Save, Star,
-  Plus, X, Send
+  Plus, X, Send, Printer
 } from 'lucide-react';
 import { events2026, months, committeeAreas, getEventsByMonth, getEventById, getEventDisplayName, getDaysUntil } from './eventsData';
 
@@ -643,6 +643,59 @@ export default function EventsDashboard() {
     window.scrollTo(0, 0);
   }, [view]);
 
+  const handlePrint = () => {
+    if (!selectedEvent) return;
+    const hdr = `
+      <div style="border-bottom:2px solid #886c44;margin-bottom:20px;padding-bottom:12px;">
+        <div style="font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:#4a4235;margin-bottom:3px;">North Star House Events Committee</div>
+        <div style="font-size:20px;font-weight:bold;color:#886c44;">${selectedEvent.name}</div>
+        <div style="font-size:12px;color:#4a4235;margin-top:3px;">${[selectedEvent.dayTime, selectedEvent.date].filter(Boolean).join(' · ')}</div>
+      </div>`;
+    const line = (label, n = 1) => `
+      <div style="margin-bottom:12px;">
+        <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#4a4235;margin-bottom:3px;">${label}</div>
+        ${Array.from({length: n}, () => '<div style="border-bottom:1px solid #ccc;height:22px;margin-bottom:3px;"></div>').join('')}
+      </div>`;
+    const tbl = (cols, rows = 3) => `
+      <div style="margin-bottom:14px;">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead><tr>${cols.map(c => `<th style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#4a4235;text-align:left;padding:3px 6px;border-bottom:1px solid #886c44;">${c}</th>`).join('')}</tr></thead>
+          <tbody>${Array.from({length: rows}, () => `<tr>${cols.map(() => '<td style="border-bottom:1px solid #e8dfd2;height:26px;padding:3px 6px;"></td>').join('')}</tr>`).join('')}</tbody>
+        </table>
+      </div>`;
+    const chk = (items) => `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:14px;">
+        ${items.map(i => `<div style="display:flex;align-items:center;gap:6px;font-size:11px;"><span style="width:14px;height:14px;border:1px solid #886c44;display:inline-block;flex-shrink:0;"></span>${i}</div>`).join('')}
+      </div>`;
+    const sh = (title, role, person) => `<h3 style="font-size:13px;font-weight:700;color:#886c44;margin:0 0 3px 0;">${title}</h3><p style="font-size:10px;color:#4a4235;margin:0 0 14px 0;">${role} · ${person}</p>`;
+    const areas = [
+      { key:'overall',      body: sh('Overall Event Status','Event Chair','Barb Kusha') + tbl(['Date','Status','Decisions Needed','Notes'],5) + line('Committee Notes',3) + line('Final Notes',2) },
+      { key:'programs',     body: sh('Activities & Programs','Programs','Gerrie Kopec') + line('Purpose') + tbl(['Performer / Vendor','Contact'],3) + tbl(['Activity','Time Frame','Volunteers'],4) + line('Transitions',2) + tbl(['Action Item','Due Date','Volunteer'],3) + line('Other Notes',2) },
+      { key:'volunteers',   body: sh('Volunteer Coordination','Volunteers','Haley Wright') + chk(['Setup','Check-in booth','Hospitality / Food Support','Cleanup / Breakdown','Program Support','Float / General Support','Bartending','Parking','Other']) + line('Volunteers Assigned') + line('Board Contacted — Date') + line('Event Support Contacted — Date') + line('Volunteer Briefing Sent — Date') + line('Other Notes',2) },
+      { key:'logistics',    body: sh('Event Logistics','Logistics & Operations','Vince LoFranco') + line('Proposed Attendance') + line('Event Locations',2) + line('Setup Plan',3) + line('Volunteers Assisting',2) + line('Equipment Needed',3) + line('Safety Considerations',2) + line('Backup Plan',2) },
+      { key:'hospitality',  body: sh('Hospitality','Hospitality','Barb Kusha') + tbl(['Food & Beverage Item','Volunteer'],4) + tbl(['Shopping List Item','Volunteer'],4) + tbl(['Rental Equipment','Volunteer'],3) + line('Serving Style') + line('Alcohol Involved? / Details') + line('Cleanup Plan',2) },
+      { key:'finance',      body: sh('Finance & Budget','Finance and Budget','Ken Underwood') + tbl(['Expense Category','Estimated','Actual'],7) + tbl(['Income Source','Estimated','Actual'],5) + line('Financial Notes',2) },
+      { key:'sponsorship',  body: sh('Sponsorships & Partnerships','Sponsorship & Partnership','Derek Cheeseman') + line('Recognition Methods',2) + line('Recognition Volunteer') + line('Potential Sponsors',3) + line('Outreach Actions',2) + line('Outreach Volunteer') + line('Intentional Invites',2) + line('Other Notes',2) },
+      { key:'interiors',    body: sh('Interiors','Interiors','Rebekah Freeman') + line('Historic Approach',2) + line('More Info / Needs',2) + line('Decor Added',2) + line('Decor Cost') + line('Removal Reasons',2) + line('Other Notes',2) },
+      { key:'marketing',    body: sh('Marketing','Marketing','Haley Wright') + chk(['Create Press Release','Send Email Blast','YubaNet','Go Nevada County Calendar','Arts Council Calendar','Grass Valley Chamber Newsletter','KVMR Calendar','Facebook Event Page','NSH Facebook Page','NSH Instagram Page','Nevada County Peeps','Grass Valley Peeps','Lake Wildwood Page','Next Door','Union Event Calendar','Union Advertisement ($270)']) + line('Other Channel') + line('Notes',3) },
+    ];
+    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>NSH Forms – ${selectedEvent.name}</title>
+      <style>
+        @page { margin: 0.7in; }
+        body { font-family: Georgia, 'Times New Roman', serif; font-size: 12px; color: #2b251a; margin: 0; }
+        .area { page-break-before: always; }
+        .area:first-child { page-break-before: avoid; }
+        @media print { .area { page-break-before: always; } .area:first-child { page-break-before: avoid; } }
+      </style>
+    </head><body>
+      ${areas.map((a, i) => `<div class="area">${hdr}${a.body}</div>`).join('')}
+    </body></html>`;
+    const win = window.open('', '_blank');
+    win.document.write(html);
+    win.document.close();
+    setTimeout(() => { win.print(); }, 400);
+  };
+
   if (view === 'form' && selectedEvent && selectedArea) {
     const FormComponent = formComponents[selectedArea];
     const area = committeeAreas.find(a => a.key === selectedArea);
@@ -696,6 +749,13 @@ export default function EventsDashboard() {
 
           <div className="mb-6">
             <div className="flex flex-wrap gap-3">
+              <button
+                onClick={handlePrint}
+                className="inline-flex items-center gap-2 rounded-full border border-sand-dark bg-white px-5 py-2 text-sm font-semibold text-ink-light shadow-sm transition hover:border-gold hover:text-gold hover:shadow-md"
+              >
+                <Printer size={15} />
+                Print Blank Forms
+              </button>
               <button
                 onClick={() => setShowAreas((prev) => !prev)}
                 className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-white px-5 py-2 text-sm font-semibold text-gold shadow-sm transition hover:border-gold hover:shadow-md"
