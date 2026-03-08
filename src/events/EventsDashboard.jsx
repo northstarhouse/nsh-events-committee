@@ -5,6 +5,8 @@ import {
   Plus, X
 } from 'lucide-react';
 import { events2026, months, committeeAreas, getEventsByMonth, getEventById, getEventDisplayName, getDaysUntil } from './eventsData';
+
+const GOOGLE_SCRIPT_URL = import.meta.env.VITE_GOOGLE_SCRIPT_URL || '';
 import OverallStatusForm from './OverallStatusForm';
 import ProgramsForm from './ProgramsForm';
 import VolunteerForm from './VolunteerForm';
@@ -489,13 +491,26 @@ export default function EventsDashboard() {
   const [generalNotesSaved, setGeneralNotesSaved] = useState(false);
 
   useEffect(() => {
-    if (selectedEventId) {
-      try {
-        const saved = localStorage.getItem(`nsh-events-${selectedEventId}-general-notes`);
-        setGeneralNotesText(saved || '');
-      } catch { setGeneralNotesText(''); }
-    }
     setShowGeneralNotes(false);
+    if (!selectedEventId) return;
+    // Load from localStorage immediately
+    try {
+      const saved = localStorage.getItem(`nsh-events-${selectedEventId}-general-notes`);
+      setGeneralNotesText(saved || '');
+    } catch { setGeneralNotesText(''); }
+    // Also sync from Google Sheets if configured
+    if (GOOGLE_SCRIPT_URL) {
+      const params = new URLSearchParams({ action: 'getFormData', eventId: selectedEventId, formType: 'general-notes' });
+      fetch(`${GOOGLE_SCRIPT_URL}?${params.toString()}`)
+        .then(r => r.json())
+        .then(result => {
+          if (result.success && result.data && result.data.notes !== undefined) {
+            setGeneralNotesText(result.data.notes);
+            localStorage.setItem(`nsh-events-${selectedEventId}-general-notes`, result.data.notes);
+          }
+        })
+        .catch(() => {});
+    }
   }, [selectedEventId]);
 
   const generalNotesRef = { id: selectedEventId, text: generalNotesText };
@@ -504,6 +519,12 @@ export default function EventsDashboard() {
     if (!id) return;
     try {
       localStorage.setItem(`nsh-events-${id}-general-notes`, text);
+      if (GOOGLE_SCRIPT_URL) {
+        fetch(GOOGLE_SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'saveFormData', eventId: id, formType: 'general-notes', data: { notes: text } }),
+        }).catch(() => {});
+      }
       setGeneralNotesSaved(true);
       setTimeout(() => setGeneralNotesSaved(false), 2000);
     } catch (err) {
