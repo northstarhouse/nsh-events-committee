@@ -653,30 +653,30 @@ export default function EventsDashboard() {
       return String(val);
     };
     const css = `
-      @page { margin: 0.75in; size: letter; }
+      @page { margin: 0.5in; size: letter; }
       * { box-sizing: border-box; }
-      body { font-family: Georgia, serif; font-size: 13px; color: #2b251a; margin: 0; line-height: 1.5; }
-      .area { page-break-before: always; }
+      body { font-family: Georgia, serif; font-size: 16px; color: #2b251a; margin: 0; line-height: 1.6; }
+      .area { page-break-before: always; min-height: 9.5in; display: flex; flex-direction: column; }
       .area:first-child { page-break-before: avoid; }
-      .ev-hdr { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2.5px solid #886c44; margin-bottom: 22px; padding-bottom: 12px; }
-      .ev-name { font-size: 22px; font-weight: bold; color: #886c44; }
-      .ev-sub { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: #4a4235; margin-bottom: 4px; }
-      .ev-dt { font-size: 12px; color: #4a4235; text-align: right; }
-      .area-title { margin-bottom: 18px; border-left: 4px solid #886c44; padding-left: 10px; }
-      .area-title h2 { font-size: 17px; font-weight: bold; color: #886c44; margin: 0 0 2px 0; }
-      .area-title p { font-size: 11px; color: #4a4235; margin: 0; }
-      .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; }
-      .fld { margin-bottom: 18px; }
-      .fld-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #886c44; margin-bottom: 5px; }
-      .fld-val { font-size: 13px; min-height: 48px; color: #2b251a; padding: 6px 8px; border: 1px solid #ccc; border-radius: 3px; background: #fafaf8; line-height: 1.6; }
+      .ev-hdr { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2.5px solid #886c44; margin-bottom: 28px; padding-bottom: 14px; }
+      .ev-name { font-size: 28px; font-weight: bold; color: #886c44; }
+      .ev-sub { font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: #4a4235; margin-bottom: 5px; }
+      .ev-dt { font-size: 15px; color: #4a4235; text-align: right; }
+      .area-title { margin-bottom: 24px; border-left: 5px solid #886c44; padding-left: 14px; }
+      .area-title h2 { font-size: 22px; font-weight: bold; color: #886c44; margin: 0 0 4px 0; }
+      .area-title p { font-size: 14px; color: #4a4235; margin: 0; }
+      .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px; }
+      .fld { margin-bottom: 24px; }
+      .fld-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #886c44; margin-bottom: 7px; }
+      .fld-val { font-size: 16px; min-height: 72px; color: #2b251a; padding: 10px 12px; border: 1px solid #ccc; border-radius: 3px; background: #fafaf8; line-height: 1.6; }
       .fld-val.empty { color: #aaa; }
-      table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-bottom: 20px; }
-      th { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #886c44; text-align: left; padding: 6px 10px; border-bottom: 2px solid #886c44; background: #faf7f2; }
-      td { padding: 10px 10px; border-bottom: 1px solid #d8d0c5; color: #2b251a; min-height: 44px; vertical-align: top; }
-      .sec-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #4a4235; margin: 20px 0 8px 0; border-bottom: 1px solid #e8dfd2; padding-bottom: 4px; }
-      .chk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 28px; margin-bottom: 18px; }
-      .chk-item { display: flex; align-items: center; gap: 9px; font-size: 13px; padding: 4px 0; }
-      .chk-box { width: 18px; height: 18px; border: 1.5px solid #886c44; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 13px; color: #886c44; font-weight: bold; border-radius: 2px; }
+      table { width: 100%; border-collapse: collapse; font-size: 15px; margin-bottom: 24px; }
+      th { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #886c44; text-align: left; padding: 8px 12px; border-bottom: 2px solid #886c44; background: #faf7f2; }
+      td { padding: 14px 12px; border-bottom: 1px solid #d8d0c5; color: #2b251a; min-height: 56px; vertical-align: top; }
+      .sec-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #4a4235; margin: 26px 0 10px 0; border-bottom: 1px solid #e8dfd2; padding-bottom: 5px; }
+      .chk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 32px; margin-bottom: 24px; }
+      .chk-item { display: flex; align-items: center; gap: 12px; font-size: 16px; padding: 6px 0; }
+      .chk-box { width: 22px; height: 22px; border: 1.5px solid #886c44; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; color: #886c44; font-weight: bold; border-radius: 2px; }
     `;
     const hdr = `<div class="ev-hdr"><div><div class="ev-sub">North Star House Events Committee</div><div class="ev-name">${selectedEvent.name}</div></div><div class="ev-dt">${[selectedEvent.dayTime, selectedEvent.date].filter(Boolean).join(' · ')}</div></div>`;
     const fld = (label, val) => `<div class="fld"><div class="fld-label">${label}</div><div class="fld-val${!val ? ' empty' : ''}">${val || '&nbsp;'}</div></div>`;
