@@ -643,7 +643,7 @@ export default function EventsDashboard() {
     window.scrollTo(0, 0);
   }, [view]);
 
-  const handlePrint = () => {
+  const handlePrintCombined = () => {
     if (!selectedEvent) return;
     const D = (key) => getStoredFormData(selectedEvent.id, key) || {};
     const v = (val) => {
@@ -658,59 +658,81 @@ export default function EventsDashboard() {
       body { font-family: Georgia, serif; font-size: 15px; color: #2b251a; margin: 0; line-height: 1.5; }
       .area { page-break-before: always; }
       .area:first-child { page-break-before: avoid; }
-      .ev-hdr { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2.5px solid #886c44; margin-bottom: 22px; padding-bottom: 12px; }
+      .area-post { display: flex; flex-direction: column; height: 10in; }
+      .area-body { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+      .ev-hdr { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2.5px solid #886c44; margin-bottom: 22px; padding-bottom: 12px; flex-shrink: 0; }
       .ev-name { font-size: 25px; font-weight: bold; color: #886c44; }
       .ev-sub { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: #4a4235; margin-bottom: 4px; }
+      .ev-badge { display: inline-block; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; color: #fff; background: #886c44; padding: 2px 8px; border-radius: 10px; margin-left: 10px; vertical-align: middle; }
       .ev-dt { font-size: 13px; color: #4a4235; text-align: right; }
-      .area-title { margin-bottom: 18px; border-left: 5px solid #886c44; padding-left: 12px; }
+      .area-title { margin-bottom: 18px; border-left: 5px solid #886c44; padding-left: 12px; flex-shrink: 0; }
       .area-title h2 { font-size: 19px; font-weight: bold; color: #886c44; margin: 0 0 3px 0; }
       .area-title p { font-size: 12px; color: #4a4235; margin: 0; }
       .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; }
-      .fld { margin-bottom: 18px; }
-      .fld-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #886c44; margin-bottom: 5px; }
-      .fld-val { font-size: 15px; min-height: 55px; color: #2b251a; padding: 7px 10px; border: 1px solid #ccc; border-radius: 3px; background: #fafaf8; line-height: 1.6; }
+      .area-pre .fld { margin-bottom: 18px; }
+      .area-post .fld { display: flex; flex-direction: column; margin-bottom: 14px; flex: 1; min-height: 0; }
+      .area-post .fld.fixed { flex: 0 0 auto; }
+      .fld-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #886c44; margin-bottom: 5px; flex-shrink: 0; }
+      .fld-val { font-size: 15px; color: #2b251a; padding: 7px 10px; border: 1px solid #ccc; border-radius: 3px; background: #fafaf8; line-height: 1.6; }
+      .area-pre .fld-val { min-height: 55px; }
+      .area-post .fld-val { flex: 1; min-height: 55px; }
       .fld-val.empty { color: #aaa; }
-      table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 18px; }
+      .yn { display: inline-flex; align-items: center; gap: 16px; font-size: 15px; padding: 6px 0; flex-shrink: 0; }
+      .yn-opt { display: flex; align-items: center; gap: 7px; }
+      .yn-box { width: 19px; height: 19px; border: 1.5px solid #886c44; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; color: #886c44; font-weight: bold; border-radius: 2px; }
+      table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 18px; flex-shrink: 0; }
       th { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #886c44; text-align: left; padding: 6px 10px; border-bottom: 2px solid #886c44; background: #faf7f2; }
-      td { padding: 7px 10px; border-bottom: 1px solid #d8d0c5; color: #2b251a; height: 36px; vertical-align: top; }
-      .sec-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #4a4235; margin: 16px 0 7px 0; border-bottom: 1px solid #e8dfd2; padding-bottom: 4px; }
+      .area-pre td { padding: 7px 10px; border-bottom: 1px solid #d8d0c5; color: #2b251a; height: 36px; vertical-align: top; }
+      .area-post td { padding: 10px 10px; border-bottom: 1px solid #d8d0c5; color: #2b251a; vertical-align: top; }
+      .sec-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #4a4235; margin: 16px 0 7px 0; border-bottom: 1px solid #e8dfd2; padding-bottom: 4px; flex-shrink: 0; }
       .chk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 28px; margin-bottom: 18px; }
       .chk-item { display: flex; align-items: center; gap: 10px; font-size: 15px; padding: 4px 0; }
       .chk-box { width: 19px; height: 19px; border: 1.5px solid #886c44; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; color: #886c44; font-weight: bold; border-radius: 2px; }
     `;
-    const hdr = `<div class="ev-hdr"><div><div class="ev-sub">North Star House Events Committee</div><div class="ev-name">${selectedEvent.name}</div></div><div class="ev-dt">${[selectedEvent.dayTime, selectedEvent.date].filter(Boolean).join(' · ')}</div></div>`;
+    const preHdr = `<div class="ev-hdr"><div><div class="ev-sub">North Star House Events Committee</div><div class="ev-name">${selectedEvent.name}</div></div><div class="ev-dt">${[selectedEvent.dayTime, selectedEvent.date].filter(Boolean).join(' · ')}</div></div>`;
+    const postHdr = `<div class="ev-hdr"><div><div class="ev-sub">North Star House Events Committee <span class="ev-badge">Post-Event</span></div><div class="ev-name">${selectedEvent.name}</div></div><div class="ev-dt">${[selectedEvent.dayTime, selectedEvent.date].filter(Boolean).join(' · ')}</div></div>`;
     const fld = (label, val) => `<div class="fld"><div class="fld-label">${label}</div><div class="fld-val${!val ? ' empty' : ''}">${val || '&nbsp;'}</div></div>`;
-    const fld2 = (l1, v1, l2, v2) => `<div class="row2"><div class="fld"><div class="fld-label">${l1}</div><div class="fld-val${!v1?' empty':''}">${v1||'&nbsp;'}</div></div><div class="fld"><div class="fld-label">${l2}</div><div class="fld-val${!v2?' empty':''}">${v2||'&nbsp;'}</div></div></div>`;
+    const fld2pre = (l1, v1, l2, v2) => `<div class="row2"><div class="fld"><div class="fld-label">${l1}</div><div class="fld-val${!v1?' empty':''}">${v1||'&nbsp;'}</div></div><div class="fld"><div class="fld-label">${l2}</div><div class="fld-val${!v2?' empty':''}">${v2||'&nbsp;'}</div></div></div>`;
+    const fld2post = (l1, v1, l2, v2) => `<div class="row2"><div class="fld fixed"><div class="fld-label">${l1}</div><div class="fld-val${!v1?' empty':''}">${v1||'&nbsp;'}</div></div><div class="fld fixed"><div class="fld-label">${l2}</div><div class="fld-val${!v2?' empty':''}">${v2||'&nbsp;'}</div></div></div>`;
     const chk = (label, checked) => `<div class="chk-item"><div class="chk-box">${checked ? '✓' : ''}</div>${label}</div>`;
+    const yn = (label, val) => `<div class="fld fixed"><div class="fld-label">${label}</div><div class="yn"><div class="yn-opt"><div class="yn-box">${val===true||val==='Yes'?'✓':''}</div> Yes</div><div class="yn-opt"><div class="yn-box">${val==='No'?'✓':''}</div> No</div></div></div>`;
     const tblRows = (cols, rows) => `<table><thead><tr>${cols.map(([l,,w])=>`<th${w?` style="width:${w}"`:''}>${l}</th>`).join('')}</tr></thead><tbody>${(rows.length?rows:[{}]).map(r=>`<tr>${cols.map(([,k])=>`<td>${v(r[k])}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+    const w = (content) => `<div class="area-body">${content}</div>`;
 
     const O = D('overall'), PR = D('programs'), VL = D('volunteers'), LG = D('logistics');
     const HO = D('hospitality'), FI = D('finance'), SP = D('sponsorship'), IN = D('interiors'), MK = D('marketing');
 
-    const areas = [
-      `${hdr}<div class="area-title"><h2>Overall Event Status</h2><p>Event Chair · Barb Kusha</p></div>
+    const prePairs = [
+      [`${preHdr}<div class="area-title"><h2>Overall Event Status</h2><p>Event Chair · Barb Kusha</p></div>
        <table><thead><tr><th style="width:14%">Date</th><th style="width:20%">Status</th><th style="width:33%">Decisions Needed</th><th>Notes</th></tr></thead><tbody>
        ${(O.statusUpdates||[]).map(r=>`<tr><td>${v(r.date)}</td><td>${v(r.status)}</td><td>${v(r.decisions)}</td><td>${v(r.notes)}</td></tr>`).join('')}</tbody></table>
        ${fld('Committee Notes',v(O.committeeNotes))}${fld('Final Notes',v(O.finalNotes))}`,
+       `${postHdr}<div class="area-title"><h2>Overall Event Status</h2><p>Event Chair · Barb Kusha</p></div>
+       ${w(fld('Committee Notes',v(O.committeeNotes))+fld('Final Notes',v(O.finalNotes)))}`],
 
-      `${hdr}<div class="area-title"><h2>Activities & Programs</h2><p>Programs · Gerrie Kopec</p></div>
+      [`${preHdr}<div class="area-title"><h2>Activities & Programs</h2><p>Programs · Gerrie Kopec</p></div>
        ${fld('Purpose',(PR.purpose||[]).join(', '))}
        <div class="sec-label">Performers / Vendors</div>${tblRows([['Name','name','50%'],['Contact','contact']],PR.performers||[])}
        <div class="sec-label">Activities</div>${tblRows([['Activity','activity','45%'],['Time Frame','timeFrame','20%'],['Volunteers','volunteers']],PR.activities||[])}
        ${fld('Transitions',v(PR.transitions))}
        <div class="sec-label">Action Items</div>${tblRows([['Item','item','50%'],['Due Date','dueDate','20%'],['Volunteer','volunteer']],PR.actionItems||[])}
        ${fld('Other Notes',v(PR.otherNotes))}`,
+       `${postHdr}<div class="area-title"><h2>Activities & Programs — Post-Event</h2><p>Programs · Gerrie Kopec</p></div>
+       ${w(`<div class="sec-label">Activity Review</div>${tblRows([['Activity','activity','40%'],['What Worked','whatWorked'],["What Didn't",'whatDidnt'],['Notes','notes']],PR.activityReview||[])}
+       ${fld('Flow & Timing',v(PR.flowTiming))}${fld('Pinch Points',v(PR.pinchPoints))}${fld('Repeat Format?',v(PR.repeatFormat))}${fld('Committee Notes',v(PR.committeeNotes))}${fld('Other Notes',v(PR.postOtherNotes))}`)}`],
 
-      `${hdr}<div class="area-title"><h2>Volunteer Coordination</h2><p>Volunteers · Haley Wright</p></div>
+      [`${preHdr}<div class="area-title"><h2>Volunteer Coordination</h2><p>Volunteers · Haley Wright</p></div>
        <div class="sec-label">Volunteer Roles Needed</div>
        <div class="chk-grid">${volunteerRoles.map(r=>{const rd=(VL.roles||{})[r]||{};return chk(`${r}${rd.count?' ('+rd.count+')':''}`,rd.needed);}).join('')}</div>
        ${fld('Volunteers Assigned',v(VL.volunteersAssigned))}
-       ${fld2('Board Contacted',v(VL.boardContacted)+(v(VL.boardContactedDate)?' — '+v(VL.boardContactedDate):''),'Event Support Contacted',v(VL.eventSupportContacted)+(v(VL.eventSupportDate)?' — '+v(VL.eventSupportDate):''))}
+       ${fld2pre('Board Contacted',v(VL.boardContacted)+(v(VL.boardContactedDate)?' — '+v(VL.boardContactedDate):''),'Event Support Contacted',v(VL.eventSupportContacted)+(v(VL.eventSupportDate)?' — '+v(VL.eventSupportDate):''))}
        ${fld('Volunteer Briefing Sent',v(VL.volunteerBriefingSent)+(v(VL.volunteerBriefingDate)?' — '+v(VL.volunteerBriefingDate):''))}
        ${fld('Other Notes',v(VL.otherNotes))}`,
+       `${postHdr}<div class="area-title"><h2>Volunteer Coordination — Post-Event</h2><p>Volunteers · Haley Wright</p></div>
+       ${w(fld2post('Average Hours On Site',v(VL.avgHoursOnSite),'Total Volunteer Hours',v(VL.totalVolunteerHours))+fld('What We Learned',v(VL.whatWeLearned))+fld('Committee Notes',v(VL.committeeNotes)))}`],
 
-      `${hdr}<div class="area-title"><h2>Event Logistics</h2><p>Logistics & Operations · Vince LoFranco</p></div>
-       ${fld2('Proposed Attendance',v(LG.proposedAttendance),'Could Impact Success?',v(LG.couldImpactSuccess))}
+      [`${preHdr}<div class="area-title"><h2>Event Logistics</h2><p>Logistics & Operations · Vince LoFranco</p></div>
+       ${fld2pre('Proposed Attendance',v(LG.proposedAttendance),'Could Impact Success?',v(LG.couldImpactSuccess))}
        ${fld('Event Locations',v(LG.eventLocations))}
        ${fld('Setup Plan',v(LG.setupPlan))}
        ${fld('Volunteers Assisting',v(LG.volunteersAssisting))}
@@ -718,17 +740,21 @@ export default function EventsDashboard() {
        ${fld('Safety Considerations',v(LG.safetyConsiderations))}
        ${fld('Backup Plan',v(LG.backupPlan))}
        ${fld('Other Notes',v(LG.otherNotes))}`,
+       `${postHdr}<div class="area-title"><h2>Event Logistics — Post-Event</h2><p>Logistics & Operations · Vince LoFranco</p></div>
+       ${w(fld('Setup vs Reality',v(LG.setupVsReality))+fld('Adjustments Made',v(LG.adjustmentsMade))+fld('Layout Support Needs for Next Time',v(LG.layoutSupportNeeds))+fld('Committee Notes',v(LG.committeeNotes)))}`],
 
-      `${hdr}<div class="area-title"><h2>Hospitality</h2><p>Hospitality · Barb Kusha</p></div>
-       ${fld2('Serving Style',(HO.servingStyle||[]).join(', '),'Alcohol Involved',v(HO.alcoholInvolved))}
+      [`${preHdr}<div class="area-title"><h2>Hospitality</h2><p>Hospitality · Barb Kusha</p></div>
+       ${fld2pre('Serving Style',(HO.servingStyle||[]).join(', '),'Alcohol Involved',v(HO.alcoholInvolved))}
        ${fld('Cleanup Plan',v(HO.cleanupPlan))}
        ${fld('Volunteers Assisting',v(HO.volunteersAssisting))}
        <div class="sec-label">Food & Beverage Plan</div>${tblRows([['Item','item','65%'],['Volunteer','volunteer']],HO.foodBevPlan||[])}
        <div class="sec-label">Shopping List</div>${tblRows([['Item','item','65%'],['Volunteer','volunteer']],HO.shoppingList||[])}
        <div class="sec-label">Rental Equipment</div>${tblRows([['Equipment','item','65%'],['Volunteer','volunteer']],HO.rentalEquipment||[])}
        ${fld('Other Notes',v(HO.otherNotes))}`,
+       `${postHdr}<div class="area-title"><h2>Hospitality — Post-Event</h2><p>Hospitality · Barb Kusha</p></div>
+       ${w(fld('Food & Beverage Outcome',v(HO.fbOutcome))+fld('Ran Out Of',v(HO.fbOutcomeRanOut))+fld('Guest Flow',v(HO.guestFlow))+fld('Guest Comments',v(HO.guestComments))+fld('Committee Notes',v(HO.committeeNotes||HO.committeeThoughts))+fld('Other Notes',v(HO.postOtherNotes)))}`],
 
-      `${hdr}<div class="area-title"><h2>Finance & Budget</h2><p>Finance and Budget · Ken Underwood</p></div>
+      [`${preHdr}<div class="area-title"><h2>Finance & Budget</h2><p>Finance and Budget · Ken Underwood</p></div>
        <div class="sec-label">Expenses</div>
        <table><thead><tr><th>Category</th><th style="width:25%">Estimated</th><th style="width:25%">Actual</th></tr></thead><tbody>
        ${(FI.expenses||[]).map(r=>`<tr><td>${v(r.category)}</td><td>${v(r.estimated)?'$'+v(r.estimated):''}</td><td>${v(r.actual)?'$'+v(r.actual):''}</td></tr>`).join('')}</tbody></table>
@@ -736,121 +762,46 @@ export default function EventsDashboard() {
        <table><thead><tr><th>Source</th><th style="width:25%">Estimated</th><th style="width:25%">Actual</th></tr></thead><tbody>
        ${(FI.income||[]).map(r=>`<tr><td>${v(r.source)}</td><td>${v(r.estimated)?'$'+v(r.estimated):''}</td><td>${v(r.actual)?'$'+v(r.actual):''}</td></tr>`).join('')}</tbody></table>
        ${fld('Financial Notes',v(FI.financialNotes))}`,
+       `${postHdr}<div class="area-title"><h2>Finance & Budget — Post-Event</h2><p>Finance and Budget · Ken Underwood</p></div>
+       ${w(fld2post('Receipts Collected',v(FI.receiptsCollected),'Receipt Dates',[v(FI.receiptsDate1),v(FI.receiptsDate2),v(FI.receiptsDate3)].filter(Boolean).join(', '))+fld2post('Reimbursement Amount',v(FI.reimbursementAmount),'Submitted By',v(FI.reimbursementSubmittedBy))+fld2post('Final Expenses',v(FI.finalExpenses)?'$'+v(FI.finalExpenses):'','Final Income',v(FI.finalIncome)?'$'+v(FI.finalIncome):'')+fld2post('Final Net',v(FI.finalNet)?'$'+v(FI.finalNet):'','Event Type',v(FI.eventType))+`<div class="row2" style="margin-bottom:14px;"><div class="fld fixed">${yn('Reimbursements Needed?',FI.reimbursementsNeeded)}</div><div class="fld fixed">${yn('Net Reported to Board?',FI.netReportedToBoard)}</div></div><div class="row2" style="margin-bottom:14px;"><div class="fld fixed">${yn('Thank Yous Sent?',FI.thankYousSent)}</div><div class="fld fixed">${yn('Lessons Documented?',FI.lessonsDocumented)}</div></div>`+fld('Committee Notes',v(FI.committeeNotes))+fld('Other Notes',v(FI.postNotes)))}`],
 
-      `${hdr}<div class="area-title"><h2>Sponsorships & Partnerships</h2><p>Sponsorship & Partnership · Derek Cheeseman</p></div>
+      [`${preHdr}<div class="area-title"><h2>Sponsorships & Partnerships</h2><p>Sponsorship & Partnership · Derek Cheeseman</p></div>
        ${fld('Recognition Methods',(SP.recognitionMethods||[]).join(', '))}
        ${fld('Recognition Volunteer',v(SP.recognitionVolunteer))}
        ${fld('Potential Sponsors',v(SP.potentialSponsors))}
        ${fld('Outreach Actions',(SP.outreachActions||[]).join(', '))}
-       ${fld2('Outreach Volunteer',v(SP.outreachVolunteer),'Intentional Invites',v(SP.intentionalInvites))}
+       ${fld2pre('Outreach Volunteer',v(SP.outreachVolunteer),'Intentional Invites',v(SP.intentionalInvites))}
        ${fld('Other Notes',v(SP.otherNotes))}`,
+       `${postHdr}<div class="area-title"><h2>Sponsorships & Partnerships — Post-Event</h2><p>Sponsorship & Partnership · Derek Cheeseman</p></div>
+       ${w(fld('Sponsors Involved',v(SP.sponsorsInvolved))+fld('Recognition Delivered',v(SP.recognitionDelivered))+fld('Future Notes',v(SP.futureNotes))+fld('Committee Notes',v(SP.committeeNotes||SP.committeeThoughts))+fld('Other Notes',v(SP.postOtherNotes)))}`],
 
-      `${hdr}<div class="area-title"><h2>Interiors</h2><p>Interiors · Rebekah Freeman</p></div>
+      [`${preHdr}<div class="area-title"><h2>Interiors</h2><p>Interiors · Rebekah Freeman</p></div>
        ${fld('Historic Approach',v(IN.historicApproach))}
        ${fld('More Info / Needs',v(IN.moreInfo))}
-       ${fld2('Decor Added',v(IN.decorAdded),'Decor Cost',v(IN.decorCost))}
+       ${fld2pre('Decor Added',v(IN.decorAdded),'Decor Cost',v(IN.decorCost))}
        ${fld('Removal Reasons',(IN.removalReasons||[]).join(', ')+(IN.removalOther?' / '+v(IN.removalOther):''))}
        ${fld('Other Notes',v(IN.otherNotes))}`,
+       `${postHdr}<div class="area-title"><h2>Interiors — Post-Event</h2><p>Interiors · Rebekah Freeman</p></div>
+       ${w(fld('Historic Issues',v(IN.historicIssues))+fld('Wear / Damage',v(IN.wearDamage))+fld('Future Adjustments',v(IN.futureAdjustments))+fld('Committee Notes',v(IN.committeeNotes))+fld('Other Notes',v(IN.postOtherNotes)))}`],
 
-      `${hdr}<div class="area-title"><h2>Marketing</h2><p>Marketing · Haley Wright</p></div>
+      [`${preHdr}<div class="area-title"><h2>Marketing</h2><p>Marketing · Haley Wright</p></div>
        <div class="sec-label">Channels</div>
        <div class="chk-grid">
          ${marketingChannels.map(ch=>{const cd=(MK.channels||{})[ch]||{};return chk(ch+(cd.date?' ('+cd.date+')':''),cd.done);}).join('')}
          ${chk('Other: '+(MK.otherChannel||'___________'),MK.otherChannelDone)}
        </div>
-       <div class="g2">${fld('Notes',v(MK.notes),'span2')}</div>`,
+       ${fld('Notes',v(MK.notes))}`,
+       `${postHdr}<div class="area-title"><h2>Marketing — Post-Event</h2><p>Marketing · Haley Wright</p></div>
+       ${w(fld('Ticket Sales Pattern',(MK.ticketSalesPattern||[]).join(', '))+yn('Photos Taken?',MK.photosTaken)+yn('Uploaded to Shared Drive?',MK.uploadedToSharedDrive)+fld('Emails Collected',v(MK.emailsCollected))+fld('Donations Related to Event',v(MK.donationsRelatedToEvent))+fld('Forms Grabbed',v(MK.formsGrabbed))+fld('Committee Notes',v(MK.committeeNotes)))}`],
     ];
+
+    const pages = prePairs.flatMap(([pre, post]) => [
+      `<div class="area area-pre">${pre}</div>`,
+      `<div class="area area-post">${post}</div>`,
+    ]);
 
     const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>NSH – ${selectedEvent.name}</title><style>${css}</style></head><body>
-      ${areas.map((a, i) => `<div class="area">${a}</div>`).join('')}
-    </body></html>`;
-    const win = window.open('', '_blank');
-    if (!win) return;
-    win.document.write(html);
-    win.document.close();
-    setTimeout(() => { win.print(); }, 500);
-  };
-
-  const handlePrintPost = () => {
-    if (!selectedEvent) return;
-    const D = (key) => getStoredFormData(selectedEvent.id, key) || {};
-    const v = (val) => {
-      if (val === null || val === undefined || val === '' || val === false) return '';
-      if (val === true) return 'Yes';
-      if (Array.isArray(val)) return val.filter(Boolean).join(', ');
-      return String(val);
-    };
-    const css = `
-      @page { margin: 0.75in; size: letter; }
-      * { box-sizing: border-box; }
-      body { font-family: Georgia, serif; font-size: 13px; color: #2b251a; margin: 0; line-height: 1.5; }
-      .area { page-break-before: always; display: flex; flex-direction: column; height: 9.5in; }
-      .area:first-child { page-break-before: avoid; }
-      .area-body { display: flex; flex-direction: column; flex: 1; min-height: 0; }
-      .ev-hdr { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2.5px solid #886c44; margin-bottom: 22px; padding-bottom: 12px; flex-shrink: 0; }
-      .ev-name { font-size: 22px; font-weight: bold; color: #886c44; }
-      .ev-sub { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: #4a4235; margin-bottom: 4px; }
-      .ev-badge { display: inline-block; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; color: #fff; background: #886c44; padding: 2px 8px; border-radius: 10px; margin-left: 10px; vertical-align: middle; }
-      .ev-dt { font-size: 12px; color: #4a4235; text-align: right; }
-      .area-title { margin-bottom: 18px; border-left: 4px solid #886c44; padding-left: 10px; flex-shrink: 0; }
-      .area-title h2 { font-size: 17px; font-weight: bold; color: #886c44; margin: 0 0 2px 0; }
-      .area-title p { font-size: 11px; color: #4a4235; margin: 0; }
-      .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; flex-shrink: 0; }
-      .fld { display: flex; flex-direction: column; margin-bottom: 14px; flex: 1; min-height: 0; }
-      .fld.fixed { flex: 0 0 auto; }
-      .fld-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #886c44; margin-bottom: 5px; flex-shrink: 0; }
-      .fld-val { font-size: 13px; flex: 1; min-height: 60px; color: #2b251a; padding: 6px 8px; border: 1px solid #ccc; border-radius: 3px; background: #fafaf8; line-height: 1.6; }
-      .fld-val.empty { color: #aaa; }
-      .yn { display: inline-flex; align-items: center; gap: 16px; font-size: 13px; padding: 6px 0; flex-shrink: 0; }
-      .yn-opt { display: flex; align-items: center; gap: 7px; }
-      .yn-box { width: 18px; height: 18px; border: 1.5px solid #886c44; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 13px; color: #886c44; font-weight: bold; border-radius: 2px; }
-      table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-bottom: 16px; flex-shrink: 0; }
-      th { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #886c44; text-align: left; padding: 6px 10px; border-bottom: 2px solid #886c44; background: #faf7f2; }
-      td { padding: 10px 10px; border-bottom: 1px solid #d8d0c5; color: #2b251a; vertical-align: top; }
-      .sec-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #4a4235; margin: 14px 0 6px 0; border-bottom: 1px solid #e8dfd2; padding-bottom: 4px; flex-shrink: 0; }
-    `;
-    const hdr = `<div class="ev-hdr"><div><div class="ev-sub">North Star House Events Committee <span class="ev-badge">Post-Event</span></div><div class="ev-name">${selectedEvent.name}</div></div><div class="ev-dt">${[selectedEvent.dayTime, selectedEvent.date].filter(Boolean).join(' · ')}</div></div>`;
-    const fld = (label, val) => `<div class="fld"><div class="fld-label">${label}</div><div class="fld-val${!val ? ' empty' : ''}">${val || '&nbsp;'}</div></div>`;
-    const fld2 = (l1, v1, l2, v2) => `<div class="row2 fixed"><div class="fld fixed"><div class="fld-label">${l1}</div><div class="fld-val${!v1?' empty':''}">${v1||'&nbsp;'}</div></div><div class="fld fixed"><div class="fld-label">${l2}</div><div class="fld-val${!v2?' empty':''}">${v2||'&nbsp;'}</div></div></div>`;
-    const yn = (label, val) => `<div class="fld fixed"><div class="fld-label">${label}</div><div class="yn"><div class="yn-opt"><div class="yn-box">${val===true||val==='Yes'?'✓':''}</div> Yes</div><div class="yn-opt"><div class="yn-box">${val==='No'?'✓':''}</div> No</div></div></div>`;
-    const tblRows = (cols, rows) => `<table><thead><tr>${cols.map(([l,,w])=>`<th${w?` style="width:${w}"`:''}>${l}</th>`).join('')}</tr></thead><tbody>${(rows.length?rows:[{}]).map(r=>`<tr>${cols.map(([,k])=>`<td>${v(r[k])}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
-
-    const O = D('overall'), PR = D('programs'), VL = D('volunteers'), LG = D('logistics');
-    const HO = D('hospitality'), FI = D('finance'), SP = D('sponsorship'), IN = D('interiors'), MK = D('marketing');
-
-    const w = (content) => `<div class="area-body">${content}</div>`;
-    const areas = [
-      `${hdr}<div class="area-title"><h2>Overall Event Status</h2><p>Event Chair · Barb Kusha</p></div>
-       ${w(fld('Committee Notes',v(O.committeeNotes))+fld('Final Notes',v(O.finalNotes)))}`,
-
-      `${hdr}<div class="area-title"><h2>Activities & Programs — Post-Event</h2><p>Programs · Gerrie Kopec</p></div>
-       ${w(`<div class="sec-label">Activity Review</div>${tblRows([['Activity','activity','40%'],['What Worked','whatWorked'],['What Didn\'t','whatDidnt'],['Notes','notes']],PR.activityReview||[])}
-       ${fld('Flow & Timing',v(PR.flowTiming))}${fld('Pinch Points',v(PR.pinchPoints))}${fld('Repeat Format?',v(PR.repeatFormat))}${fld('Committee Notes',v(PR.committeeNotes))}${fld('Other Notes',v(PR.postOtherNotes))}`)}`,
-
-      `${hdr}<div class="area-title"><h2>Volunteer Coordination — Post-Event</h2><p>Volunteers · Haley Wright</p></div>
-       ${w(fld2('Average Hours On Site',v(VL.avgHoursOnSite),'Total Volunteer Hours',v(VL.totalVolunteerHours))+fld('What We Learned',v(VL.whatWeLearned))+fld('Committee Notes',v(VL.committeeNotes)))}`,
-
-      `${hdr}<div class="area-title"><h2>Event Logistics — Post-Event</h2><p>Logistics & Operations · Vince LoFranco</p></div>
-       ${w(fld('Setup vs Reality',v(LG.setupVsReality))+fld('Adjustments Made',v(LG.adjustmentsMade))+fld('Layout Support Needs for Next Time',v(LG.layoutSupportNeeds))+fld('Committee Notes',v(LG.committeeNotes)))}`,
-
-      `${hdr}<div class="area-title"><h2>Hospitality — Post-Event</h2><p>Hospitality · Barb Kusha</p></div>
-       ${w(fld('Food & Beverage Outcome',v(HO.fbOutcome))+fld('Ran Out Of',v(HO.fbOutcomeRanOut))+fld('Guest Flow',v(HO.guestFlow))+fld('Guest Comments',v(HO.guestComments))+fld('Committee Notes',v(HO.committeeNotes||HO.committeeThoughts))+fld('Other Notes',v(HO.postOtherNotes)))}`,
-
-      `${hdr}<div class="area-title"><h2>Finance & Budget — Post-Event</h2><p>Finance and Budget · Ken Underwood</p></div>
-       ${w(fld2('Receipts Collected',v(FI.receiptsCollected),'Receipt Dates',[v(FI.receiptsDate1),v(FI.receiptsDate2),v(FI.receiptsDate3)].filter(Boolean).join(', '))+fld2('Reimbursement Amount',v(FI.reimbursementAmount),'Submitted By',v(FI.reimbursementSubmittedBy))+fld2('Final Expenses',v(FI.finalExpenses)?'$'+v(FI.finalExpenses):'','Final Income',v(FI.finalIncome)?'$'+v(FI.finalIncome):'')+fld2('Final Net',v(FI.finalNet)?'$'+v(FI.finalNet):'','Event Type',v(FI.eventType))+`<div class="row2 fixed" style="margin-bottom:14px;"><div class="fld fixed">${yn('Reimbursements Needed?',FI.reimbursementsNeeded)}</div><div class="fld fixed">${yn('Net Reported to Board?',FI.netReportedToBoard)}</div></div><div class="row2 fixed" style="margin-bottom:14px;"><div class="fld fixed">${yn('Thank Yous Sent?',FI.thankYousSent)}</div><div class="fld fixed">${yn('Lessons Documented?',FI.lessonsDocumented)}</div></div>`+fld('Committee Notes',v(FI.committeeNotes))+fld('Other Notes',v(FI.postNotes)))}`,
-
-      `${hdr}<div class="area-title"><h2>Sponsorships & Partnerships — Post-Event</h2><p>Sponsorship & Partnership · Derek Cheeseman</p></div>
-       ${w(fld('Sponsors Involved',v(SP.sponsorsInvolved))+fld('Recognition Delivered',v(SP.recognitionDelivered))+fld('Future Notes',v(SP.futureNotes))+fld('Committee Notes',v(SP.committeeNotes||SP.committeeThoughts))+fld('Other Notes',v(SP.postOtherNotes)))}`,
-
-      `${hdr}<div class="area-title"><h2>Interiors — Post-Event</h2><p>Interiors · Rebekah Freeman</p></div>
-       ${w(fld('Historic Issues',v(IN.historicIssues))+fld('Wear / Damage',v(IN.wearDamage))+fld('Future Adjustments',v(IN.futureAdjustments))+fld('Committee Notes',v(IN.committeeNotes))+fld('Other Notes',v(IN.postOtherNotes)))}`,
-
-      `${hdr}<div class="area-title"><h2>Marketing — Post-Event</h2><p>Marketing · Haley Wright</p></div>
-       ${w(fld('Ticket Sales Pattern',(MK.ticketSalesPattern||[]).join(', '))+yn('Photos Taken?',MK.photosTaken)+yn('Uploaded to Shared Drive?',MK.uploadedToSharedDrive)+fld('Emails Collected',v(MK.emailsCollected))+fld('Donations Related to Event',v(MK.donationsRelatedToEvent))+fld('Forms Grabbed',v(MK.formsGrabbed))+fld('Committee Notes',v(MK.committeeNotes)))}`,
-    ];
-
-    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>NSH Post-Event – ${selectedEvent.name}</title><style>${css}</style></head><body>
-      ${areas.map(a => `<div class="area">${a}</div>`).join('')}
+      ${pages.join('')}
     </body></html>`;
     const win = window.open('', '_blank');
     if (!win) return;
@@ -903,18 +854,11 @@ export default function EventsDashboard() {
       <div className="min-h-screen bg-sand-light">
         <div className="fixed top-4 right-4 z-40 flex gap-2">
           <button
-            onClick={handlePrint}
+            onClick={handlePrintCombined}
             className="inline-flex items-center gap-2 rounded-full bg-white border border-sand-dark px-4 py-2 text-sm font-semibold text-ink-light shadow-md transition hover:border-gold hover:text-gold cursor-pointer"
           >
             <Printer size={14} />
-            Pre-Event Forms
-          </button>
-          <button
-            onClick={handlePrintPost}
-            className="inline-flex items-center gap-2 rounded-full bg-white border border-sand-dark px-4 py-2 text-sm font-semibold text-ink-light shadow-md transition hover:border-gold hover:text-gold cursor-pointer"
-          >
-            <Printer size={14} />
-            Post-Event Forms
+            Print All Forms
           </button>
         </div>
         <div className="max-w-4xl mx-auto px-4 py-6">
