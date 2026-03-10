@@ -705,7 +705,7 @@ export default function EventsDashboard() {
     const prePairs = [
       [`${preHdr}<div class="area-title"><h2>Overall Event Status</h2><p>Event Chair · Barb Kusha</p></div>
        <table><thead><tr><th style="width:14%">Date</th><th style="width:20%">Status</th><th style="width:33%">Decisions Needed</th><th>Notes</th></tr></thead><tbody>
-       ${(O.statusUpdates||[]).map(r=>`<tr><td>${v(r.date)}</td><td>${v(r.status)}</td><td>${v(r.decisions)}</td><td>${v(r.notes)}</td></tr>`).join('')}</tbody></table>
+       ${(O.statusUpdates&&O.statusUpdates.length?O.statusUpdates:Array(6).fill({})).map(r=>`<tr style="height:56px"><td>${v(r.date)}</td><td>${v(r.status)}</td><td>${v(r.decisions)}</td><td>${v(r.notes)}</td></tr>`).join('')}</tbody></table>
        ${fld('Committee Notes',v(O.committeeNotes))}${fld('Final Notes',v(O.finalNotes))}`,
        `${postHdr}<div class="area-title"><h2>Overall Event Status</h2><p>Event Chair · Barb Kusha</p></div>
        ${w(fld('Committee Notes',v(O.committeeNotes))+fld('Final Notes',v(O.finalNotes)))}`],
@@ -757,10 +757,10 @@ export default function EventsDashboard() {
       [`${preHdr}<div class="area-title"><h2>Finance & Budget</h2><p>Finance and Budget · Ken Underwood</p></div>
        <div class="sec-label">Expenses</div>
        <table><thead><tr><th>Category</th><th style="width:25%">Estimated</th><th style="width:25%">Actual</th></tr></thead><tbody>
-       ${(FI.expenses||[]).map(r=>`<tr><td>${v(r.category)}</td><td>${v(r.estimated)?'$'+v(r.estimated):''}</td><td>${v(r.actual)?'$'+v(r.actual):''}</td></tr>`).join('')}</tbody></table>
+       ${(FI.expenses&&FI.expenses.length?FI.expenses:['Food & Beverage','Entertainment / Speakers','Supplies / Decor','Marketing / Printing','Permits / Licenses / Insurance','Cleaning / Security','Other'].map(c=>({category:c}))).map(r=>`<tr><td>${v(r.category)}</td><td>${v(r.estimated)?'$'+v(r.estimated):''}</td><td>${v(r.actual)?'$'+v(r.actual):''}</td></tr>`).join('')}</tbody></table>
        <div class="sec-label">Income</div>
        <table><thead><tr><th>Source</th><th style="width:25%">Estimated</th><th style="width:25%">Actual</th></tr></thead><tbody>
-       ${(FI.income||[]).map(r=>`<tr><td>${v(r.source)}</td><td>${v(r.estimated)?'$'+v(r.estimated):''}</td><td>${v(r.actual)?'$'+v(r.actual):''}</td></tr>`).join('')}</tbody></table>
+       ${(FI.income&&FI.income.length?FI.income:['Ticket Sales','Alcohol or food sales','House Merch','Donations','Other'].map(s=>({source:s}))).map(r=>`<tr><td>${v(r.source)}</td><td>${v(r.estimated)?'$'+v(r.estimated):''}</td><td>${v(r.actual)?'$'+v(r.actual):''}</td></tr>`).join('')}</tbody></table>
        ${fld('Financial Notes',v(FI.financialNotes))}`,
        `${postHdr}<div class="area-title"><h2>Finance & Budget — Post-Event</h2><p>Finance and Budget · Ken Underwood</p></div>
        ${w(fld2post('Receipts Collected',v(FI.receiptsCollected),'Receipt Dates',[v(FI.receiptsDate1),v(FI.receiptsDate2),v(FI.receiptsDate3)].filter(Boolean).join(', '))+fld2post('Reimbursement Amount',v(FI.reimbursementAmount),'Submitted By',v(FI.reimbursementSubmittedBy))+fld2post('Final Expenses',v(FI.finalExpenses)?'$'+v(FI.finalExpenses):'','Final Income',v(FI.finalIncome)?'$'+v(FI.finalIncome):'')+fld2post('Final Net',v(FI.finalNet)?'$'+v(FI.finalNet):'','Event Type',v(FI.eventType))+`<div class="row2" style="margin-bottom:14px;"><div class="fld fixed">${yn('Reimbursements Needed?',FI.reimbursementsNeeded)}</div><div class="fld fixed">${yn('Net Reported to Board?',FI.netReportedToBoard)}</div></div><div class="row2" style="margin-bottom:14px;"><div class="fld fixed">${yn('Thank Yous Sent?',FI.thankYousSent)}</div><div class="fld fixed">${yn('Lessons Documented?',FI.lessonsDocumented)}</div></div>`+fld('Committee Notes',v(FI.committeeNotes))+fld('Other Notes',v(FI.postNotes)))}`],
