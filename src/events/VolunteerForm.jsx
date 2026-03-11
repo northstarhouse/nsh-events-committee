@@ -24,7 +24,7 @@ const defaultData = {
   committeeNotes: '',
 };
 
-export default function VolunteerForm({ event, onSubmitted, section }) {
+export default function VolunteerForm({ event, onSubmitted, section, showSaveStatus = false }) {
   const { data, updateField, saveStatus, saveNow } = useFormData(event.id, 'volunteers', defaultData);
 
   const handleSubmit = async () => {
@@ -109,7 +109,7 @@ export default function VolunteerForm({ event, onSubmitted, section }) {
           onChange={(val) => updateField('otherNotes', val)}
           rows={4}
         />
-        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
+        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={showSaveStatus} />
       </Section>}
 
       {(!section || section === 'post') && <Section title="Post Event Notes">
@@ -141,7 +141,7 @@ export default function VolunteerForm({ event, onSubmitted, section }) {
           onChange={(val) => updateField('committeeNotes', val)}
           rows={4}
         />
-        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
+        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={showSaveStatus} />
       </Section>}
     </div>
   );

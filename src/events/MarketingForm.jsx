@@ -34,7 +34,7 @@ const defaultData = {
   formsGrabbed: '',
 };
 
-export default function MarketingForm({ event, onSubmitted, section }) {
+export default function MarketingForm({ event, onSubmitted, section, showSaveStatus = false }) {
   const { data, updateField, saveStatus, saveNow } = useFormData(event.id, 'marketing', defaultData);
 
   const handleSubmit = async () => {
@@ -143,7 +143,7 @@ export default function MarketingForm({ event, onSubmitted, section }) {
             rows={4}
           />
         </div>
-        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
+        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={showSaveStatus} />
       </Section>}
 
       {(!section || section === 'post') && <Section title="Post Event Notes">
@@ -199,7 +199,7 @@ export default function MarketingForm({ event, onSubmitted, section }) {
           onChange={(val) => updateField('committeeNotes', val)}
           rows={4}
         />
-        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
+        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={showSaveStatus} />
       </Section>}
     </div>
   );

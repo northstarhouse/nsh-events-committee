@@ -13,7 +13,7 @@ const defaultData = {
   finalNotes: '',
 };
 
-export default function OverallStatusForm({ event, onSubmitted, section }) {
+export default function OverallStatusForm({ event, onSubmitted, section, showSaveStatus = false }) {
   const { data, updateField, updateNestedField, saveStatus, saveNow } = useFormData(event.id, 'overall', defaultData);
 
   const updateStatusEntry = (index, field, value) => {
@@ -76,7 +76,7 @@ export default function OverallStatusForm({ event, onSubmitted, section }) {
             </div>
 
             <div className="mt-3 flex justify-end">
-              <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
+              <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={showSaveStatus} />
             </div>
           </div>
         ))}
@@ -98,7 +98,7 @@ export default function OverallStatusForm({ event, onSubmitted, section }) {
           placeholder="Final notes and overall reflections on this event..."
           rows={6}
         />
-        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
+        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={showSaveStatus} />
       </Section>}
     </div>
   );

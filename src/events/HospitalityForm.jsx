@@ -56,7 +56,7 @@ function DynamicTable({ label, items, onUpdate, onAdd, onRemove, col1Label, col2
   );
 }
 
-export default function HospitalityForm({ event, onSubmitted, section }) {
+export default function HospitalityForm({ event, onSubmitted, section, showSaveStatus = false }) {
   const { data, updateField, updateNestedField, addToArray, removeFromArray, saveStatus, saveNow } = useFormData(event.id, 'hospitality', defaultData);
 
   const handleSubmit = async () => {
@@ -130,7 +130,7 @@ export default function HospitalityForm({ event, onSubmitted, section }) {
           onChange={(val) => updateField('otherNotes', val)}
           rows={4}
         />
-        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
+        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={showSaveStatus} />
       </Section>}
 
       {(!section || section === 'post') && <Section title="Post Event Notes">
@@ -178,7 +178,7 @@ export default function HospitalityForm({ event, onSubmitted, section }) {
           onChange={(val) => updateField('postOtherNotes', val)}
           rows={4}
         />
-        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
+        <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={showSaveStatus} />
       </Section>}
     </div>
   );
