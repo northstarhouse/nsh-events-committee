@@ -34,7 +34,7 @@ const defaultData = {
   formsGrabbed: '',
 };
 
-export default function MarketingForm({ event, onSubmitted }) {
+export default function MarketingForm({ event, onSubmitted, section }) {
   const { data, updateField, saveStatus, saveNow } = useFormData(event.id, 'marketing', defaultData);
 
   const handleSubmit = async () => {
@@ -64,13 +64,13 @@ export default function MarketingForm({ event, onSubmitted }) {
 
   return (
     <div>
-      <div className="mb-4">
+      {(!section || section === 'pre') && <div className="mb-4">
         <span className="text-sm text-ink-light">
           {completedCount} of {marketingChannels.length} channels completed
         </span>
-      </div>
+      </div>}
 
-      <Section title="Marketing Checklist">
+      {(!section || section === 'pre') && <Section title="Marketing Checklist">
         <p className="text-sm text-ink-light mb-4">
           Check off each marketing channel as it is completed for this event.
         </p>
@@ -144,9 +144,9 @@ export default function MarketingForm({ event, onSubmitted }) {
           />
         </div>
         <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
-      </Section>
+      </Section>}
 
-      <Section title="Post Event Notes">
+      {(!section || section === 'post') && <Section title="Post Event Notes">
         <CheckboxGroup
           label="Tickets sold"
           options={['Early majority', 'Steady flow', 'Mostly last week', 'Mostly last 48 hours']}
@@ -200,7 +200,7 @@ export default function MarketingForm({ event, onSubmitted }) {
           rows={4}
         />
         <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
-      </Section>
+      </Section>}
     </div>
   );
 }

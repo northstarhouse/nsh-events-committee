@@ -819,6 +819,45 @@ export default function EventsDashboard() {
   };
 
   if (view === 'committee-edit' && selectedEvent) {
+    const navPill = (area, phase) => {
+      const Icon = areaIcons[area.key];
+      return (
+        <button
+          key={`${phase}-${area.key}`}
+          onClick={() => committeeEditRefs.current[`${area.key}-${phase}`]?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+          className="inline-flex items-center gap-1.5 flex-shrink-0 rounded-full border border-sand-dark bg-sand-light/60 px-3 py-1.5 text-xs font-medium text-ink hover:border-gold hover:text-gold hover:bg-white transition-colors cursor-pointer"
+        >
+          <div className="w-5 h-5 rounded bg-sand flex items-center justify-center flex-shrink-0">
+            <Icon size={11} className="text-gold" />
+          </div>
+          {area.label}
+        </button>
+      );
+    };
+
+    const areaBlock = (area, phase) => {
+      const FormComponent = formComponents[area.key];
+      const Icon = areaIcons[area.key];
+      return (
+        <div
+          key={`${phase}-${area.key}`}
+          ref={(el) => { committeeEditRefs.current[`${area.key}-${phase}`] = el; }}
+          className="scroll-mt-48"
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-sand flex items-center justify-center">
+              <Icon size={20} className="text-gold" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-gold">{area.label}</h2>
+              <p className="text-xs text-ink-light">{area.role} · {area.person}</p>
+            </div>
+          </div>
+          <FormComponent event={selectedEvent} onSubmitted={() => {}} section={phase} />
+        </div>
+      );
+    };
+
     return (
       <div className="min-h-screen bg-sand-light">
         {/* Sticky header */}
@@ -837,51 +876,35 @@ export default function EventsDashboard() {
                 <h1 className="text-base font-bold text-gold leading-none">{selectedEvent.name}</h1>
               </div>
             </div>
-            {/* Anchor nav pills */}
-            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-              {committeeAreas.map((area) => {
-                const Icon = areaIcons[area.key];
-                return (
-                  <button
-                    key={area.key}
-                    onClick={() => committeeEditRefs.current[area.key]?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                    className="inline-flex items-center gap-1.5 flex-shrink-0 rounded-full border border-sand-dark bg-sand-light/60 px-3 py-1.5 text-xs font-medium text-ink hover:border-gold hover:text-gold hover:bg-white transition-colors cursor-pointer"
-                  >
-                    <div className="w-5 h-5 rounded bg-sand flex items-center justify-center flex-shrink-0">
-                      <Icon size={11} className="text-gold" />
-                    </div>
-                    {area.label}
-                  </button>
-                );
-              })}
+            <div className="flex items-center gap-2 mb-1.5 overflow-x-auto pb-1 scrollbar-hide">
+              <span className="text-xs font-semibold text-ink-light uppercase tracking-wider flex-shrink-0">Pre:</span>
+              {committeeAreas.map((area) => navPill(area, 'pre'))}
+            </div>
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
+              <span className="text-xs font-semibold text-ink-light uppercase tracking-wider flex-shrink-0">Post:</span>
+              {committeeAreas.map((area) => navPill(area, 'post'))}
             </div>
           </div>
         </div>
 
-        {/* All forms stacked */}
-        <div className="max-w-4xl mx-auto px-4 py-8 space-y-10">
-          {committeeAreas.map((area) => {
-            const FormComponent = formComponents[area.key];
-            const Icon = areaIcons[area.key];
-            return (
-              <div
-                key={area.key}
-                ref={(el) => { committeeEditRefs.current[area.key] = el; }}
-                className="scroll-mt-40"
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-sand flex items-center justify-center">
-                    <Icon size={20} className="text-gold" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-gold">{area.label}</h2>
-                    <p className="text-xs text-ink-light">{area.role} · {area.person}</p>
-                  </div>
-                </div>
-                <FormComponent event={selectedEvent} onSubmitted={() => {}} />
-              </div>
-            );
-          })}
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="flex-1 h-px bg-gold/40" />
+            <span className="text-sm font-bold text-gold uppercase tracking-widest">Pre-Event Planning</span>
+            <div className="flex-1 h-px bg-gold/40" />
+          </div>
+          <div className="space-y-10">
+            {committeeAreas.map((area) => areaBlock(area, 'pre'))}
+          </div>
+
+          <div className="flex items-center gap-3 my-12">
+            <div className="flex-1 h-px bg-gold/40" />
+            <span className="text-sm font-bold text-gold uppercase tracking-widest">Post-Event Review</span>
+            <div className="flex-1 h-px bg-gold/40" />
+          </div>
+          <div className="space-y-10">
+            {committeeAreas.map((area) => areaBlock(area, 'post'))}
+          </div>
         </div>
       </div>
     );

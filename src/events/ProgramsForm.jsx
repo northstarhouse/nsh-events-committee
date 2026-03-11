@@ -20,7 +20,7 @@ const defaultData = {
   postOtherNotes: '',
 };
 
-export default function ProgramsForm({ event, onSubmitted }) {
+export default function ProgramsForm({ event, onSubmitted, section }) {
   const { data, updateField, updateNestedField, addToArray, removeFromArray, saveStatus, saveNow } = useFormData(event.id, 'programs', defaultData);
 
   const handleSubmit = async () => {
@@ -30,7 +30,7 @@ export default function ProgramsForm({ event, onSubmitted }) {
 
   return (
     <div>
-      <Section title="Activities & Programs - Planning">
+      {(!section || section === 'pre') && <Section title="Activities & Programs - Planning">
         <CheckboxGroup
           label="Primary purpose of the activities/programs at this event"
           options={['Educational', 'Entertainment', 'Community engagement', 'Fundraising support']}
@@ -163,9 +163,9 @@ export default function ProgramsForm({ event, onSubmitted }) {
           rows={4}
         />
         <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
-      </Section>
+      </Section>}
 
-      <Section title="Program & Activities Review (Post-Event)">
+      {(!section || section === 'post') && <Section title="Program & Activities Review (Post-Event)">
         <div className="mb-4">
           <label className="block text-sm font-semibold text-ink mb-2">Activities / Program Elements Review</label>
           {(data.activityReview || []).map((item, i) => (
@@ -245,7 +245,7 @@ export default function ProgramsForm({ event, onSubmitted }) {
           onChange={(val) => updateField('postOtherNotes', val)}
         />
         <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
-      </Section>
+      </Section>}
     </div>
   );
 }

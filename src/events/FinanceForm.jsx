@@ -42,7 +42,7 @@ const defaultData = {
   postNotes: '',
 };
 
-export default function FinanceForm({ event, onSubmitted }) {
+export default function FinanceForm({ event, onSubmitted, section }) {
   const { data, updateField, updateNestedField, saveStatus, saveNow } = useFormData(event.id, 'finance', defaultData);
 
   const handleSubmit = async () => {
@@ -59,7 +59,7 @@ export default function FinanceForm({ event, onSubmitted }) {
 
   return (
     <div>
-      <Section title="Projected Expenses">
+      {(!section || section === 'pre') && <Section title="Projected Expenses">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <colgroup>
@@ -112,9 +112,9 @@ export default function FinanceForm({ event, onSubmitted }) {
             </tbody>
           </table>
         </div>
-      </Section>
+      </Section>}
 
-      <Section title="Projected Income">
+      {(!section || section === 'pre') && <Section title="Projected Income">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <colgroup>
@@ -167,9 +167,9 @@ export default function FinanceForm({ event, onSubmitted }) {
             </tbody>
           </table>
         </div>
-      </Section>
+      </Section>}
 
-      <Section title="Financial Notes / Risks / Approvals Needed">
+      {(!section || section === 'pre') && <Section title="Financial Notes / Risks / Approvals Needed">
         <TextArea
           value={data.financialNotes}
           onChange={(val) => updateField('financialNotes', val)}
@@ -177,9 +177,9 @@ export default function FinanceForm({ event, onSubmitted }) {
           rows={4}
         />
         <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
-      </Section>
+      </Section>}
 
-      <Section title="After Event Data">
+      {(!section || section === 'post') && <Section title="After Event Data">
         <RadioGroup
           label="Receipts Collected"
           options={['Yes', 'Partial', 'Pending']}
@@ -278,7 +278,7 @@ export default function FinanceForm({ event, onSubmitted }) {
           rows={4}
         />
         <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
-      </Section>
+      </Section>}
     </div>
   );
 }

@@ -13,7 +13,7 @@ const defaultData = {
   finalNotes: '',
 };
 
-export default function OverallStatusForm({ event, onSubmitted }) {
+export default function OverallStatusForm({ event, onSubmitted, section }) {
   const { data, updateField, updateNestedField, saveStatus, saveNow } = useFormData(event.id, 'overall', defaultData);
 
   const updateStatusEntry = (index, field, value) => {
@@ -27,7 +27,7 @@ export default function OverallStatusForm({ event, onSubmitted }) {
 
   return (
     <div>
-      <Section title="Event Status Updates">
+      {(!section || section === 'pre') && <Section title="Event Status Updates">
         <p className="text-sm text-ink-light mb-4">
           Record the overall status of the event after each committee meeting.
         </p>
@@ -80,9 +80,9 @@ export default function OverallStatusForm({ event, onSubmitted }) {
             </div>
           </div>
         ))}
-      </Section>
+      </Section>}
 
-      <Section title="Final Notes">
+      {(!section || section === 'post') && <Section title="Final Notes">
         <TextArea
           label="Committee Notes"
           value={data.committeeNotes}
@@ -99,7 +99,7 @@ export default function OverallStatusForm({ event, onSubmitted }) {
           rows={6}
         />
         <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
-      </Section>
+      </Section>}
     </div>
   );
 }

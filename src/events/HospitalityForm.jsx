@@ -56,7 +56,7 @@ function DynamicTable({ label, items, onUpdate, onAdd, onRemove, col1Label, col2
   );
 }
 
-export default function HospitalityForm({ event, onSubmitted }) {
+export default function HospitalityForm({ event, onSubmitted, section }) {
   const { data, updateField, updateNestedField, addToArray, removeFromArray, saveStatus, saveNow } = useFormData(event.id, 'hospitality', defaultData);
 
   const handleSubmit = async () => {
@@ -66,7 +66,7 @@ export default function HospitalityForm({ event, onSubmitted }) {
 
   return (
     <div>
-      <Section title="Hospitality - Planning">
+      {(!section || section === 'pre') && <Section title="Hospitality - Planning">
         <DynamicTable
           label="Food & Beverage Plan"
           items={data.foodBevPlan}
@@ -131,9 +131,9 @@ export default function HospitalityForm({ event, onSubmitted }) {
           rows={4}
         />
         <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
-      </Section>
+      </Section>}
 
-      <Section title="Post Event Notes">
+      {(!section || section === 'post') && <Section title="Post Event Notes">
         <div className="mb-4">
           <RadioGroup
             label="Food & Beverage Outcome"
@@ -179,7 +179,7 @@ export default function HospitalityForm({ event, onSubmitted }) {
           rows={4}
         />
         <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
-      </Section>
+      </Section>}
     </div>
   );
 }

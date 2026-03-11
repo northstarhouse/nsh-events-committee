@@ -24,7 +24,7 @@ const defaultData = {
   committeeNotes: '',
 };
 
-export default function VolunteerForm({ event, onSubmitted }) {
+export default function VolunteerForm({ event, onSubmitted, section }) {
   const { data, updateField, saveStatus, saveNow } = useFormData(event.id, 'volunteers', defaultData);
 
   const handleSubmit = async () => {
@@ -40,7 +40,7 @@ export default function VolunteerForm({ event, onSubmitted }) {
 
   return (
     <div>
-      <Section title="Volunteer Coordination - Planning">
+      {(!section || section === 'pre') && <Section title="Volunteer Coordination - Planning">
         <div className="mb-4">
           <label className="block text-sm font-semibold text-ink mb-3">Volunteer roles</label>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -110,9 +110,9 @@ export default function VolunteerForm({ event, onSubmitted }) {
           rows={4}
         />
         <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
-      </Section>
+      </Section>}
 
-      <Section title="Post Event Notes">
+      {(!section || section === 'post') && <Section title="Post Event Notes">
         <TextInput
           label="Average hours on site"
           value={data.avgHoursOnSite}
@@ -142,7 +142,7 @@ export default function VolunteerForm({ event, onSubmitted }) {
           rows={4}
         />
         <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
-      </Section>
+      </Section>}
     </div>
   );
 }

@@ -20,7 +20,7 @@ const defaultData = {
   postOtherNotes: '',
 };
 
-export default function SponsorshipForm({ event, onSubmitted }) {
+export default function SponsorshipForm({ event, onSubmitted, section }) {
   const { data, updateField, saveStatus, saveNow } = useFormData(event.id, 'sponsorship', defaultData);
 
   const handleSubmit = async () => {
@@ -30,7 +30,7 @@ export default function SponsorshipForm({ event, onSubmitted }) {
 
   return (
     <div>
-      <Section title="Sponsorships & Partnerships - Planning">
+      {(!section || section === 'pre') && <Section title="Sponsorships & Partnerships - Planning">
         <CheckboxGroup
           label="How will sponsors be recognized at this event?"
           options={[
@@ -105,9 +105,9 @@ export default function SponsorshipForm({ event, onSubmitted }) {
           rows={4}
         />
         <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
-      </Section>
+      </Section>}
 
-      <Section title="Post Event Notes">
+      {(!section || section === 'post') && <Section title="Post Event Notes">
         <TextArea
           label="Sponsors involved"
           value={data.sponsorsInvolved}
@@ -139,7 +139,7 @@ export default function SponsorshipForm({ event, onSubmitted }) {
           onChange={(val) => updateField('postOtherNotes', val)}
         />
         <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
-      </Section>
+      </Section>}
     </div>
   );
 }

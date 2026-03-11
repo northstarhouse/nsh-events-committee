@@ -18,7 +18,7 @@ const defaultData = {
   committeeNotes: '',
 };
 
-export default function LogisticsForm({ event, onSubmitted }) {
+export default function LogisticsForm({ event, onSubmitted, section }) {
   const { data, updateField, saveStatus, saveNow } = useFormData(event.id, 'logistics', defaultData);
 
   const handleSubmit = async () => {
@@ -28,7 +28,7 @@ export default function LogisticsForm({ event, onSubmitted }) {
 
   return (
     <div>
-      <Section title="Event Logistics - Planning">
+      {(!section || section === 'pre') && <Section title="Event Logistics - Planning">
         <TextInput
           label="Proposed attendance"
           value={data.proposedAttendance}
@@ -97,9 +97,9 @@ export default function LogisticsForm({ event, onSubmitted }) {
           rows={4}
         />
         <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
-      </Section>
+      </Section>}
 
-      <Section title="Post Event Notes">
+      {(!section || section === 'post') && <Section title="Post Event Notes">
         <RadioGroup
           label="Setup plan vs. reality"
           options={['Matched plan exactly', 'Minor adjustments needed', 'Significant changes made']}
@@ -128,7 +128,7 @@ export default function LogisticsForm({ event, onSubmitted }) {
           rows={4}
         />
         <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
-      </Section>
+      </Section>}
     </div>
   );
 }

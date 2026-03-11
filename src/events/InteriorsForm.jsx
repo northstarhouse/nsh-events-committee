@@ -17,7 +17,7 @@ const defaultData = {
   postOtherNotes: '',
 };
 
-export default function InteriorsForm({ event, onSubmitted }) {
+export default function InteriorsForm({ event, onSubmitted, section }) {
   const { data, updateField, saveStatus, saveNow } = useFormData(event.id, 'interiors', defaultData);
 
   const handleSubmit = async () => {
@@ -27,7 +27,7 @@ export default function InteriorsForm({ event, onSubmitted }) {
 
   return (
     <div>
-      <Section title="Interiors - Planning">
+      {(!section || section === 'pre') && <Section title="Interiors - Planning">
         <RadioGroup
           label="For this event, which applies?"
           options={[
@@ -79,9 +79,9 @@ export default function InteriorsForm({ event, onSubmitted }) {
           rows={4}
         />
         <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
-      </Section>
+      </Section>}
 
-      <Section title="Post Event Notes">
+      {(!section || section === 'post') && <Section title="Post Event Notes">
         <RadioGroup
           label="Any issues with historic spaces or furnishings?"
           options={['None', 'Minor', 'Significant']}
@@ -117,7 +117,7 @@ export default function InteriorsForm({ event, onSubmitted }) {
           rows={3}
         />
         <FormActions saveStatus={saveStatus} onSave={handleSubmit} align="right" showStatus={false} />
-      </Section>
+      </Section>}
     </div>
   );
 }
