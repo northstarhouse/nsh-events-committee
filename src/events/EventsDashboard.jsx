@@ -865,7 +865,7 @@ export default function EventsDashboard() {
               <p className="text-xs text-ink-light">{area.role} · {area.person}</p>
             </div>
           </div>
-          <FormComponent event={selectedEvent} onSubmitted={() => {}} section={phase} showSaveStatus={true} />
+          <FormComponent event={selectedEvent} onSubmitted={navigateBack} section={phase} showSaveStatus={true} />
         </div>
       );
     };
