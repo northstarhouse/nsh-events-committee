@@ -888,13 +888,8 @@ export default function EventsDashboard() {
                 <h1 className="text-base font-bold text-gold leading-none">{selectedEvent.name}</h1>
               </div>
             </div>
-            <div className="flex items-center gap-2 mb-1.5 overflow-x-auto pb-1 scrollbar-hide">
-              <span className="text-xs font-semibold text-ink-light uppercase tracking-wider flex-shrink-0">Pre:</span>
+            <div className="flex items-center gap-2 overflow-x-auto" style={{scrollbarWidth:'none',msOverflowStyle:'none'}}>
               {committeeAreas.map((area) => navPill(area, 'pre'))}
-            </div>
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
-              <span className="text-xs font-semibold text-ink-light uppercase tracking-wider flex-shrink-0">Post:</span>
-              {committeeAreas.map((area) => navPill(area, 'post'))}
             </div>
           </div>
         </div>
