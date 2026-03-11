@@ -1,8 +1,8 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import {
   ArrowLeft, Calendar, ChevronRight, ClipboardList, Music2, Users,
   MapPin, Megaphone, Coffee, DollarSign, Handshake, Paintbrush, Save, Star,
-  Plus, X, Send, Printer
+  Plus, X, Send, Printer, PenLine
 } from 'lucide-react';
 import { events2026, months, committeeAreas, getEventsByMonth, getEventById, getEventDisplayName, getDaysUntil } from './eventsData';
 
@@ -513,6 +513,7 @@ export default function EventsDashboard() {
   const [generalMessages, setGeneralMessages] = useState([]);
   const [newMessageText, setNewMessageText] = useState('');
   const [detailDataVersion, setDetailDataVersion] = useState(0);
+  const committeeEditRefs = useRef({});
 
   const loadGeneralMessages = (raw) => {
     if (!raw) return [];
@@ -632,10 +633,17 @@ export default function EventsDashboard() {
     window.scrollTo(0, 0);
   }, []);
 
+  const navigateToCommitteeEdit = useCallback(() => {
+    setView('committee-edit');
+    window.scrollTo(0, 0);
+  }, []);
+
   const navigateBack = useCallback(() => {
     if (view === 'form') {
       setView('detail');
       setSelectedArea(null);
+    } else if (view === 'committee-edit') {
+      setView('detail');
     } else if (view === 'detail') {
       setView('overview');
       setSelectedEventId(null);
@@ -810,6 +818,75 @@ export default function EventsDashboard() {
     setTimeout(() => { win.print(); }, 500);
   };
 
+  if (view === 'committee-edit' && selectedEvent) {
+    return (
+      <div className="min-h-screen bg-sand-light">
+        {/* Sticky header */}
+        <div className="sticky top-0 z-40 bg-white border-b border-sand-dark shadow-sm">
+          <div className="max-w-4xl mx-auto px-4 py-3">
+            <div className="flex items-center gap-3 mb-3">
+              <button
+                onClick={navigateBack}
+                className="flex items-center gap-2 text-gold hover:text-gold-dark font-medium transition-colors cursor-pointer"
+              >
+                <ArrowLeft size={18} />
+                Back
+              </button>
+              <div className="border-l border-sand-dark pl-3">
+                <p className="text-xs uppercase tracking-[0.3em] text-ink-light leading-none mb-0.5">Committee Edit</p>
+                <h1 className="text-base font-bold text-gold leading-none">{selectedEvent.name}</h1>
+              </div>
+            </div>
+            {/* Anchor nav pills */}
+            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+              {committeeAreas.map((area) => {
+                const Icon = areaIcons[area.key];
+                return (
+                  <button
+                    key={area.key}
+                    onClick={() => committeeEditRefs.current[area.key]?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                    className="inline-flex items-center gap-1.5 flex-shrink-0 rounded-full border border-sand-dark bg-sand-light/60 px-3 py-1.5 text-xs font-medium text-ink hover:border-gold hover:text-gold hover:bg-white transition-colors cursor-pointer"
+                  >
+                    <div className="w-5 h-5 rounded bg-sand flex items-center justify-center flex-shrink-0">
+                      <Icon size={11} className="text-gold" />
+                    </div>
+                    {area.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* All forms stacked */}
+        <div className="max-w-4xl mx-auto px-4 py-8 space-y-10">
+          {committeeAreas.map((area) => {
+            const FormComponent = formComponents[area.key];
+            const Icon = areaIcons[area.key];
+            return (
+              <div
+                key={area.key}
+                ref={(el) => { committeeEditRefs.current[area.key] = el; }}
+                className="scroll-mt-40"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-xl bg-sand flex items-center justify-center">
+                    <Icon size={20} className="text-gold" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-gold">{area.label}</h2>
+                    <p className="text-xs text-ink-light">{area.role} · {area.person}</p>
+                  </div>
+                </div>
+                <FormComponent event={selectedEvent} onSubmitted={() => {}} />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
   if (view === 'form' && selectedEvent && selectedArea) {
     const FormComponent = formComponents[selectedArea];
     const area = committeeAreas.find(a => a.key === selectedArea);
@@ -853,6 +930,13 @@ export default function EventsDashboard() {
     return (
       <div className="min-h-screen bg-sand-light">
         <div className="fixed top-4 right-4 z-40 flex gap-2">
+          <button
+            onClick={navigateToCommitteeEdit}
+            className="inline-flex items-center gap-2 rounded-full bg-gold px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-gold-dark cursor-pointer"
+          >
+            <PenLine size={14} />
+            Committee Edit
+          </button>
           <button
             onClick={handlePrintCombined}
             className="inline-flex items-center gap-2 rounded-full bg-white border border-sand-dark px-4 py-2 text-sm font-semibold text-ink-light shadow-md transition hover:border-gold hover:text-gold cursor-pointer"
