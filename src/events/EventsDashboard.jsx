@@ -29,6 +29,18 @@ const areaIcons = {
   marketing: Megaphone,
 };
 
+const areaShortLabels = {
+  overall: 'Overall',
+  programs: 'Activities',
+  volunteers: 'Volunteers',
+  logistics: 'Logistics',
+  hospitality: 'Hospitality',
+  finance: 'Finance',
+  sponsorship: 'Sponsorship',
+  interiors: 'Interiors',
+  marketing: 'Marketing',
+};
+
 const marketingChannels = [
   'Create Press Release',
   'Send Email Blast',
@@ -830,7 +842,7 @@ export default function EventsDashboard() {
           <div className="w-5 h-5 rounded bg-sand flex items-center justify-center flex-shrink-0">
             <Icon size={11} className="text-gold" />
           </div>
-          {area.label}
+          {areaShortLabels[area.key]}
         </button>
       );
     };
