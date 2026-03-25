@@ -533,6 +533,8 @@ export default function EventsDashboard() {
   });
   const [editingContactIndex, setEditingContactIndex] = useState(null);
   const [editContactForm, setEditContactForm] = useState({ name: '', role: '', phone: '', email: '' });
+  const [showAddContact, setShowAddContact] = useState(false);
+  const [newContactForm, setNewContactForm] = useState({ name: '', role: '', phone: '', email: '' });
   const committeeEditRefs = useRef({});
 
   const loadGeneralMessages = (raw) => {
@@ -1684,8 +1686,14 @@ export default function EventsDashboard() {
 
             {selectedResource === 'committee' && (
               <div className="border border-sand-dark rounded-xl overflow-hidden">
-                <div className="px-4 py-3 bg-sand-light/50 border-b border-sand-dark">
+                <div className="px-4 py-3 bg-sand-light/50 border-b border-sand-dark flex items-center justify-between">
                   <p className="text-sm font-semibold text-ink">Committee Members and Contact Info</p>
+                  <button
+                    onClick={() => { setShowAddContact(true); setNewContactForm({ name: '', role: '', phone: '', email: '' }); }}
+                    className="flex items-center gap-1 px-2.5 py-1 text-xs rounded border border-gold/60 text-gold font-medium hover:bg-gold/10 transition-colors"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Add Contact
+                  </button>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
@@ -1740,6 +1748,30 @@ export default function EventsDashboard() {
                           </tr>
                         )
                       ))}
+                      {showAddContact && (
+                        <tr className="border-b border-sand-dark/40 bg-gold/5">
+                          <td className="py-1.5 px-2"><input placeholder="Name" className="w-full border border-sand-dark rounded px-2 py-1 text-sm text-ink bg-white" value={newContactForm.name} onChange={e => setNewContactForm(f => ({...f, name: e.target.value}))} /></td>
+                          <td className="py-1.5 px-2"><input placeholder="Role" className="w-full border border-sand-dark rounded px-2 py-1 text-sm text-ink bg-white" value={newContactForm.role} onChange={e => setNewContactForm(f => ({...f, role: e.target.value}))} /></td>
+                          <td className="py-1.5 px-2"><input placeholder="Phone" className="w-full border border-sand-dark rounded px-2 py-1 text-sm text-ink bg-white" value={newContactForm.phone} onChange={e => setNewContactForm(f => ({...f, phone: e.target.value}))} /></td>
+                          <td className="py-1.5 px-2"><input placeholder="Email" className="w-full border border-sand-dark rounded px-2 py-1 text-sm text-ink bg-white" value={newContactForm.email} onChange={e => setNewContactForm(f => ({...f, email: e.target.value}))} /></td>
+                          <td className="py-1.5 px-2 whitespace-nowrap">
+                            <button
+                              onClick={() => {
+                                if (!newContactForm.name.trim()) return;
+                                const updated = [...contacts, {...newContactForm}];
+                                setContacts(updated);
+                                localStorage.setItem('nsh-committee-contacts', JSON.stringify(updated));
+                                setShowAddContact(false);
+                              }}
+                              className="mr-1 px-2 py-1 text-xs rounded bg-gold text-white font-medium hover:bg-gold/80"
+                            >Add</button>
+                            <button
+                              onClick={() => setShowAddContact(false)}
+                              className="px-2 py-1 text-xs rounded border border-sand-dark text-ink hover:bg-sand-light"
+                            >Cancel</button>
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
