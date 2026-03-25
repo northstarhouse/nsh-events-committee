@@ -525,6 +525,14 @@ export default function EventsDashboard() {
   const [generalMessages, setGeneralMessages] = useState([]);
   const [newMessageText, setNewMessageText] = useState('');
   const [detailDataVersion, setDetailDataVersion] = useState(0);
+  const [contacts, setContacts] = useState(() => {
+    try {
+      const saved = localStorage.getItem('nsh-committee-contacts');
+      return saved ? JSON.parse(saved) : [...committeeContacts, ...eventSupportContacts];
+    } catch { return [...committeeContacts, ...eventSupportContacts]; }
+  });
+  const [editingContactIndex, setEditingContactIndex] = useState(null);
+  const [editContactForm, setEditContactForm] = useState({ name: '', role: '', phone: '', email: '' });
   const committeeEditRefs = useRef({});
 
   const loadGeneralMessages = (raw) => {
@@ -1687,16 +1695,50 @@ export default function EventsDashboard() {
                         <th className="text-left py-2.5 px-4 font-semibold text-ink">Role</th>
                         <th className="text-left py-2.5 px-4 font-semibold text-ink">Phone Number</th>
                         <th className="text-left py-2.5 px-4 font-semibold text-ink">Email</th>
+                        <th className="py-2.5 px-4"></th>
                       </tr>
                     </thead>
                     <tbody>
-                      {[...committeeContacts, ...eventSupportContacts].map((contact) => (
-                        <tr key={`resource-committee-${contact.email}`} className="border-b border-sand-dark/40 last:border-b-0">
-                          <td className="py-2.5 px-4 text-ink">{contact.name}</td>
-                          <td className="py-2.5 px-4 text-ink">{contact.role}</td>
-                          <td className="py-2.5 px-4 text-ink-light">{contact.phone}</td>
-                          <td className="py-2.5 px-4 text-ink">{contact.email}</td>
-                        </tr>
+                      {contacts.map((contact, idx) => (
+                        editingContactIndex === idx ? (
+                          <tr key={`edit-${idx}`} className="border-b border-sand-dark/40 bg-sand-light/40">
+                            <td className="py-1.5 px-2"><input className="w-full border border-sand-dark rounded px-2 py-1 text-sm text-ink bg-white" value={editContactForm.name} onChange={e => setEditContactForm(f => ({...f, name: e.target.value}))} /></td>
+                            <td className="py-1.5 px-2"><input className="w-full border border-sand-dark rounded px-2 py-1 text-sm text-ink bg-white" value={editContactForm.role} onChange={e => setEditContactForm(f => ({...f, role: e.target.value}))} /></td>
+                            <td className="py-1.5 px-2"><input className="w-full border border-sand-dark rounded px-2 py-1 text-sm text-ink bg-white" value={editContactForm.phone} onChange={e => setEditContactForm(f => ({...f, phone: e.target.value}))} /></td>
+                            <td className="py-1.5 px-2"><input className="w-full border border-sand-dark rounded px-2 py-1 text-sm text-ink bg-white" value={editContactForm.email} onChange={e => setEditContactForm(f => ({...f, email: e.target.value}))} /></td>
+                            <td className="py-1.5 px-2 whitespace-nowrap">
+                              <button
+                                onClick={() => {
+                                  const updated = contacts.map((c, i) => i === idx ? {...editContactForm} : c);
+                                  setContacts(updated);
+                                  localStorage.setItem('nsh-committee-contacts', JSON.stringify(updated));
+                                  setEditingContactIndex(null);
+                                }}
+                                className="mr-1 px-2 py-1 text-xs rounded bg-gold text-white font-medium hover:bg-gold/80"
+                              >Save</button>
+                              <button
+                                onClick={() => setEditingContactIndex(null)}
+                                className="px-2 py-1 text-xs rounded border border-sand-dark text-ink hover:bg-sand-light"
+                              >Cancel</button>
+                            </td>
+                          </tr>
+                        ) : (
+                          <tr key={`resource-committee-${idx}`} className="border-b border-sand-dark/40 last:border-b-0">
+                            <td className="py-2.5 px-4 text-ink">{contact.name}</td>
+                            <td className="py-2.5 px-4 text-ink">{contact.role}</td>
+                            <td className="py-2.5 px-4 text-ink-light">{contact.phone}</td>
+                            <td className="py-2.5 px-4 text-ink">{contact.email}</td>
+                            <td className="py-2.5 px-4">
+                              <button
+                                onClick={() => { setEditingContactIndex(idx); setEditContactForm({...contact}); }}
+                                className="p-1 rounded hover:bg-sand-light text-ink-light hover:text-ink transition-colors"
+                                title="Edit contact"
+                              >
+                                <PenLine className="w-3.5 h-3.5" />
+                              </button>
+                            </td>
+                          </tr>
+                        )
                       ))}
                     </tbody>
                   </table>
