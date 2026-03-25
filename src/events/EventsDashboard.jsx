@@ -1688,12 +1688,20 @@ export default function EventsDashboard() {
               <div className="border border-sand-dark rounded-xl overflow-hidden">
                 <div className="px-4 py-3 bg-sand-light/50 border-b border-sand-dark flex items-center justify-between">
                   <p className="text-sm font-semibold text-ink">Committee Members and Contact Info</p>
-                  <button
-                    onClick={() => { setShowAddContact(true); setNewContactForm({ name: '', role: '', phone: '', email: '' }); }}
-                    className="flex items-center gap-1 px-2.5 py-1 text-xs rounded border border-gold/60 text-gold font-medium hover:bg-gold/10 transition-colors"
-                  >
-                    <Plus className="w-3.5 h-3.5" /> Add Contact
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={`mailto:${contacts.map(c => c.email).filter(Boolean).join(',')}`}
+                      className="flex items-center gap-1 px-2.5 py-1 text-xs rounded border border-sand-dark/60 text-ink-light font-medium hover:border-gold/60 hover:text-gold transition-colors"
+                    >
+                      <Send className="w-3.5 h-3.5" /> Email All
+                    </a>
+                    <button
+                      onClick={() => { setShowAddContact(true); setNewContactForm({ name: '', role: '', phone: '', email: '' }); }}
+                      className="flex items-center gap-1 px-2.5 py-1 text-xs rounded border border-gold/60 text-gold font-medium hover:bg-gold/10 transition-colors"
+                    >
+                      <Plus className="w-3.5 h-3.5" /> Add Contact
+                    </button>
+                  </div>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
