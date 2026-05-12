@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { ArrowLeft, Plus, X, CheckCircle2, Save, AlertCircle } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { ArrowLeft, Plus, X, CheckCircle2, Save, AlertCircle, Upload, ImageIcon } from 'lucide-react';
 import { useFormData } from './useFormData';
+import { supabase } from '../lib/supabase';
 
 const PURPOSE_OPTIONS = ['Educational', 'Entertainment', 'Community engagement', 'Fundraising support'];
 const HISTORIC_OPTIONS = [
@@ -32,6 +33,7 @@ const MARKETING_CHANNELS = [
 ];
 
 const defaultPrograms = {
+  flyerUrl: '',
   purpose: [], performers: [{ name: '', contact: '' }],
   activities: [{ activity: '', timeFrame: '', volunteers: '' }],
   transitions: '', actionItems: [{ item: '', dueDate: '', volunteer: '' }],
@@ -229,6 +231,33 @@ export default function CommitteeEditUnified({ event, onBack }) {
   const mkt  = useFormData(event.id, 'marketing', defaultMarketing);
 
   const [newVolName, setNewVolName] = useState({});
+  const [flyerUploading, setFlyerUploading] = useState(false);
+  const [flyerError, setFlyerError] = useState('');
+  const flyerInputRef = useRef(null);
+
+  async function handleFlyerUpload(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setFlyerUploading(true);
+    setFlyerError('');
+    const ext = file.name.split('.').pop();
+    const path = `${event.id}/flyer.${ext}`;
+    const { error } = await supabase.storage
+      .from('event-flyers')
+      .upload(path, file, { upsert: true, contentType: file.type });
+    if (error) {
+      setFlyerError(error.message);
+      setFlyerUploading(false);
+      return;
+    }
+    const { data: urlData } = supabase.storage.from('event-flyers').getPublicUrl(path);
+    prog.updateField('flyerUrl', urlData.publicUrl + '?t=' + Date.now());
+    setFlyerUploading(false);
+  }
+
+  function handleRemoveFlyer() {
+    prog.updateField('flyerUrl', '');
+  }
 
   const statuses = {
     prog: prog.saveStatus, log: log.saveStatus, int: int.saveStatus,
@@ -281,6 +310,51 @@ export default function CommitteeEditUnified({ event, onBack }) {
 
         {/* ── Event Overview ── */}
         <SectionCard title="Event Overview">
+          {/* Flyer */}
+          <div className="mb-5">
+            <input ref={flyerInputRef} type="file" accept="image/*" className="hidden" onChange={handleFlyerUpload} />
+            {prog.data.flyerUrl ? (
+              <div className="relative group">
+                <img
+                  src={prog.data.flyerUrl}
+                  alt="Event flyer"
+                  className="w-full max-h-96 object-contain rounded-lg border border-sand-dark bg-sand-light"
+                />
+                <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button
+                    onClick={() => flyerInputRef.current?.click()}
+                    className="flex items-center gap-1.5 bg-white border border-sand-dark rounded-lg px-3 py-1.5 text-xs font-medium text-ink hover:border-gold hover:text-gold shadow-sm transition-colors"
+                  >
+                    <Upload size={12} /> Replace
+                  </button>
+                  <button
+                    onClick={handleRemoveFlyer}
+                    className="flex items-center gap-1.5 bg-white border border-sand-dark rounded-lg px-3 py-1.5 text-xs font-medium text-ink hover:border-red-400 hover:text-red-500 shadow-sm transition-colors"
+                  >
+                    <X size={12} /> Remove
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => flyerInputRef.current?.click()}
+                disabled={flyerUploading}
+                className="w-full flex flex-col items-center gap-2 border-2 border-dashed border-sand-dark rounded-xl py-8 text-ink-light hover:border-gold hover:text-gold hover:bg-sand-light/60 transition-colors cursor-pointer disabled:opacity-50"
+              >
+                {flyerUploading ? (
+                  <span className="text-sm">Uploading…</span>
+                ) : (
+                  <>
+                    <ImageIcon size={28} />
+                    <span className="text-sm font-medium">Upload event flyer</span>
+                    <span className="text-xs">PNG, JPG, or PDF</span>
+                  </>
+                )}
+              </button>
+            )}
+            {flyerError && <p className="mt-1.5 text-xs text-red-500">{flyerError}</p>}
+          </div>
+
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div>
               <p className="text-xs font-semibold text-ink-light uppercase tracking-wider mb-1">Event Name</p>
