@@ -15,6 +15,7 @@ import FinanceForm from './FinanceForm';
 import SponsorshipForm from './SponsorshipForm';
 import InteriorsForm from './InteriorsForm';
 import MarketingForm from './MarketingForm';
+import CommitteeEditUnified from './CommitteeEditUnified';
 
 const areaIcons = {
   overall: ClipboardList,
@@ -795,6 +796,10 @@ export default function EventsDashboard() {
   };
 
   if (view === 'committee-edit' && selectedEvent) {
+    return <CommitteeEditUnified event={selectedEvent} onBack={navigateBack} />;
+  }
+
+  if (view === 'committee-edit-old' && selectedEvent) {
     const navPill = (area, phase) => {
       const Icon = areaIcons[area.key];
       return (
