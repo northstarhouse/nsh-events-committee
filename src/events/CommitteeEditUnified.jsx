@@ -251,12 +251,23 @@ export default function CommitteeEditUnified({ event, onBack }) {
       return;
     }
     const { data: urlData } = supabase.storage.from('event-flyers').getPublicUrl(path);
-    prog.updateField('flyerUrl', urlData.publicUrl + '?t=' + Date.now());
+    const newUrl = urlData.publicUrl + '?t=' + Date.now();
+    const newData = { ...prog.data, flyerUrl: newUrl };
+    prog.updateField('flyerUrl', newUrl);
+    await supabase.from('event_forms').upsert({
+      event_id: event.id, form_type: 'programs',
+      data: newData, updated_at: new Date().toISOString(),
+    });
     setFlyerUploading(false);
   }
 
-  function handleRemoveFlyer() {
+  async function handleRemoveFlyer() {
+    const newData = { ...prog.data, flyerUrl: '' };
     prog.updateField('flyerUrl', '');
+    await supabase.from('event_forms').upsert({
+      event_id: event.id, form_type: 'programs',
+      data: newData, updated_at: new Date().toISOString(),
+    });
   }
 
   const statuses = {
