@@ -1,90 +1,76 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { supabase } from '../lib/supabase';
 
-const GOOGLE_SCRIPT_URL = import.meta.env.VITE_GOOGLE_SCRIPT_URL || '';
-
-function isSuccessResponse(result, action) {
-  if (!result || typeof result !== 'object') return false;
-  if (result.success === true) return true;
-  if (action === 'saveFormData' && result.status === 'saved') return true;
-  if (action === 'getFormData' && result.status === 'ok') return true;
-  return false;
-}
-
-function extractFormData(result) {
-  if (!result || typeof result !== 'object') return null;
-  if (result.data && typeof result.data === 'object') return result.data;
-  if (result.result && result.result.data && typeof result.result.data === 'object') return result.result.data;
-  return null;
+function mergeWithDefaults(defaultData, savedData) {
+  if (!savedData) return defaultData;
+  if (Array.isArray(defaultData)) {
+    return Array.isArray(savedData) && savedData.length > 0 ? savedData : defaultData;
+  }
+  if (typeof defaultData === 'object' && defaultData !== null) {
+    const result = { ...defaultData };
+    if (savedData && typeof savedData === 'object') {
+      Object.keys(savedData).forEach(k => {
+        result[k] = mergeWithDefaults(defaultData[k], savedData[k]);
+      });
+    }
+    return result;
+  }
+  return savedData !== undefined ? savedData : defaultData;
 }
 
 export function useFormData(eventId, formType, defaultData = {}) {
-  const key = `nsh-events-${eventId}-${formType}`;
-  const remoteEnabled = Boolean(GOOGLE_SCRIPT_URL);
+  const lsKey = `nsh-events-${eventId}-${formType}`;
 
   const [data, setData] = useState(() => {
     try {
-      const saved = localStorage.getItem(key);
-      return saved ? { ...defaultData, ...JSON.parse(saved) } : { ...defaultData };
+      const saved = localStorage.getItem(lsKey);
+      return saved ? mergeWithDefaults(defaultData, JSON.parse(saved)) : { ...defaultData };
     } catch {
       return { ...defaultData };
     }
   });
 
-  const [saveStatus, setSaveStatus] = useState(remoteEnabled ? 'loading' : 'saved');
+  const [saveStatus, setSaveStatus] = useState('loading');
   const timeoutRef = useRef(null);
   const isFirstRender = useRef(true);
   const hydratingRef = useRef(false);
   const localChangeRef = useRef(false);
 
-  const persistToLocal = useCallback((payload) => {
-    try {
-      localStorage.setItem(key, JSON.stringify(payload));
-      return true;
-    } catch (err) {
-      console.error('Failed to save form data locally:', err);
-      return false;
-    }
-  }, [key]);
+  useEffect(() => {
+    let cancelled = false;
+    setSaveStatus('loading');
 
-  const persistToRemote = useCallback(async (payload) => {
-    if (!remoteEnabled) return true;
-    try {
-      const response = await fetch(GOOGLE_SCRIPT_URL, {
-        method: 'POST',
-        // Use text/plain to avoid CORS preflight for Apps Script.
-        body: JSON.stringify({
-          action: 'saveFormData',
-          eventId,
-          formType,
-          data: payload,
-        }),
+    supabase
+      .from('event_forms')
+      .select('data')
+      .eq('event_id', eventId)
+      .eq('form_type', formType)
+      .maybeSingle()
+      .then(({ data: row, error }) => {
+        if (cancelled || localChangeRef.current) return;
+        if (error) { setSaveStatus('error'); return; }
+        if (row?.data) {
+          hydratingRef.current = true;
+          const merged = mergeWithDefaults(defaultData, row.data);
+          setData(merged);
+          try { localStorage.setItem(lsKey, JSON.stringify(merged)); } catch {}
+        }
+        setSaveStatus('saved');
       });
-      if (!response.ok) return false;
-      let result = null;
-      try {
-        result = await response.json();
-      } catch {
-        return false;
-      }
-      return isSuccessResponse(result, 'saveFormData');
-    } catch (err) {
-      console.error('Failed to save form data to Google Sheets:', err);
-      return false;
-    }
-  }, [eventId, formType, remoteEnabled]);
+
+    return () => { cancelled = true; };
+  }, [eventId, formType]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const persistAll = useCallback(async (payload, { silent = false } = {}) => {
     if (!silent) setSaveStatus('saving');
-    const localOk = persistToLocal(payload);
-    const remoteOk = await persistToRemote(payload);
-    const ok = localOk && remoteOk;
-    if (ok) {
-      setSaveStatus('saved');
-    } else {
-      setSaveStatus('error');
-    }
-    return ok;
-  }, [persistToLocal, persistToRemote]);
+    try { localStorage.setItem(lsKey, JSON.stringify(payload)); } catch {}
+    const { error } = await supabase
+      .from('event_forms')
+      .upsert({ event_id: eventId, form_type: formType, data: payload, updated_at: new Date().toISOString() });
+    if (error) { setSaveStatus('error'); return false; }
+    setSaveStatus('saved');
+    return true;
+  }, [eventId, formType, lsKey]);
 
   const updateField = useCallback((field, value) => {
     localChangeRef.current = true;
@@ -104,82 +90,22 @@ export function useFormData(eventId, formType, defaultData = {}) {
 
   const addToArray = useCallback((field, item) => {
     localChangeRef.current = true;
-    setData(prev => ({
-      ...prev,
-      [field]: [...(prev[field] || []), item],
-    }));
+    setData(prev => ({ ...prev, [field]: [...(prev[field] || []), item] }));
     setSaveStatus('unsaved');
   }, []);
 
   const removeFromArray = useCallback((field, index) => {
     localChangeRef.current = true;
-    setData(prev => ({
-      ...prev,
-      [field]: (prev[field] || []).filter((_, i) => i !== index),
-    }));
+    setData(prev => ({ ...prev, [field]: (prev[field] || []).filter((_, i) => i !== index) }));
     setSaveStatus('unsaved');
   }, []);
 
   useEffect(() => {
-    if (!remoteEnabled) return;
-
-    let cancelled = false;
-    const controller = new AbortController();
-
-    const loadRemote = async () => {
-      setSaveStatus('loading');
-      try {
-        const params = new URLSearchParams({
-          action: 'getFormData',
-          eventId: String(eventId),
-          formType,
-        });
-        const response = await fetch(`${GOOGLE_SCRIPT_URL}?${params.toString()}`, {
-          signal: controller.signal,
-        });
-        const result = await response.json();
-        if (!isSuccessResponse(result, 'getFormData')) throw new Error(result?.error || 'Load failed');
-        if (cancelled || localChangeRef.current) return;
-        hydratingRef.current = true;
-        const merged = { ...defaultData, ...(extractFormData(result) || {}) };
-        setData(merged);
-        persistToLocal(merged);
-        setSaveStatus('saved');
-      } catch (err) {
-        if (err.name !== 'AbortError') {
-          console.error('Failed to load form data from Google Sheets:', err);
-          setSaveStatus('error');
-        }
-      }
-    };
-
-    loadRemote();
-
-    return () => {
-      cancelled = true;
-      controller.abort();
-    };
-  }, [eventId, formType, remoteEnabled, defaultData, persistToLocal]);
-
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-
-    if (hydratingRef.current) {
-      hydratingRef.current = false;
-      return;
-    }
-
+    if (isFirstRender.current) { isFirstRender.current = false; return; }
+    if (hydratingRef.current) { hydratingRef.current = false; return; }
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => {
-      persistAll(data, { silent: true });
-    }, 500);
-
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
+    timeoutRef.current = setTimeout(() => persistAll(data, { silent: true }), 500);
+    return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current); };
   }, [data, persistAll]);
 
   const saveNow = useCallback(async () => {

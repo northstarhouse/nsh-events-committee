@@ -5,8 +5,7 @@ import {
   Plus, X, Send, Printer, PenLine
 } from 'lucide-react';
 import { events2026, months, committeeAreas, getEventsByMonth, getEventById, getEventDisplayName, getDaysUntil } from './eventsData';
-
-const GOOGLE_SCRIPT_URL = import.meta.env.VITE_GOOGLE_SCRIPT_URL || '';
+import { supabase } from '../lib/supabase';
 import OverallStatusForm from './OverallStatusForm';
 import ProgramsForm from './ProgramsForm';
 import VolunteerForm from './VolunteerForm';
@@ -496,26 +495,12 @@ export default function EventsDashboard() {
   const [selectedArea, setSelectedArea] = useState(null);
   const [showAreas, setShowAreas] = useState(false);
   const [selectedResource, setSelectedResource] = useState(null);
-  const [customEvents, setCustomEvents] = useState(() => {
-    try {
-      const saved = localStorage.getItem('nsh-custom-events');
-      return saved ? JSON.parse(saved) : [];
-    } catch { return []; }
-  });
+  const [customEvents, setCustomEvents] = useState([]);
 
-  // Load custom events from Google Sheets on mount
   useEffect(() => {
-    if (!GOOGLE_SCRIPT_URL) return;
-    const params = new URLSearchParams({ action: 'getFormData', eventId: 'nsh-dashboard', formType: 'custom-events' });
-    fetch(`${GOOGLE_SCRIPT_URL}?${params.toString()}`)
-      .then(r => r.json())
-      .then(result => {
-        if (result.success && result.data && Array.isArray(result.data.events) && result.data.events.length > 0) {
-          setCustomEvents(result.data.events);
-          localStorage.setItem('nsh-custom-events', JSON.stringify(result.data.events));
-        }
-      })
-      .catch(() => {});
+    supabase.from('event_custom').select('*').order('created_at').then(({ data }) => {
+      if (data) setCustomEvents(data.map(r => ({ id: r.id, name: r.name, month: r.month, date: r.date, dayTime: r.day_time, isoDate: r.iso_date })));
+    });
   }, []);
   const [showAddEvent, setShowAddEvent] = useState(false);
   const [addEventForm, setAddEventForm] = useState({
@@ -549,40 +534,15 @@ export default function EventsDashboard() {
     if (!selectedEventId) { setGeneralMessages([]); return; }
     const raw = localStorage.getItem(`nsh-events-${selectedEventId}-general-notes`);
     setGeneralMessages(loadGeneralMessages(raw));
-    if (GOOGLE_SCRIPT_URL) {
-      const params = new URLSearchParams({ action: 'getFormData', eventId: selectedEventId, formType: 'general-notes' });
-      fetch(`${GOOGLE_SCRIPT_URL}?${params.toString()}`)
-        .then(r => r.json())
-        .then(result => {
-          if (result.success && result.data) {
-            const msgs = Array.isArray(result.data.messages) ? result.data.messages : loadGeneralMessages(result.data.notes || '');
-            setGeneralMessages(msgs);
-            localStorage.setItem(`nsh-events-${selectedEventId}-general-notes`, JSON.stringify({ messages: msgs }));
-          }
-        })
-        .catch(() => {});
-    }
+    supabase.from('event_forms').select('data').eq('event_id', selectedEventId).eq('form_type', 'general-notes').maybeSingle()
+      .then(({ data: row }) => {
+        if (!row?.data) return;
+        const msgs = Array.isArray(row.data.messages) ? row.data.messages : loadGeneralMessages(row.data.notes || '');
+        setGeneralMessages(msgs);
+        try { localStorage.setItem(`nsh-events-${selectedEventId}-general-notes`, JSON.stringify({ messages: msgs })); } catch {}
+      });
   }, [selectedEventId]);
 
-  // Sync all committee area form data from Google Sheets when entering detail view
-  useEffect(() => {
-    if (view !== 'detail' || !selectedEventId || !GOOGLE_SCRIPT_URL) return;
-    let cancelled = false;
-    committeeAreas.forEach(({ key: formType }) => {
-      const params = new URLSearchParams({ action: 'getFormData', eventId: selectedEventId, formType });
-      fetch(`${GOOGLE_SCRIPT_URL}?${params.toString()}`)
-        .then(r => r.json())
-        .then(result => {
-          if (cancelled) return;
-          if (result.success && result.data && Object.keys(result.data).length > 0) {
-            localStorage.setItem(`nsh-events-${selectedEventId}-${formType}`, JSON.stringify(result.data));
-            setDetailDataVersion(v => v + 1);
-          }
-        })
-        .catch(() => {});
-    });
-    return () => { cancelled = true; };
-  }, [selectedEventId, view]);
 
   const generalRef = { id: selectedEventId, messages: generalMessages, newText: newMessageText };
   const handleSendMessage = () => {
@@ -591,18 +551,8 @@ export default function EventsDashboard() {
     const updated = [...messages, { text: newText.trim(), ts: new Date().toISOString() }];
     setGeneralMessages(updated);
     setNewMessageText('');
-    try {
-      const payload = JSON.stringify({ messages: updated });
-      localStorage.setItem(`nsh-events-${id}-general-notes`, payload);
-      if (GOOGLE_SCRIPT_URL) {
-        fetch(GOOGLE_SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'saveFormData', eventId: id, formType: 'general-notes', data: { messages: updated } }),
-        }).catch(() => {});
-      }
-    } catch (err) {
-      console.error('Failed to save general notes:', err);
-    }
+    try { localStorage.setItem(`nsh-events-${id}-general-notes`, JSON.stringify({ messages: updated })); } catch {}
+    supabase.from('event_forms').upsert({ event_id: id, form_type: 'general-notes', data: { messages: updated }, updated_at: new Date().toISOString() }).catch(() => {});
   };
 
   const allEvents = [...events2026, ...customEvents];
@@ -612,25 +562,28 @@ export default function EventsDashboard() {
   }, {});
   const selectedEvent = selectedEventId ? allEvents.find(e => e.id === selectedEventId) : null;
 
-  const handleAddEvent = useCallback(() => {
+  const handleAddEvent = useCallback(async () => {
     if (!addEventForm.name.trim()) return;
     const newEvent = {
-      ...addEventForm,
       id: `custom-${Date.now()}`,
+      name: addEventForm.name,
+      month: addEventForm.month,
+      date: addEventForm.date,
+      dayTime: addEventForm.dayTime,
       isoDate: addEventForm.isoDate || null,
     };
-    const updated = [...customEvents, newEvent];
-    setCustomEvents(updated);
-    localStorage.setItem('nsh-custom-events', JSON.stringify(updated));
-    if (GOOGLE_SCRIPT_URL) {
-      fetch(GOOGLE_SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'saveFormData', eventId: 'nsh-dashboard', formType: 'custom-events', data: { events: updated } }),
-      }).catch(() => {});
-    }
+    setCustomEvents(prev => [...prev, newEvent]);
+    await supabase.from('event_custom').insert({
+      id: newEvent.id,
+      name: newEvent.name,
+      month: newEvent.month,
+      date: newEvent.date,
+      day_time: newEvent.dayTime,
+      iso_date: newEvent.isoDate,
+    });
     setShowAddEvent(false);
     setAddEventForm({ name: '', month: 'January', date: '', dayTime: '', isoDate: '' });
-  }, [addEventForm, customEvents]);
+  }, [addEventForm]);
 
   const navigateToEvent = useCallback((eventId) => {
     setSelectedEventId(eventId);
