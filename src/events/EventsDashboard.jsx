@@ -16,6 +16,7 @@ import SponsorshipForm from './SponsorshipForm';
 import InteriorsForm from './InteriorsForm';
 import MarketingForm from './MarketingForm';
 import CommitteeEditUnified from './CommitteeEditUnified';
+import CommitteeEditPostEvent from './CommitteeEditPostEvent';
 
 const areaIcons = {
   overall: ClipboardList,
@@ -615,11 +616,16 @@ export default function EventsDashboard() {
     window.scrollTo(0, 0);
   }, []);
 
+  const navigateToPostEvent = useCallback(() => {
+    setView('committee-post');
+    window.scrollTo(0, 0);
+  }, []);
+
   const navigateBack = useCallback(() => {
     if (view === 'form') {
       setView('detail');
       setSelectedArea(null);
-    } else if (view === 'committee-edit') {
+    } else if (view === 'committee-edit' || view === 'committee-post') {
       setView('detail');
     } else if (view === 'detail') {
       setView('overview');
@@ -799,6 +805,10 @@ export default function EventsDashboard() {
     return <CommitteeEditUnified event={selectedEvent} onBack={navigateBack} />;
   }
 
+  if (view === 'committee-post' && selectedEvent) {
+    return <CommitteeEditPostEvent event={selectedEvent} onBack={navigateBack} />;
+  }
+
   if (view === 'committee-edit-old' && selectedEvent) {
     const navPill = (area, phase) => {
       const Icon = areaIcons[area.key];
@@ -935,6 +945,13 @@ export default function EventsDashboard() {
           >
             <PenLine size={14} />
             Committee Edit
+          </button>
+          <button
+            onClick={navigateToPostEvent}
+            className="inline-flex items-center gap-2 rounded-full bg-amber-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-amber-700 cursor-pointer"
+          >
+            <Star size={14} />
+            After Event Review
           </button>
           <button
             onClick={handlePrintCombined}
